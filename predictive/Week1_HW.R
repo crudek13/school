@@ -2,6 +2,8 @@ library(tidyverse)
 
 getwd()
 
+# either use this path if school is wd
+# or change wd 
 data <- read.csv("predictive/datasets/Broadwayshow.csv")
 
 #Q1
