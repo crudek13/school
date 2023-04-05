@@ -1,3 +1,5 @@
 # Data Analysis (Statistics)
 
-R
+Language: R
+
+* Week 1
