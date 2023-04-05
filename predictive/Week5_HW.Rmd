@@ -1,0 +1,191 @@
+---
+title: "BUSOBA 7332 Homework 5"
+author: "Carter Rudek"
+date: '`r Sys.Date()`'
+output: html_document
+---
+
+#### Load Packages
+
+```{r, error = FALSE}
+library(tidyverse)
+library(caret)
+library(neuralnet)
+```
+
+#### 1. Read Data
+
+```{r}
+data <- read.csv("GraduateAdmission.csv")
+data <-data[-1]
+str(data)
+```
+
+
+
+### 2. Do we need to convert the categorical variables into factors like what you did in HW#3 and HW#4? Explain? Why or why not?
+
+
+
+
+
+### 3. Prepare the data by using the Max-Min normalization method.
+
+```{r}
+# normalization function
+normalize <- function(x){
+  return((x-min(x))/(max(x)-min(x)))
+}
+```
+
+```{r}
+# convert data in to a range between 0 and 1
+normdata <- as.data.frame(lapply(data,normalize))
+str(normdata)
+summary(normdata)
+```
+
+### 4. Split the data into a 80% training set and a 20% test set. Use set.seed(7332) for reproducibility.
+
+```{r}
+set.seed(7332)
+Index <- createDataPartition(normdata$Admit,p=0.8,list=FALSE)
+trdata <- normdata[Index,]  # training data set 80%
+tsdata <- normdata[-Index,] # testing data set 20%
+head(trdata) # Gives the first 6 rows of the training data
+head(tsdata) # Gives the first 6 rows of the testing data
+
+names(normdata)
+```
+
+### 5. What are the top 3 predictors (features) that you identified using importance plot according to the mean Gini decrease for the Random Forest-Bagging model in question 5 part II in Homework 4?
+
+1. CGPA
+2. GRE
+3. LOR
+
+### 6. Find the neural network (nn) model with 1 hidden layer to predict Admit using the top 3 predictors you stated in the previous question. Report overall accuracy and misclassification, sensitivity and specificity for the test data.
+
+Overall test accuracy: 85%
+Miscalassifcation (error rate): 15%
+Sensitivity: 93.2%
+Specificity: 61.9%
+
+```{r}
+set.seed(7332)
+nnmodel <- neuralnet(Admit~ CGPA+GRE+LOR,
+                     trdata,
+                     hidden=1,
+                     err.fct = "ce",
+                     rep=5,
+                     lifesign = "full",
+                     linear.output = FALSE) 
+```
+
+```{r}
+##### Predict Testing data #####
+pred_clannts <-predict(nnmodel, tsdata,rep=5) # Predicting test data. 
+pred_clannts <-predict(nnmodel, tsdata,which.min(nnmodel$result.matrix[1, ]))#use this efficient line code instead of the code in line 103
+# Gives predicted probabilities and others
+head(pred_clannts) # shows the first 6 predicted probabilities from test data 
+head(tsdata[1:6,])  # shows the first 6  rows of the testing data
+```
+
+```{r}
+pred_classnnts<- ifelse(pred_clannts>0.5,1,0) # Assigning probabilities to classes
+conf_clannts<-table(Predicted=pred_classnnts,Actual=tsdata$Admit) # confusion matrix from nnmodel
+conf_clannts  # confusion Matrix from nn model
+```
+
+```{r}
+conf_clannts[2,2]/sum(conf_clannts[,2]) #sensitivity
+conf_clannts[1,1]/sum(conf_clannts[,1]) #specificity
+```
+
+```{r}
+### Overall accuracy and misclasification in the testing data  ###
+ts_oacc <- sum(diag(conf_clannts))/sum(conf_clannts )  # Overall accuracy
+ts_oacc  # overall accuracy
+1-ts_oacc # misclasification
+```
+
+### 7. Plot the nn model found in the previous question.
+
+```{r}
+plot(nnmodel,"best") 
+```
+
+
+
+
+
+### 8. Attempt different parameters of the hidden layers (number of hidden layers andnumber of nodes) as was done in the lecture video to find the model that will give you the best overall accuracy. Report the model, plot, the overall accuracy, misclassification, sensitivity and specificity.
+
+```{r}
+set.seed(7332)
+nnmodel_new <- neuralnet(Admit~ CGPA+GRE+LOR,
+                     trdata,
+                     #hidden=c(1,2)
+                     hidden=4,
+                     err.fct = "ce",
+                     rep=2,
+                     lifesign = "full",
+                     linear.output = FALSE) 
+
+```
+
+```{r}
+##### Predict Testing data #####
+pred_clannts_new <-predict(nnmodel_new, tsdata,rep=2) # Predicting test data. 
+pred_clannts_new <-predict(nnmodel_new, tsdata,which.min(nnmodel_new$result.matrix[1, ]))#use this efficient line code instead of the code in line 103
+# Gives predicted probabilities and others
+head(pred_clannts_new) # shows the first 6 predicted probabilities from test data 
+head(tsdata[1:6,])  # shows the first 6  rows of the testing data
+```
+
+```{r}
+pred_classnnts_new <- ifelse(pred_clannts_new > 0.5,1,0) # Assigning probabilities to classes
+conf_clannts_new <-table(Predicted=pred_classnnts_new,Actual=tsdata$Admit) # confusion matrix from nnmodel
+conf_clannts_new  # confusion Matrix from nn model
+```
+
+```{r}
+conf_clannts_new[2,2]/sum(conf_clannts_new[,2]) #sensitivity
+conf_clannts_new[1,1]/sum(conf_clannts_new[,1]) #specificity
+```
+
+```{r}
+### Overall accuracy and misclasification in the testing data  ###
+ts_oacc_new <- sum(diag(conf_clannts_new))/sum(conf_clannts_new)  # Overall accuracy
+ts_oacc_new  # overall accuracy
+1-ts_oacc_new # misclasification
+```
+
+```{r}
+plot(nnmodel_new,"best") 
+```
+
+
+
+### 9. The same data was used to predict Admit in Homework 3, 4 and this homework 5. Compare the test misclassification error from the decision tree, Random Forest, Random Forest-Bagging, the logistic model and neural network model found in question #6 of this homework. Which model is best?
+
+Misclassification Rates
+
+HW3: 
+Logistic Model: **11.25%**
+
+HW4:
+Decision Tree: **13.75%**
+Random Forest: **13.75%**
+Random Forest Bagging: **12.5%** 
+
+HW5:
+Neural Network: **15%** 
+
+
+The Logistic Regression Model from HW3 performed best for me.
+
+
+### 10. Write the names of each team member who worked together. If you do it alone, just write your name. (0.5 Pt)
+
+Carter Rudek

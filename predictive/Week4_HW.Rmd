@@ -1,0 +1,221 @@
+---
+title: "BUSOBA 7332 Homework 4"
+author: "Carter Rudek"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+#### Load Packages
+
+```{r, error = FALSE}
+library(tidyverse)
+library(party)
+library(caret)
+library(randomForest)
+```
+
+#### Read Data
+
+```{r}
+data <- read.csv("GraduateAdmission.csv")
+data <-data[-1]
+str(data)
+```
+
+### 1. Prepare the data by converting some of the features to factors
+
+```{r}
+data$Research <- as.factor(data$Research)
+data$Admit<- as.factor(data$Admit)
+data$UnivRating<- as.factor(data$UnivRating)
+str(data)
+```
+
+```{r}
+#sum(is.na(data)) #no missing values
+summary(data)
+```
+
+### 2. Split the data into a 80% training set and a 20% test set. Use set.seed(7332) for reproducibility
+
+```{r}
+set.seed(7332)
+
+Index <- createDataPartition(data$Admit,p=0.8,list=FALSE)
+trdata <- data[Index,] # training data set 80%
+tsdata <- data[-Index,]  # testing data set 20%
+head(trdata) 
+head(tsdata) 
+```
+
+
+### 3. Fit Classification Tree to the training dataset and answer the following questions. Use set.seed(7332)
+
+```{r}
+set.seed(7332)
+clatree <- ctree(Admit~.,trdata)
+print(clatree)
+```
+
+#### i. Plot the classification tree and interpret the results.
+
+Undergraduate GPA is the root node which means it is the most important variable. If the GPA out of 10 is less than or equal to 8.03, you would follow the tree down to the left. From there we would we would look at Letter of Recommendation strength out of 5. If that is less than or equal to 2.5, there is a 89.2% probability that individual is not admitted. Going back to the root node, if the GPA score out of 10 is greater than 8.03, then we would follow the right side of the tree.
+
+```{r}
+#plot(clatree)
+plot(clatree,type="simple")
+```
+
+#### ii. Predict the response on the test data, and produce a confusion matrixcomparing the test labels to the predicted test labels. What is the testoverall accuracy. misclassification (error rate), sensitivity and specificity?
+
+Overall test accuracy: 86.25%
+Miscalassifcation (error rate): 13.75%
+Sensitivity: 100%
+Specificity: 38.89%
+
+```{r}
+pred_clatree <-predict(clatree, tsdata) # predict
+conf_clatree<-table(Predicted=pred_clatree,Actual=tsdata$Admit) # confusion matrix
+conf_clatree  # confusion matrix
+
+### Part II v) ###
+test_ercltree <- 1-sum(diag(conf_clatree))/sum(conf_clatree )  # test error rate
+test_ercltree  # test error rate
+1-test_ercltree
+
+
+conf_clatree[2,2]/sum(conf_clatree[,2]) #sensitivity
+conf_clatree[1,1]/sum(conf_clatree[,1]) #specificity
+```
+
+### 4. Fit random forests for classification to the training data and answer the following questions. Use set.seed(7332)
+
+```{r}
+set.seed(7332)
+clarf <- randomForest(Admit~.,trdata,importance=TRUE)  # Classification Tree Model - DEFAULT is 500 TREES, SPLIT 3 TIMES
+print(clarf) 
+```
+
+#### i. Plot the random forest. Describe the plot.
+
+We can visually see that the red line (for not admitted), is much higher ~.4 than for admitted (green line) which is ~.04. The out of back error rate is between the two at ~.14. Around 180-200 trees, the lines begin to  level off and become constant for admitted and OOB.
+
+```{r}
+plot(clarf,main="Random Forest Error rate vs ntrees" )  # Decision Tree plot with bar plot showing as predicted probablity value in the terminal node
+legend(450,0.35,colnames(clarf$err.rate),col=1:3,cex=0.8,fill=1:3)
+```
+
+### ii. Use varImpPlot() function to determine which variables are most important. List the top 3 important features.
+
+1.GRE
+2.CGPA
+3.SOP
+
+```{r}
+varImpPlot(clarf,main="Random Forest-Variable Importance" )
+importance(clarf)
+```
+
+#### iii. Predict the response on the test data, and produce a confusion matrix comparing the test labels to the predicted test labels. What is the test overall accuracy and misclassification (error rate), sensitivity and specificity? 
+
+Overall test accuracy: 86.25%
+Miscalassifcation (error rate): 13.75%
+Sensitivity: 93.54%
+Specificity: 61.11%
+
+```{r}
+pred_clarf  <-predict(clarf , tsdata) # Predict
+conf_clarf <-table(Predicted=pred_clarf ,Actual=tsdata$Admit) # confusion matrix
+conf_clarf  # confusion matrix
+
+test_erclarf <- 1-sum(diag(conf_clarf ))/sum(conf_clarf )  # test error rate
+test_erclarf # test error rate
+#1-test_erclarf #accuracy
+
+conf_clarf[2,2]/sum(conf_clarf[,2]) #sensitivity
+conf_clarf[1,1]/sum(conf_clarf[,1]) #specificity
+
+### The following code gets you more than the test error rate ####
+confusionMatrix(pred_clarf,tsdata$Admit,positive="1")
+```
+
+### 5. Fit Bagging for classification to the training data and answer the following questions. Use set.seed(7332)
+
+```{r}
+set.seed(7332)
+clabag <- randomForest(Admit~.,trdata,mtry=12,importance=TRUE) 
+print(clabag)
+```
+
+#### i. Plot the Bagging model. Describe the plot.
+
+We can visually see that the red line (for not admitted), is much higher ~.4 than for admitted (green line) which is ~.06. The out of back error rate is between the two at ~.14. 
+
+```{r}
+plot(clabag,main="Bagging Error rate vs ntrees") 
+legend(450,0.35,colnames(clarf$err.rate),col=1:3,cex=0.8,fill=1:3)
+```
+
+#### ii. Use the varImpPlot() function to determine which variables are mostimportant.
+
+1.GRE
+2.CGPA
+3.SOP
+
+```{r}
+varImpPlot(clabag, main="Bagging-Variable Importance ") 
+importance(clabag)
+```
+
+#### iii. Predict the response on the test data, and produce a confusion matrix comparing the test labels to the predicted test labels. What is the test overall accuracy and misclassification (error rate), sensitivity and specificity?
+
+Overall test accuracy: 87.5%
+Miscalassifcation (error rate): 12.5%
+Sensitivity: 95.16%
+Specificity: 61.11%
+
+```{r}
+pred_clabag <-predict(clabag, tsdata) # Predict
+conf_clabag<-table(Predicted=pred_clabag,Actual=tsdata$Admit) # confusion matrix
+conf_clabag # confusion matrix
+
+test_erclabag <- 1-sum(diag(conf_clabag))/sum(conf_clabag)  # test error rate
+test_erclabag # test error rate (MISCLASSIFICATION)
+
+conf_clabag[2,2]/sum(conf_clabag[,2]) #sensitivity
+conf_clabag[1,1]/sum(conf_clabag[,1]) #specificity
+
+### The following code gets you more than the test error rate ####
+confusionMatrix(pred_clabag,tsdata$Admit,positive="1")
+```
+
+### 6. What was the misclassification error you found for the test data in Homework 3? 
+
+Overall missclassfication in testing data from HW3 Q8 **0.1125 (11.25%)** 
+
+### 7. Compare the misclassification error from the decision tree, Random Forest, Random Forest-Bagging and the logistic model from homework 3. Which classification method is better? 
+
+The model from HW3 performed best with an error of **11.25%**
+
+```{r}
+test_hw3 <- 0.1125
+  
+Test_erclacomp <- data.frame(test_hw3,test_ercltree,test_erclabag ,test_erclarf)
+Test_erclacomp
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

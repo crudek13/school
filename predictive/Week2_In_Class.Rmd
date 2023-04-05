@@ -1,0 +1,255 @@
+---
+title: "In class Activity"
+author: "Dr. Talke"
+date: "`r Sys.Date()`"
+output: html_document
+---
+  
+# Packages Needed
+```{r,eval=FALSE}
+library(tidyverse)
+library(psych)
+library(caret)
+```
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r, eval=TRUE}
+data <- read.csv("ZillowHousePrice.csv")
+```
+
+```{r,echo=FALSE}
+str(data)
+summary(data)
+```
+
+## Part I, ii) Preliminary data exploration Correlation and Scatterplot Matrix ####
+
+```{r,echo=FALSE}
+library(psych)
+round(cor(data),2)
+pairs.panels(data,cex=1)
+names(data)
+```
+###### Part I, iii) Build OLS Regression model using entire data  ############
+```{r,echo=TRUE}
+model1 <- lm(Price~Bedrooms,data)
+summary(model1)
+```
+
+```{r,echo=TRUE}
+model2 <- lm(Price~Bedrooms+LivingArea,data)
+summary(model2)
+```
+
+## Building Predictive Regression Model
+
+# Part I, iv) data partitioning using Stratified random sample into training and testing data ##
+```{r,echo=TRUE}
+library(caret)
+set.seed(7332)
+Index <- createDataPartition(data$Price,p=0.8,list=FALSE)
+trdata <- data[Index,] # training data set
+tsdata <- data[-Index,]  # testing data set
+```
+###### Part I, V) Specify repeated K-Fold cross validation (10-Fold CV) ####  
+```{r,echo=TRUE}
+set.seed(7332)  # set.seed for reproducibility 
+cntrl <- trainControl(method="repeatedcv",number = 10, repeats = 5)
+```
+###### Part I, Vi) Fit OLS Regression model with K-Fold cross validation (10-Fold CV) 
+
+```{r,echo=TRUE}
+set.seed(7332)# set.seed for reproducibility
+model_ols <- train(Price~., 
+                   data=trdata,
+                   method="lm",
+                   trControl=cntrl)
+#### print Model to see results from K=10 CV  train_data
+print(model_ols)  # model performance from K=10 fold CV get an idea how the model will perform on new data
+model_ols$results  # gives more info
+varImp(model_ols)
+plot(varImp(model_ols,scale=T), main="Variable importance from OLS Model")
+
+#### Summary of the model which shows the result of the model using entire train_data
+summary(model_ols)
+#### or model regression coefficients can be printed as follows
+model_ols$finalModel$coefficients
+```
+
+### Part I, Vii)  Predict outcomes from OLS MLR Model using Testing data and OLS Model performance Test data  
+```{r,echo=FALSE}
+predmodel_olstsdata <- predict(model_ols,newdata=tsdata)
+model_olsperformance_ts <- data.frame(RMSE=RMSE(predmodel_olstsdata,tsdata$Price),
+                                      Rsquare=R2(predmodel_olstsdata,tsdata$Price))
+print(model_olsperformance_ts)
+```
+
+
+
+########## Questions Part II LASSO Regression ########
+
+# Part II, i) specifying tuning parameter (sequences of lambda).  Note for lasso alpha=1 ambda values
+```{r,echo=TRUE}
+lambda_grid <- 10^(seq(2.5,-2.5,length=100))
+```
+##### Part II, ii) Fitting LASSO Regression Model using training data and 10-fold cv
+```{r,echo=TRUE}
+set.seed(7332) # for reproduciblity
+model_laso <- train(Price~.,data=trdata,
+                    method="glmnet",
+                    tuneGrid=expand.grid(alpha=1,lambda=lambda_grid),
+                    trControl=cntrl)
+```
+### Part II, iii) Best tuning parameter ##
+```{r,echo=FALSE}
+model_laso$bestTune
+```
+##Visual inspection of LASSO Regularization Parameter and RMSE
+```{r,echo=FALSE}
+plot(model_laso)
+```
+## OR Visual inspection of log(lambda) and RMSE
+```{r,echo=FALSE}
+plot(log(model_laso$result$lambda),model_laso$result$RMSE,xlab="log(lambda)",ylab="RMSE",xlim=c(6,-6),main = " LASSO log Reguralization Parameter Vs RMSE")
+log(model_laso$bestTune$lambda)
+abline(v=log(model_laso$bestTune$lambda),col="blue") # help locate log lamda that resulted in small RMSE
+```
+## Visual inspection of log(lambda) and Rsquared
+```{r,echo=FALSE}
+plot(log(model_laso$result$lambda),model_laso$result$Rsquared,xlab="log(lambda)",ylab="Rsquared",xlim=c(6,-6),main = " LASSO log Reguralization Parameter Vs Rsquare")
+```
+### Part II, iii) Best tuning parameter ##
+```{r,echo=FALSE}
+model_laso$bestTune
+```
+
+## Part II, IV) How many variable coefficients shrunk to zero?  ##
+```{r,echo=FALSE}
+coef(model_laso$finalModel,model_laso$bestTune$lambda)
+```
+
+#### Part II, V) Important Variables  ####
+```{r,echo=FALSE}
+varImp(model_laso)
+plot(varImp(model_laso),main="LASSO REGRESSION")
+plot(model_laso$finalModel,xvar="lambda", label=TRUE,main="LASSO REGRESSION")
+```
+##### or Visualization of varImp using ggplot2
+```{r,echo=FALSE}
+ggplot(varImp(model_laso))
+```
+
+## Part II, Vi)  Predict outcome from LASSO Regression Model using test_data and Lasso Regression model performance
+```{r,echo=FALSE}
+model_lasopred_ts <- predict(model_laso,newdata=tsdata)
+model_lasoperformance_ts <- data.frame(RMSE=RMSE(model_lasopred_ts,tsdata$Price),
+                                       Rsquare=R2(model_lasopred_ts,tsdata$Price))
+print(model_lasoperformance_ts)
+```
+
+## Fitting Ridge Regression 
+
+##### Part III, i) Fitting RIDGE Regression Model using training data and 10-fold cv
+```{r,echo=TRUE}
+set.seed(7332) # for reproduciblity
+model_rdg <- train(Price~.,data=trdata,
+                    method="glmnet",
+                    tuneGrid=expand.grid(alpha=0,lambda=lambda_grid),
+                    trControl=cntrl)
+```
+### Part III, ii) Best tuning parameter ##
+```{r,echo=FALSE}
+model_rdg$bestTune
+```
+##Visual inspection of Ridge Regularization Parameter and RMSE
+```{r,echo=FALSE}
+plot(model_rdg)
+```
+## OR Visual inspection of log(lambda) and RMSE
+```{r,echo=FALSE}
+plot(log(model_rdg$result$lambda),model_rdg$result$RMSE,xlab="log(lambda)",ylab="RMSE",xlim=c(6,-6),main = " Ridge log Reguralization Parameter Vs RMSE")
+log(model_rdg$bestTune$lambda)
+abline(v=log(model_rdg$bestTune$lambda),col="blue") # help locate log lamda that resulted in small RMSE
+```
+## Visual inspection of log(lambda) and Rsquared
+```{r,echo=FALSE}
+plot(log(model_rdg$result$lambda),model_rdg$result$Rsquared,xlab="log(lambda)",ylab="Rsquared",xlim=c(6,-6),main = " Ridge log Reguralization Parameter Vs Rsquare")
+```
+
+#### Part II, iii) Important Variables  ####
+```{r,echo=FALSE}
+varImp(model_rdg)
+plot(varImp(model_rdg),main="Ridge REGRESSION")
+plot(model_rdg$finalModel,xvar="lambda", label=TRUE,main="RIDGE REGRESSION")
+```
+##### or Visualization of varImp using ggplot2
+```{r,echo=FALSE}
+ggplot(varImp(model_rdg))
+```
+
+## Part II, Vi)  Predict outcome from Ridge Regression Model using test_data and Ridge Regression model performance
+```{r,echo=FALSE}
+model_rdgpred_ts <- predict(model_rdg,newdata=tsdata)
+model_rdgperformance_ts <- data.frame(RMSE=RMSE(model_rdgpred_ts,tsdata$Price),
+                                       Rsquare=R2(model_rdgpred_ts,tsdata$Price))
+print(model_rdgperformance_ts)
+```
+
+# Elastic Net Regression
+
+##### Part Iv, i) Fitting Elastic Net Regression Model using training data and 10-fold cv
+```{r,echo=TRUE}
+set.seed(7332) # for reproduciblity
+model_net <- train(Price~.,data=trdata,
+                    method="glmnet",
+                    tuneGrid=expand.grid(alpha=seq(0,1,length=10),lambda=lambda_grid),
+                    trControl=cntrl)
+```
+### Part IV, ii) Best tuning parameter ##
+```{r,echo=FALSE}
+model_net$bestTune
+```
+##Visual inspection of Elastic Net Regularization Parameter and RMSE
+```{r,echo=FALSE}
+plot(model_net)
+```
+## OR Visual inspection of log(lambda) and RMSE
+```{r,echo=FALSE}
+plot(log(model_net$result$lambda),model_net$result$RMSE,xlab="log(lambda)",ylab="RMSE",xlim=c(6,-6),main = " Elastic Net log Reguralization Parameter Vs RMSE")
+log(model_net$bestTune$lambda)
+abline(v=log(model_rdg$bestTune$lambda),col="blue") # help locate log lamda that resulted in small RMSE
+```
+## Visual inspection of log(lambda) and Rsquared
+```{r,echo=FALSE}
+plot(log(model_net$result$lambda),model_net$result$Rsquared,xlab="log(lambda)",ylab="Rsquared",xlim=c(6,-6),main = " Elastic Net log Reguralization Parameter Vs Rsquare")
+```
+
+#### Part IV, iii) Important Variables  ####
+```{r,echo=FALSE}
+varImp(model_net)
+plot(varImp(model_net),main="ELASTIC NET REGRESSION")
+plot(model_net$finalModel,xvar="lambda", label=TRUE,main="ELASTIC NET REGRESSION")
+```
+##### or Visualization of varImp using ggplot2
+```{r,echo=FALSE}
+ggplot(varImp(model_net))
+```
+
+## Part IV, iv)  Predict outcome from Elastic Net Regression Model using test_data and Elastic Net Regression model performance
+```{r,echo=FALSE}
+model_netpred_ts <- predict(model_net,newdata=tsdata)
+model_netperformance_ts <- data.frame(RMSE=RMSE(model_netpred_ts,tsdata$Price),
+                                       Rsquare=R2(model_netpred_ts,tsdata$Price))
+print(model_netperformance_ts)
+```
+
+# Part IV, v) Comparison of OLS, RIDGE, LASSO and Elastic Net Regression Models performance for the test data######
+```{r,echo=FALSE}
+comp_ts <- matrix(c(model_olsperformance_ts,model_lasoperformance_ts,model_rdgperformance_ts,model_netperformance_ts ),ncol=2,byrow=TRUE)
+colnames(comp_ts) <- c("RMSE","Rsquare")
+rownames(comp_ts) <- c("OLS","LASSO","RIDGE","Net")
+print(comp_ts, digits=3)# round to 4 decimal places
+```
+

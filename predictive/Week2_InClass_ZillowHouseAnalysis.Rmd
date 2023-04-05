@@ -1,0 +1,227 @@
+---
+title: "InClass Test"
+author: "Carter Rudek"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+
+## Packages
+
+```{r, eval = FALSE, error = FALSE}
+
+library(tidyverse)
+library(psych)
+library(caret)
+
+```
+
+```{r}
+# load Zillow data
+#p1.i
+data <- read.csv("ZillowHousePrice.csv")
+```
+
+
+```{r}
+#p1.ii
+# explore structure and summary of data
+str(data)
+summary(data)
+```
+
+```{r}
+# check for missing
+sum(is.na(data))
+```
+
+```{r}
+#p1.ii
+# check for correlation
+pairs(data)   
+round(cor(data),2)
+pairs.panels(data)
+```
+
+
+```{r}
+set.seed(7332)
+#p1.iv
+#stratified random sample
+Index <- createDataPartition(data$Price,p=0.8,list=FALSE) #amount spent is the target variable
+trdata <- data[Index,] # training data set
+tsdata <- data[-Index,]  # testing data set
+head(trdata) # shows the first 6 rows of training data
+head(tsdata)
+
+```
+```{r}
+#p1.iii
+model1_test <- lm(Price ~ Bedrooms, data = data)
+summary(model1_test)
+
+model2_test <- lm(Price ~ Bedrooms+LivingArea, data = data)
+summary(model2_test)
+
+```
+
+```{r}
+#p1.v
+cntrl <- trainControl(method="repeatedcv",number = 10, repeats = 5)
+
+```
+
+```{r}
+#p1.vi
+model_ols <- train(Price~., 
+                   data=trdata,
+                   method="lm",
+                   trControl=cntrl)
+```
+
+```{r}
+print(model_ols)  # model performance from K=10 fold CV get an idea how the model will perform on new data
+
+model_ols$results  # gives more info
+
+plot(varImp(model_ols,scale=T), main="Variable importance from OLS Model")
+varImp(model_ols)
+```
+```{r}
+summary(model_ols)
+
+#### or model regression coefficients can be printed as follows
+model_ols$finalModel$coefficients
+
+model_olspred_ts <- predict(model_ols,newdata=tsdata)
+
+```
+```{r}
+#p1.vii
+###  Predict outcomes from OLS Model using Testing data  
+model_olspred_ts <- predict(model_ols,newdata=tsdata)
+
+## OLS Model performance Test data  
+model_olsperformance_ts <- data.frame(RMSE=RMSE(model_olspred_ts,tsdata$Price),
+                                      Rsquare=R2(model_olspred_ts,tsdata$Price))
+print(model_olsperformance_ts)
+```
+
+## PART 2
+
+```{r}
+#p2.i
+lambda_grid <- 10^seq(2.5,-2.5,length=100) 
+```
+
+
+```{r}
+#p2.ii and p2.iii
+model_laso <- train(Price~.,
+                    data=trdata,
+                    method="glmnet",
+                    tuneGrid=expand.grid(alpha=1,lambda=lambda_grid),
+                    trControl=cntrl)
+
+model_laso$bestTune
+
+plot(model_laso)
+
+print(model_laso)
+```
+
+
+```{r}
+#p2.iv and p1.v
+coef(model_laso$finalModel,model_laso$bestTune$lambda)
+```
+
+```{r}
+#p2.vi
+model_lasopred_ts <- predict(model_laso,newdata=tsdata)
+
+model_lasoperformance_ts <- data.frame(RMSE=RMSE(model_lasopred_ts,tsdata$Price),
+                                       Rsquare=R2(model_lasopred_ts,tsdata$Price))
+print(model_lasoperformance_ts)
+```
+
+## PART 3
+
+```{r}
+#p3.i and ii
+model_rdg <- train(Price~.,
+                   data=trdata,
+                   method="glmnet",
+                   tuneGrid=expand.grid(alpha=0,lambda=lambda_grid),
+                   trControl=cntrl)
+
+model_rdg$bestTune 
+```
+
+```{r}
+#p3.iii
+varImp(model_rdg)
+plot(varImp(model_rdg, Scale = T),main=" Ridge Regression")
+
+```
+
+```{r}
+#p3.iv
+model_rdgpred_ts <- predict(model_rdg,newdata=tsdata)
+
+model_rdgperformance_ts <- data.frame(RMSE=RMSE(model_rdgpred_ts,tsdata$Price),
+                                      Rsquare=R2(model_rdgpred_ts,tsdata$Price))
+print(model_rdgperformance_ts)
+
+```
+
+## PART 4
+
+```{r}
+#p4.i
+model_net <- train(Price~.,
+                   data=trdata,
+                   method="glmnet",
+                   tuneGrid=expand.grid(alpha=seq(0,1,length=10),lambda=lambda_grid),
+                   trControl=cntrl)
+
+model_net$bestTune
+summary(model_net)
+```
+
+```{r}
+#p4.iii
+#### Variable Importance
+plot(model_net$finalModel,xvar="lambda", main="Elastic Net Regression",label=TRUE)
+varImp(model_net)
+plot(varImp(model_net),main=" Net Regression")
+
+```
+```{r}
+model_net
+```
+
+```{r}
+coef(model_net$finalModel,model_net$bestTune$lambda)
+```
+```{r}
+model_netpred_ts <- predict(model_net,newdata=tsdata)
+
+model_netperformance_ts <- data.frame(RMSE=RMSE(model_netpred_ts,tsdata$Price),
+                                      Rsquare=R2(model_netpred_ts,tsdata$Price))
+print(model_netperformance_ts)
+```
+
+```{r}
+######Comparison of RIDGE, LASSO and Elastic Net Regression Models performance for the test data######
+comp_ts <- matrix(c(model_lasoperformance_ts,model_rdgperformance_ts,model_netperformance_ts ),ncol=2,byrow=TRUE)
+colnames(comp_ts) <- c("RMSE","Rsquare")
+rownames(comp_ts) <- c("LASSO","RIDGE","Net")
+print(comp_ts, digits=3)# round to 4 decimal places
+```
+
+
+
+
+
+

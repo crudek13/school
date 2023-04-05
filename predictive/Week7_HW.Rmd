@@ -1,0 +1,94 @@
+---
+title: "BUSOBA 7332 Homework 7"
+author: "Carter Rudek"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+#### Load Packages
+
+```{r, error = FALSE}
+library(arules)
+library(arulesViz)
+library(tidyverse)
+```
+
+### Read data
+
+```{r}
+data<-read.transactions("Bread_Basket.csv",format = "single",sep=",",header=TRUE,cols = 1:2)
+```
+
+
+```{r}
+View(data)
+```
+
+```{r}
+inspect(head(data,3))
+```
+
+#### 1. How many unique transactions (carts) were made based on the data? 
+
+```{r}
+length(data)
+```
+
+#### 2. How many unique items were there on the data?  
+
+```{r}
+length(itemFrequency(data))
+```
+
+#### 3. What are the top 2 items based on the transaction data? 
+
+```{r}
+itemFrequencyPlot(data,topN=10,type="absolute", main="Top 10 Sold Items")
+```
+
+#### 4. What percentage of all carts contain coffee?  
+
+```{r}
+sort(itemFrequency(data),decreasing = TRUE)[1:10] 
+```
+
+#### 5. Generate association rules with a minimum support of 0.0012 and minimum confidence of 0.80 and minlen=2. Sort the rules by lift ratio. Which of the following is the top rule? 
+
+```{r}
+mrules2<-apriori(data,parameter=list(supp=0.0012, confi=0.8, minlen=2)) # Finding association rules
+mrules2 # How many rules
+```
+
+```{r}
+inspect(sort(mrules2,by="lift",decreasing=TRUE)[1:6])  # Sort by lift 
+```
+
+
+
+#### 6. What is the lift ratio for the top rule in the previous question? Report your answer to 2 decimal places.
+
+
+
+
+
+
+
+
+#### 7. Generate association rules with a minimum support of 0.0012 and minimum confidence of 0.80 and minlen=2. Sort the rules by support. What is the support for the top rule? Report your answer to 4 decimal places.
+
+```{r}
+inspect(sort(mrules2,by="support",decreasing=TRUE)[1:6]) 
+```
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,342 @@
+---
+title: "Predictive Group Project"
+author: "Tyler Hesselbein, Neil Shipley, Brandon Slover, Hunter Smith, Carter Rudek"
+date: "2023-02-23"
+output: html_document
+---
+
+```{r}
+#Hidden data path string
+path <- "Loan_Data.csv"
+```
+
+
+### Packages Needed:
+```{r}
+#Packages Needed
+library(tidyverse)
+library(psych)
+library(caret)
+library(randomForest)
+library(neuralnet)
+library(party)
+```
+
+### Reading in the Data:
+```{r}
+#Read Data
+data<-read.csv(path, na.strings=c(""," ","NA"))
+```
+
+# Data Cleaning:
+```{r}
+#Reproducibility
+str(data)
+summary(data)
+
+#Replace categorical variables with class variables (mainly binary, except for property area)
+data$Loan_Status <- recode(data$Loan_Status, 'Y' = '1', 'N' = '0')
+data$Gender <- recode(data$Gender, 'Female' = '1', 'Male' = '0')
+data$Education <- recode(data$Education, 'Graduate' = '1', 'Not Graduate' = '0')
+data$Married <- recode(data$Married, 'Yes' = '1', 'No' = '0')
+data$Self_Employed <- recode(data$Self_Employed, 'Yes' = '1', 'No' = '0')
+data$Property_Area <- recode(data$Property_Area, 'Semiurban' = '2', 'Urban' = '1', 'Rural' = '0')
+
+#Update Dependents
+data$Dependents  <- gsub('3\\+','3',data$Dependents) %>% 
+  as.numeric()
+
+#Drop NAs
+data <- data %>%
+  drop_na()
+
+
+#Change to Factors
+data$Loan_Status <- as.factor(data$Loan_Status)
+data$Gender <- as.factor(data$Gender)
+data$Education <- as.factor(data$Education)
+data$Married <- as.factor(data$Married)
+data$Self_Employed <- as.factor(data$Self_Employed)
+data$Property_Area <- as.factor(data$Property_Area)
+data$Credit_History <- as.factor(data$Credit_History)
+
+#Drop Loan ID
+data <- data[-1]
+
+str(data)
+summary(data)
+```
+
+# Additional Information About the Data:
+```{r}
+#Side by side boxplot 
+data %>% 
+  ggplot(aes(x=ApplicantIncome,fill=Loan_Status)) +
+  geom_boxplot() +
+  ggtitle('Side by Side Boxplot of Applicant Income by Loan Status')+
+  theme(plot.title=element_text(hjust = 0.5))  
+
+#Proportion of each class of admit 
+table(data$Loan_Status)  # Gives counts of each class
+prop.table(table(data$Loan_Status))
+```
+
+### Partition the Data:
+```{r}
+# Partition Data
+set.seed(7332)
+Index <- createDataPartition(data$Loan_Status,p=0.8,list=FALSE)
+trdata <- data[Index,] # training data set 80%
+tsdata <- data[-Index,]  # testing data set 20%
+head(trdata)
+head(tsdata)
+```
+
+# Logistic Model:
+```{r}
+# Fit logistical model
+flogisticm <- glm(Loan_Status~.,data=trdata, family="binomial")
+summary(flogisticm)
+round(coef(flogisticm),5)
+
+# Fit logistical model with only significant variables
+flogisticm1 <- glm(Loan_Status~Credit_History+Property_Area,data=trdata, family="binomial")
+summary(flogisticm1)
+round(coef(flogisticm1),5)
+
+# Predicting the test data set 
+pred_probts <- predict(flogisticm1,tsdata,type="response") # Gives predicted probabilities of testing data and  store it in pred_ts
+pred_cts <- ifelse(pred_probts>0.5,1,0) #Converting the predicted probabilities into class 1 or 0
+
+#Confusion Matrix and model measures
+conf_ts<- table(pred_cts, tsdata$Loan_Status)
+conf_ts # confusing matrix from Testing set
+sum(diag(conf_ts))/sum(conf_ts)  # Overall accuracy in Testing set
+1-sum(diag(conf_ts))/sum(conf_ts)  # Overall Missclassfication in Testing Data
+conf_ts[2,2]/sum(conf_ts[,2]) # sensitivity or true positive rate
+conf_ts[1,1]/sum(conf_ts[,1]) # specificity or true negative rate
+```
+
+# Decision Tree:
+```{r}
+set.seed(7332) 
+clatree <- ctree(Loan_Status~.,trdata) #Creates classification tree
+print(clatree)
+
+plot(clatree,type="simple") #Plots decision tree
+
+pred_clatree <-predict(clatree, tsdata) #Predicts testig data 
+conf_clatree<-table(Predicted=pred_clatree,Actual=tsdata$Loan_Status) #Creates confusion matrix
+conf_clatree  # confusion Matrix 
+
+test_ercltree <- 1-sum(diag(conf_clatree))/sum(conf_clatree )  # test error rate
+paste('error:', test_ercltree)
+
+paste('accuracy:', 1-test_ercltree) # overall test accuracy
+
+paste('sensitivity:',conf_clatree[2,2]/sum(conf_clatree[,2])) # sensitivity
+
+paste('specificity:',conf_clatree[1,1]/sum(conf_clatree[,1])) # specificity
+```
+
+# Random Forest Model:
+```{r}
+set.seed(7332)
+##### Predict Test data #####
+pred_clatree <-predict(clatree, tsdata) # Predicting test data
+conf_clatree<-table(Predicted=pred_clatree,Actual=tsdata$Loan_Status) # confusion matrix and strong it in conf_clatree
+conf_clatree  # confusion Matrix from Classification tree
+
+test_ercltree <- 1-sum(diag(conf_clatree))/sum(conf_clatree )  # test error rate
+test_ercltree  # test error rate
+
+clarf <- randomForest(Loan_Status~.,trdata,importance=TRUE)  # Classification Tree Model
+print(clarf ) # Shows the decision input and output variables as well as nodes and rules
+
+plot(clarf,main="Random Forest Error rate vs ntrees" )  # Decision Tree plot with bar plot showing as predicted probablity value in the terminal node
+legend(450,0.35,colnames(clarf$err.rate),col=1:3,cex=0.8,fill=1:3)
+
+#### Variable Importance ######
+varImpPlot(clarf,main="Random Forest-Variable Importance" )
+importance(clarf) # Gives numerical values of the variable Importance
+
+pred_clarf  <-predict(clarf , tsdata) # Predicting test data
+conf_clarf <-table(Predicted=pred_clarf ,Actual=tsdata$Loan_Status) # confusion matrix and strong it in conf_clatree
+conf_clarf  # confusion Matrix from Classification tree
+
+test_erclarf <- 1-sum(diag(conf_clarf ))/sum(conf_clarf )  # test error rate
+test_erclarf # test error rate
+
+### The following code gets you more than the test error rate ####
+confusionMatrix(pred_clarf,tsdata$Loan_Status)
+```
+
+# Random Forest Bagging:
+# Perform RF Bagging
+```{r}
+set.seed(7332) #Sets seed for reproducibility
+clabag <- randomForest(Loan_Status~., trdata, mtry = 3, importance = TRUE) #Creates random forest bagging model
+
+plot(clabag, main = "RF Bagging Error Rate vs. n Trees") #Plots error vs. number of trees
+legend(450, 0.4, colnames(clabag$err.rate), col = 1:3, cex = 0.8, fill = 1:3) #Adds legend to above plot
+
+varImpPlot(clabag, main = "Bagging Variable Importance") #Creates variable importance plot
+importance(clabag) #Gives numerical values of variables of importance
+
+pred_clabag <- predict(clabag, tsdata) #Uses test data to predict this model
+conf_clabag <- table(Predicted = pred_clabag, Actual = tsdata$Loan_Status) #Creates a confusion matrix for prediction
+
+accuracy = sum(diag(conf_clabag))/sum(conf_clabag) #Calculates accuracy of the model
+misclass = 1 - sum(diag(conf_clabag))/sum(conf_clabag) #Calculates misclassification of the model
+
+confusionMatrix(pred_clabag, tsdata$Loan_Status, positive = "1") #Creates a confusion matrix for this model
+```
+
+# Prepare data for NN
+```{r}
+set.seed(7332)
+data2<-read.csv(path, na.strings=c(""," ","NA"))
+
+str(data2)
+names(data2)
+data2 <- data2[-1] 
+
+
+#Replace categorical variables with class variables (mainly binary, except for property area)
+data2$Loan_Status <- recode(data2$Loan_Status, 'Y' = '1', 'N' = '0')
+data2$Gender <- recode(data2$Gender, 'Female' = '1', 'Male' = '0')
+data2$Education <- recode(data2$Education, 'Graduate' = '1', 'Not Graduate' = '0')
+data2$Married <- recode(data2$Married, 'Yes' = '1', 'No' = '0')
+data2$Self_Employed <- recode(data2$Self_Employed, 'Yes' = '1', 'No' = '0')
+data2$Property_Area <- recode(data2$Property_Area, 'Semiurban' = '2', 'Urban' = '1', 'Rural' = '0')
+
+#Update Dependents
+data2$Dependents  <- gsub('3\\+','3',data2$Dependents) %>% 
+  as.numeric()
+
+#Make chr column integer
+data2$Loan_Status <- as.integer(data2$Loan_Status)
+data2$Gender <- as.integer(data2$Gender) 
+data2$Education <- as.integer(data2$Education)
+data2$Married <- as.integer(data2$Married)
+data2$Self_Employed <- as.integer(data2$Self_Employed)
+data2$Property_Area <- as.integer(data2$Property_Area)
+
+#Drop NAs
+data2 <- data2 %>%
+  drop_na()
+
+str(data2)
+
+normalize <- function(x){
+  return((x-min(x))/(max(x)-min(x)))
+}
+
+normdata <- as.data.frame(lapply(data2,normalize)) #Normalizes the data
+str(normdata)
+summary(normdata)
+
+trdata_norm <- normdata[Index,]  
+tsdata_norm <- normdata[-Index,] 
+
+```
+
+
+
+# Neural Network:
+```{r}
+set.seed(7332)
+data2<-read.csv(path, na.strings=c(""," ","NA"))
+
+str(data2)
+names(data2)
+data2 <- data2[-1] 
+
+#Replace categorical variables with class variables (mainly binary, except for property area)
+data2$Loan_Status <- recode(data2$Loan_Status, 'Y' = '1', 'N' = '0')
+data2$Gender <- recode(data2$Gender, 'Female' = '1', 'Male' = '0')
+data2$Education <- recode(data2$Education, 'Graduate' = '1', 'Not Graduate' = '0')
+data2$Married <- recode(data2$Married, 'Yes' = '1', 'No' = '0')
+data2$Self_Employed <- recode(data2$Self_Employed, 'Yes' = '1', 'No' = '0')
+data2$Property_Area <- recode(data2$Property_Area, 'Semiurban' = '2', 'Urban' = '1', 'Rural' = '0')
+
+#Update Dependents
+data2$Dependents  <- gsub('3\\+','3',data2$Dependents) %>% 
+  as.numeric()
+
+#Make chr column integer
+data2$Loan_Status <- as.integer(data2$Loan_Status)
+data2$Gender <- as.integer(data2$Gender) 
+data2$Education <- as.integer(data2$Education)
+data2$Married <- as.integer(data2$Married)
+data2$Self_Employed <- as.integer(data2$Self_Employed)
+data2$Property_Area <- as.integer(data2$Property_Area)
+
+#Drop NAs
+data2 <- data2 %>%
+  drop_na()
+
+str(data2)
+
+normalize <- function(x){
+  return((x-min(x))/(max(x)-min(x)))
+}
+
+normdata <- as.data.frame(lapply(data2,normalize)) #Normalizes the data
+str(normdata)
+summary(normdata)
+
+Index <- createDataPartition(data2$Loan_Status,p=0.8,list=FALSE)
+trdata_norm <- normdata[Index,]  
+tsdata_norm <- normdata[-Index,]
+
+#Fit normalized data to NN
+nnmodel <- neuralnet(Loan_Status~ Credit_History+Loan_Amount_Term+ApplicantIncome+CoapplicantIncome+LoanAmount,
+                     trdata_norm,
+                     hidden=1,
+                     err.fct = "ce",
+                     rep=5,
+                     lifesign = "full",
+                     linear.output = FALSE) 
+
+plot(nnmodel,"best")
+
+##### Predict Training data #####
+pred_clanntr <- predict(nnmodel,trdata_norm,rep=3)
+pred_clanntr <-predict(nnmodel, trdata_norm,which.min(nnmodel$result.matrix[1, ]))
+head(pred_clanntr) 
+head(trdata_norm[1:6,])  
+
+pred_classnntr<- ifelse(pred_clanntr >0.5,1,0) 
+conf_clanntr<-table(Predicted=pred_classnntr,Actual=trdata_norm$Loan_Status) 
+conf_clanntr  
+
+
+tr_oacc <- sum(diag(conf_clanntr))/sum(conf_clanntr )  
+tr_oacc  
+1-tr_oacc
+
+##### Predict Testing data #####
+pred_clannts <-predict(nnmodel, tsdata_norm,rep=3) 
+pred_clannts <-predict(nnmodel, tsdata_norm,which.min(nnmodel$result.matrix[1, ]))
+head(pred_clannts)
+head(tsdata_norm[1:6,]) 
+
+pred_classnnts<- ifelse(pred_clannts>0.5,1,0)
+conf_clannts<-table(Predicted=pred_classnnts,Actual=tsdata_norm$Loan_Status) 
+conf_clannts  
+
+
+ts_oacc <- sum(diag(conf_clannts))/sum(conf_clannts )
+ts_oacc 
+1-ts_oacc 
+```
+
+### The best testing data accuracy observed was with 1 Hidden Layer, and was found to be 75.0% 
+
+# Cluster Analysis:
+
+
+
+
+

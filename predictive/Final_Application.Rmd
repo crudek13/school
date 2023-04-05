@@ -1,0 +1,431 @@
+---
+title: "BUSOBA 7332 Final Exam Practical Application"
+author: "Carter Rudek"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r, echo = FALSE}
+#Source = kaggle data
+#Hidden data path string
+path <- "Cardiotocography.csv"
+```
+
+
+###### Load Packages & Read data
+
+```{r load_packages, warning=FALSE, message=FALSE}
+#Packages Needed
+library(tidyverse)
+library(psych)
+library(caret)
+library(randomForest)
+library(neuralnet)
+library(nnet)
+library(party)
+library(glmnet)
+library(ROCR)
+library(cluster)
+library(factoextra)
+library(NbClust)
+```
+
+```{r}
+#Read in Data
+data<-read.csv(path)
+```
+
+```{r}
+#investigate
+str(data)
+summary(data)
+sum(is.na(data)) #check for missing data
+```
+
+```{r}
+#adjust NSP variable
+data$NSP <- recode(data$NSP, 'N' = '1', 'S' = '2', 'P' = '3')
+data$NSP <- as.factor(data$NSP)
+```
+
+
+### 1. Split the data into 80% training and 20% testing using set.seed (7332) (1 Pts)
+
+```{r}
+#Partition Data
+set.seed(7332)
+Index <- createDataPartition(data$NSP,p=0.8,list=FALSE)
+trdata <- data[Index,] #training data set 80%
+tsdata <- data[-Index,]  #testing data set 20%
+head(trdata)
+head(tsdata)
+```
+
+### 2. Fit the appropriate logistic model to predict NSP using all the predictors  (3 Pts)
+
+```{r}
+#Fit logistical model
+mlogistm <-multinom(NSP~.,data=trdata) #R selects 1(Normal) as the reference (baseline)
+summary(mlogistm) 
+```
+
+#### i) Interpret the estimated coefficients of AC(x1) for the two non-baseline levels.  (3 Pts)
+
+2 (Suspect): For every 1 increase in accelerations per second, the log odds of belonging to the 'Suspect' fetal state decreases by .7915152 while holding all other predictors (UC, ASTV, MSTV, ALTV, MLTV, DP, Mode, Mean, Median) constant.
+
+3 (Pathologic): For every 1 increase in accelerations per second, the log odds of belonging to the 'Pathologic' fetal state decreases by 5.0927489 while holding all other predictors (UC, ASTV, MSTV, ALTV, MLTV, DP, Mode, Mean, Median) constant.
+
+#### ii) Report the overall accuracy, misclassification, sensitivity and specificity for the test data? (4 Pts)
+
+* Overall Accuracy: **83.18%**
+* Misclassification: **16.82%**
+
+* Sensitivity: 89.93%(Normal), 66.67%(Suspect), 88.89%(Pathologic)
+* Specificity: 89.58%(Normal), 90.91%(Suspect), 93.26%(Pathologic)
+
+
+```{r}
+#Predict Test data
+pred_mlogist<- predict(mlogistm,tsdata)
+conf_mlogistm<-table(pred_mlogist,tsdata$NSP)
+conf_mlogistm #confusion matrix
+```
+
+```{r}
+#Accuracy and Error
+oa_pred_logm <- paste('Overall Accuracy:', sum(diag(conf_mlogistm))/sum(conf_mlogistm)) #Overall accuracy
+er_pred_logm <- paste ('Misclassification:', 1-sum(diag(conf_mlogistm))/sum(conf_mlogistm))  #Test error rate (misclassification)
+
+#Show the performance metrics
+logm_perf <- paste(oa_pred_logm, er_pred_logm, sep="\n")
+cat(logm_perf)
+```
+
+```{r}
+#Sensitivity and Specificity
+cm_logm <- confusionMatrix(pred_mlogist,tsdata$NSP)
+cm_logm$byClass[, "Sensitivity"]
+cm_logm$byClass[, "Specificity"]
+```
+
+### 3. Use the single decision tree to predict NSP using all the predictors. Note before running the decision tree make sure to use set.seed(7332) for reproducibility. (3 Pts)
+
+```{r}
+#Single Decision/Classification tree
+set.seed(7332)
+clatree <- ctree(NSP~.,trdata)
+print(clatree)
+plot(clatree,type="simple")
+```
+
+#### i) What are the three important features based on the tree plot? List them. (3 Pts)
+
+1. ASTV
+2. DP
+3. AC
+
+#### ii) Report the overall accuracy, misclassification, sensitivity and specificity for the test data? (4 Pts)
+
+* Overall Accuracy: **85.05%**
+* Misclassification: **14.95%**
+
+* Sensitivity: 88.14%(Normal), 73.33%(Suspect), 94.44%(Pathologic)
+* Specificity: 83.33%(Normal), 92.21%(Suspect), 97.75%(Pathologic)
+
+```{r}
+#Predict test data
+pred_clatree <-predict(clatree, tsdata) 
+conf_clatree<-table(Predicted=pred_clatree,Actual=tsdata$NSP) 
+conf_clatree  # confusion Matrix 
+```
+
+```{r}
+#Accuracy and Error
+oa_pred_clatree <- paste('Overall Accuracy:', sum(diag(conf_clatree))/sum(conf_clatree)) #Overall accuracy
+er_pred_clatree <- paste ('Misclassification:', 1-sum(diag(conf_clatree))/sum(conf_clatree))  #Test error rate (misclassification)
+
+#Show the performance metrics
+clatree_perf <- paste(oa_pred_clatree, er_pred_clatree, sep="\n")
+cat(clatree_perf)
+```
+
+```{r}
+#Sensitivity and Specificity
+cm_clatree <- confusionMatrix(pred_clatree,tsdata$NSP)
+cm_clatree$byClass[, "Sensitivity"]
+cm_clatree$byClass[, "Specificity"]
+```
+
+### 4. Find the Random Forest to predict NSP using all the predictors. Note before running the Random Forest make sure to use set.seed (7332) for reproducibility. (3 Pts)
+
+```{r}
+set.seed(7332)
+clarf <- randomForest(NSP~.,trdata,importance=TRUE)  # Classification Tree Model - DEFAULT is 500 TREES, SPLIT 3 TIMEs
+print(clarf) 
+```
+
+#### i) What are the top 5 important features based on the tree plot? List them. (2 Pts)
+
+Mean Decrease Accuracy:
+1.ASTV
+2.ALTV
+3.DP
+4.Mean
+5.MSTV
+
+Mean Decrease Gini:
+1.ASTV
+2.ALTV
+3.MSTV
+4.Mean
+5.MLTV
+
+```{r}
+varImpPlot(clarf,main="Random Forest-Variable Importance" )
+importance(clarf) 
+```
+
+#### ii) Report the overall accuracy, misclassification, sensitivity and specificity for the test data? (4 Pts)
+
+* Overall Accuracy: **86.92%**
+* Misclassification: **13.08%**
+
+* Sensitivity: 88.14%(Normal), 83.33%(Suspect), 88.89%(Pathologic)
+* Specificity: 89.58%(Normal), 89.61%(Suspect), 98.88%(Pathologic)
+
+```{r}
+#Predict Test data
+pred_clarf  <-predict(clarf , tsdata)
+conf_clarf <-table(Predicted=pred_clarf ,Actual=tsdata$NSP) 
+conf_clarf #confusion matrix 
+```
+
+```{r}
+#Accuracy and Error
+oa_pred_clarf <- paste('Overall Accuracy:', sum(diag(conf_clarf))/sum(conf_clarf)) #Overall accuracy
+er_pred_clarf <- paste ('Misclassification:', 1-sum(diag(conf_clarf))/sum(conf_clarf))  #Test error rate (misclassification)
+
+#Show the performance metrics
+clarf_perf <- paste(oa_pred_clarf, er_pred_clarf, sep="\n")
+cat(clarf_perf)
+```
+
+```{r}
+#Sensitivity and Specificity
+cm_clarf <- confusionMatrix(pred_clarf,tsdata$NSP)
+cm_clarf$byClass[, "Sensitivity"]
+cm_clarf$byClass[, "Specificity"]
+```
+
+### 5. Find the Random Forest-Bagging to predict NSP using all the predictors. Note before running the Random Forest-Bagging make sure to use set.seed (7332) for reproducibility. Report the overall accuracy, misclassification, sensitivity and specificity for the test data? (6 Pts)
+
+* Overall Accuracy: **87.85%**
+* Misclassification: **12.15%**
+
+* Sensitivity: 89.83%(Normal), 83.33%(Suspect), 88.89%(Pathologic)
+* Specificity: 89.58%(Normal), 90.91%(Suspect), 98.88%(Pathologic)
+
+```{r}
+#RF Bagging
+set.seed(7332)
+clabag <- randomForest(NSP~.,trdata,mtry=10,importance=TRUE)
+print(clabag)
+```
+
+```{r}
+#Predicting test data
+pred_clabag <-predict(clabag, tsdata) 
+conf_clabag<-table(Predicted=pred_clabag,Actual=tsdata$NSP)
+conf_clabag #confusion matrix
+```
+
+```{r}
+#Accuracy and Error
+oa_pred_clabag <- paste('Overall Accuracy:', sum(diag(conf_clabag))/sum(conf_clabag)) #Overall accuracy
+er_pred_clabag <- paste ('Misclassification:', 1-sum(diag(conf_clabag))/sum(conf_clabag))  #Test error rate (misclassification)
+
+#Show the performance metrics
+clabag_perf <- paste(oa_pred_clabag, er_pred_clabag, sep="\n")
+cat(clabag_perf)
+```
+
+```{r}
+#Sensitivity and Specificity
+cm_clabag <- confusionMatrix(pred_clabag,tsdata$NSP)
+cm_clabag$byClass[, "Sensitivity"]
+cm_clabag$byClass[, "Specificity"]
+```
+
+### 6. Find the best Neural Network (NN) model to predict NSP using all the predictors. Note before running the NN model make sure to use set.seed (7332) for reproducibility.  To circumvent computational issue use the default one repetition and stepmax=1e6.  Report the overall accuracy, misclassification, sensitivity and specificity for the test data?  (5 Pts)
+
+* Overall Accuracy: **76.85%**
+* Misclassification: **23.14%**
+
+* Sensitivity: 93.22%(Normal), 41.94%(Suspect), 83.33%(Pathologic)
+* Specificity: 71.43%(Normal), 96.10%(Suspect), 91.11%(Pathologic)
+
+```{r}
+# normalization function
+normalize <- function(x){
+  return((x-min(x))/(max(x)-min(x)))
+}
+```
+ 
+```{r}
+data2 <- data
+data2$NSP <- as.integer(as.character(data2$NSP))
+```
+ 
+ 
+```{r}
+normdata <- as.data.frame(lapply(data2,normalize))
+```
+
+```{r}
+set.seed(7332)
+Index <- createDataPartition(normdata$NSP,p=0.8,list=FALSE)
+trdata2 <- normdata[Index,]  # training data set 80%
+tsdata2 <- normdata[-Index,] # testing data set 20%
+#head(trdata2) # Gives the first 6 rows of the training data
+#head(tsdata2)
+```
+
+```{r}
+#Neural Network Model
+set.seed(7332)
+nnmodel <- neuralnet(NSP~ .,
+                     trdata2,
+                     hidden=10,
+                     err.fct = "sse",
+                     rep=1,
+                     stepmax=1e6,
+                     lifesign = "full",
+                     linear.output = FALSE)
+
+plot(nnmodel,"best")
+```
+
+```{r}
+#Predict Testing data
+pred_clannts <-predict(nnmodel, tsdata2,rep=1) # Predicting test data. 
+pred_clannts <-predict(nnmodel, tsdata2,which.min(nnmodel$result.matrix[1, ]))
+#head(pred_clannts)
+#head(tsdata[1:6,])
+```
+
+```{r}
+pred_classnnts<- ifelse(pred_clannts>0.66,1,ifelse(pred_clannts<0.33,0,.5)) #Assigning probabilities
+conf_clannts<-table(Predicted=pred_classnnts,Actual=tsdata2$NSP) 
+conf_clannts #Confusion matrix
+```
+ 
+```{r}
+#Accuracy and Error
+oa_pred_classnnts <- paste('Overall Accuracy:', sum(diag(conf_clannts))/sum(conf_clannts)) #Overall accuracy
+er_pred_classnnts <- paste('Misclassification:', 1-sum(diag(conf_clannts))/sum(conf_clannts))  #Test error rate (misclassification)
+
+#Show the performance metrics
+classnnts_perf <- paste(oa_pred_classnnts, er_pred_classnnts, sep="\n")
+cat(classnnts_perf)
+```
+
+```{r}
+nnp <- as.factor(pred_classnnts)
+tsd2 <- as.factor(tsdata2$NSP)
+
+#Sensitivity and Specificity
+cm_classnnts <- confusionMatrix(nnp, tsd2)
+cm_classnnts$byClass[, "Sensitivity"]
+cm_classnnts$byClass[, "Specificity"]
+```
+
+### 7. Compare the fitted models in questions 2-6 and give the best model. Explain how you identified your best model? (3 Pts)
+
+Random Forest-Bagging was the best model produced in question 2-6. This was identified by the highest overall accuracy (87.85%) and lowest misclassification (12.15%).
+ 
+
+### 8.  In the previous questions the goal was classification. In this problem you will check if the NSP classification we have in the data are good or not using clustering analysis. That is, the goal is to group the data using K-means cluster analysis and check how successfully the clustering is able to agree/match with what we already know about the NSP variable.  
+
+
+#### i) Standardize using scale() function and run k-means with 2 clusters with 10 random initial points (nstart=10). For reproducibility use set.seed(7332).  (2 Pts)
+
+```{r}
+standata <- scale(data[-11])
+summary(standata)
+```
+
+```{r}
+data_new <- cbind(data[11], standata)
+```
+
+```{r}
+#remove categorical variable for k means
+data_new1 <- data_new[-1]
+```
+
+```{r}
+set.seed(7332)  # K means algorithm uses a random set of initial points 
+kmc2 <- kmeans(data_new1,center=2,nstart = 10) # K-means with 2 cluster repeated with 10 different random initial points
+kmc2 # prints clusters and others
+```
+
+#### ii) Determine the number of clustering recommended by the majority of Nbclust() method and Silhouette Method. (3 Pts)
+
+* Silhouette: 3 clusters
+* Nbclust(): 3 clusters
+
+
+```{r}
+#Silhouette method
+fviz_nbclust(data_new1,kmeans,method="silhouette")+
+  labs(subtitle = "Silhouette Method")+
+  theme(plot.title=element_text(hjust = 0.5)) 
+```
+
+```{r}
+#NbClust() Method
+nbclustm<- NbClust(data=data_new1,min.nc = 2, max.nc = 5, distance="euclidean",method="kmeans")
+```
+
+#### iii) Graph the silhouette plot for the clusters you found in part ii) of this question. Describe the graph? (3 Pts)
+
+* Cluster 2 is the healthiest of the 3 clusters.
+* Cluster 2 is also larger than cluster 1 and 3 with 265 observations.
+* Some observations in cluster 3 and cluster 3 are negative so might be placed in the wrong cluster.
+
+```{r}
+set.seed(7332)
+kmc3f <-kmeans(data_new1,3,nstart=10)
+kmc3f
+```
+
+
+```{r}
+silht <- silhouette(kmc3f$cluster,dist(data_new1))
+fviz_silhouette(silht)
+```
+
+#### iv) Does the clustering you found using K-means method in the previous question agree with the NSP variable in the data? What’s the percentage of agreement? (4 Pts)
+
+The overall accuracy for the k-means is **75.18%**. This means that this method somewhat agrees with the NSP variable. The sensitivity for Fetal State "Pathologic" was 31.18% which is where the k-means clustering was primarily off.
+
+```{r}
+k <- data.frame(kmc3f$cluster)
+colnames(k) <- c("Fetal_State")
+
+data_final <- cbind(data,k)
+
+test_prediction1 <-as.factor(data_final$Fetal_State) # Predicted Classes
+test_actual1 <- as.factor(data_final$NSP)    # Actual Classes
+conf_mat1 <- table(test_prediction1,test_actual1) # Confusion Matrix
+conf_mat1
+```
+
+```{r}
+test_nnoacc1 <- sum(diag(conf_mat1))/sum(conf_mat1)  # Overall accuracy
+test_nnoacc1 # Overall accuracy
+test_ernn1 <- 1-test_nnoacc1  # Misclassification Error 
+test_ernn1  # Misclassification Error 
+
+confusionMatrix(test_prediction1,test_actual1)  # or confusionMatrix(conf_mat)
+```

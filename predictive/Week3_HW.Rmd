@@ -1,0 +1,163 @@
+---
+title: "BUSOBA 7332 W3 Homework"
+author: "Carter Rudek"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+## Load Packages
+
+```{r, error = FALSE}
+library(tidyverse)
+library(psych)
+library(caret)
+library(ROCR)
+library(glmnet)
+```
+
+
+## Read Data
+
+```{r}
+data <- read.csv("GraduateAdmission.csv")
+data <-data[-1]
+```
+
+```{r}
+str(data)
+```
+
+
+# 1.Prepare the data by converting some of the features to factors.
+
+```{r}
+data$Research <- as.factor(data$Research)
+data$Admit<- as.factor(data$Admit)
+```
+
+```{r}
+str(data)
+```
+# 2.Produce numerical summaries of each feature.
+
+
+```{r}
+#sum(is.na(data)) #no missing values
+summary(data)
+```
+# 3.Draw the side by side boxplot of CGPA by Admit. Describe your finding.
+
+Based on our boxplot, we can see that there is a difference between undergraduate GPA for thse who were admitted and those who were not admitted. All values, respectively, within the 5 number summary are higher for those admitted than those who were not. The difference, however, is not as large as I would've expected. The difference in median GPA for those admitted and those not is less than 1. The minimum value, even for those not admitted, does not go below a score of 6.
+
+```{r}
+data %>% 
+ggplot(aes(x=CGPA,fill=Admit)) +
+  geom_boxplot() +
+  ggtitle('Side by side boxplot of CGPA by Admit')+
+theme(plot.title=element_text(hjust = 0.5))  
+```
+
+# 4.What’s the proportion of each class Admit (category)? What’s the benchmark accuracy?
+
+Proportion of Admittance:
+  - 22.5% Not Admitted (0)
+  - 77.5% Admitted (1)
+  
+The benchmark accuracy is 77.5%
+
+```{r}
+table(data$Admit)  # Count of Admitted (1) and not Admitted (0)
+prop.table(table(data$Admit)) # Proportion. Highest Proportion is the benchmark accuracy.
+```
+
+# 5.Split the data into a 80% training set and a 20% test set. Use seed (7332) for reproducibility.
+
+```{r}
+set.seed(7332)
+
+Index <- createDataPartition(data$Admit,p=0.8,list=FALSE)
+trdata <- data[Index,] # training data set 80%
+tsdata <- data[-Index,]  # testing data set 20%
+head(trdata) 
+head(tsdata) 
+```
+
+
+# 6.Find the logistic model with all its predictors in the model significant using the training data set.
+
+```{r}
+logisticm <- glm(Admit~.,data=trdata, family="binomial")
+summary(logisticm)  # Model Summary. Multiple predictors are not significant
+```
+
+```{r}
+flogisticm <- glm(Admit~LOR+CGPA, data=trdata, family="binomial")
+summary(flogisticm)
+round(coef(flogisticm),5)
+```
+
+# 7. Interpret the logistic model coefficients found in question #6.
+
+Both coefficients, are positive, meaning the predictors have a positive relationship with being admitted.
+
+LOR: For every one unit increase in Letter of Recommendation Strength, the odds of being admitted go up by .84817.
+CGPA: For every one unit increase in Undergraduate CGPA, the odds of being admitted go up by 3.68256.
+
+# 8. Predict the testing dataset using the model you found in question #6.
+
+```{r}
+pred_probts <- predict(flogisticm, tsdata, type="response") # predicted probabilities of testing data and  store it in pred_ts
+pred_cts <- ifelse(pred_probts>0.5,1,0) #Converting the predicted probabilities into class 1 or 0
+head(pred_cts)
+head(tsdata)
+```
+
+## Compute the confusion matrix and discuss the overall accuracy, misclassification, Sensitivity and Specificity?
+
+Overall accuracy of model is **88.75%**, which gives us an overall missclassifcation of **11.25%**.
+
+- Sensitivity (True Positive Rate) = Tp/Ap = 59/(59+3) = **95%**
+- Specificity (True Negative Rate) = Tn/An = 12/(12+6) = **67%**
+
+```{r}
+conf_ts<- table(pred_cts, tsdata$Admit)
+conf_ts # Testing data confusion matrix
+sum(diag(conf_ts))/sum(conf_ts)  # Testing data overall accuracy
+1-sum(diag(conf_ts))/sum(conf_ts)  # Overall missclassfication in testing data
+```
+
+# 9. Graph the ROC curve for the testing data and describe it?
+
+We see that the ROC curve is above the benchmark in red, so the model is doing better than the benchmark.
+
+```{r}
+pred_probts <- predict(flogisticm,tsdata,type = 'response')
+pred_probts <- prediction(pred_probts,tsdata$Admit)
+ROC <- performance(pred_probts,"tpr","fpr") # Saves True positive rate=sensitivity and 1-Specificity = fpr
+plot(ROC,xlab="1-Specificity",ylab="Sensitivity",main="Logistic Regression ROC",colorize=TRUE)  # Plots ROC Curve
+abline(a=0,b=1,col="red")  # Benchmark 
+```
+
+# 10. What is the AUC? Is the accuracy of the mode good? Why or Why not?
+
+The AUC is equal to **.8925**. This means that the accuracy of our model is good given the area under the whole curve is 1, and our AUC is almost .9.
+
+```{r}
+AUC <- performance(pred_probts,"auc")
+AUC<- unlist(slot(AUC,"y.values")) # Unlist from the stored slot
+AUC # Area under the curve
+AUC <- round(AUC,4)  # Round it to 4 decimal places
+AUC
+plot(ROC,xlab="1-Specificity",ylab="Sensitivity",main="Logistic Regression AUC",colorize=TRUE)
+abline(a=0,b=1,col="red")
+legend(0.3,0.8,AUC,title="AUC",cex=1)
+```
+
+
+
+
+
+
+
+
+

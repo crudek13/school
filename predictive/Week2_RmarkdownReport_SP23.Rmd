@@ -1,0 +1,64 @@
+---
+title: "Analysis of Zillow Selling Price of Houses"
+author: "Dr. Ismael Talke"
+date: "`r Sys.Date()`"
+output:
+  html_document: default
+---
+
+# Packages Needed
+
+```{r,eval=FALSE}
+library(tidyverse)
+library(psych)
+library(caret)
+```
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r, eval=TRUE}
+data <- read.csv("ZillowHousePrice.csv") 
+```
+
+
+
+# Structure of the data and summary Statistics
+
+```{r,echo=FALSE}
+str(data)
+summary(data)
+```
+
+## ScatterPlots and Correlation
+```{r,echo=FALSE}
+library(psych)
+round(cor(data),2)
+pairs.panels(data)
+```
+
+The correlation between selling price and LivingArea is `r cor(data$Price,data$LivingArea)` shows strong positive linear relationship. 
+
+
+
+## R Markdown
+
+This is a quick refresher on R Markdown. Markdown allows you to generate document (report) in  HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,212 @@
+---
+title: "BUSOBA 7332 HW 2"
+author: "Carter Rudek"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+## Load Packages
+
+```{r, eval = FALSE, error = FALSE}
+library(tidyverse)
+library(psych)
+library(caret)
+```
+
+## Read Data
+
+```{r}
+data <- read.csv("BostonHousing.csv")
+```
+
+```{r}
+str(data)
+summary(data)
+```
+
+```{r}
+data$chas <- as.factor(data$chas)
+data$rad <- as.factor(data$rad)
+```
+
+```{r}
+sum(is.na(data)) 
+```
+
+
+## Question 1
+# Make scatterplot matrix of the predictors (columns) in this data set. Describe your findings. 
+
+There are some variables that show correlation, but nothing stronger than +/- .8. Distance to five employment centers has somewhat strong negative correlation to three other variables - indus(-.71), nox(-.77) and age(-.75). This means that as distance decreases, so do these other variables.
+
+```{r}
+# remove factor variables and respondent
+data_temp <- data[-c(4,9,14)]
+pairs.panels(data_temp)
+```
+## Question 2
+# Are any of the predictors associated with per capita crime rate? If so, explain the relationship. 
+
+There is nothing too strongly correlated with per capita crime rate. The variable with the strongest correlation is tax, with a value of .58. This means that as per capita crime rate goes up, so does the full-value property tax. So, the areas with more crime are paying more property taxes.
+
+
+## Question 3
+# Why should the data be partitioned into training and validation sets? For what will the training set be used? For what will the validation set be used?
+
+We split our data in to two sets to try and avoid overfitting. The training data set is used to train the algorithm/model. The testing/validation data set is used to test how the model performs with data it hasn't seen.
+
+## Question 4
+# Split the data set into  80% training set and a 20% test set.
+
+```{r}
+set.seed(7332)
+Index <- createDataPartition(data$medv,p=0.8,list=FALSE)
+trdata <- data[Index,] #training data set
+tsdata <- data[-Index,]  #testing data set
+head(trdata)
+head(tsdata)
+```
+
+## Question 5
+# Fit a linear model using least squares (OLS model) on the training set, and report the RMSE and Rsquare
+
+R^2 = 0.7573561		
+RMSE = 4.912782
+
+```{r}
+set.seed(7332)
+cntrl <- trainControl(method="repeatedcv",number = 10, repeats = 5)
+```
+
+```{r}
+set.seed(7332)
+model_ols <- train(medv~., 
+                   data=trdata,
+                   method="lm",
+                   trControl=cntrl)
+
+print(model_ols) 
+```
+
+```{r}
+set.seed(7332)
+predmodel_olstsdata <- predict(model_ols,newdata=tsdata)
+model_olsperformance_ts <- data.frame(RMSE=RMSE(predmodel_olstsdata,tsdata$medv),
+                                      Rsquare=R2(predmodel_olstsdata,tsdata$medv))
+print(model_olsperformance_ts)
+```
+
+## Question 6
+# Fit a Ridge regression model on the training set, with λ chosen by cross-validation. What are the tuning parameters? What are the top 3 important variables?  Report the RMSE and Rsquare.
+
+
+Tuning parameters:
+  Alpha = 0
+  Lambda = 0.9435121	
+  
+Top 3 Important Variables: nox, rm, rad3
+
+R^2 = 0.7689196
+RMSE = 4.93175	
+
+
+```{r}
+set.seed(7332)
+lambda_grid <- 10^seq(0.5,-0.5,length=100)
+```
+
+```{r}
+set.seed(7332)
+model_rdg <- train(medv~.,data=trdata,
+                    method="glmnet",
+                    tuneGrid=expand.grid(alpha=0,lambda=lambda_grid),
+                    trControl=cntrl)
+
+print(model_rdg) 
+model_rdg$bestTune
+varImp(model_rdg)
+```
+
+```{r}
+set.seed(7332)
+model_rdgpred_ts <- predict(model_rdg,newdata=tsdata)
+model_rdgperformance_ts <- data.frame(RMSE=RMSE(model_rdgpred_ts,tsdata$medv),
+                                       Rsquare=R2(model_rdgpred_ts,tsdata$medv))
+print(model_rdgperformance_ts)
+```
+
+## Question 7 
+#  Fit a lasso model on the training set, with λ chosen by cross-validation.What are the tuning parameters? What are the top 3 important variables?   Report the test RMSE, Rsquare and the number of non-zero coefficient estimates.
+
+Tuning parameters:
+  Alpha = 1
+  Lambda = 0.3162278
+  
+Top 3 Important Variables: nox, rm, rad3
+
+R^2 = 0.7614816	
+RMSE = 5.064451
+
+Number of Non-zero coefficient estimates = 3
+
+```{r}
+set.seed(7332)
+model_laso <- train(medv~.,data=trdata,
+                    method="glmnet",
+                    tuneGrid=expand.grid(alpha=1,lambda=lambda_grid),
+                    trControl=cntrl)
+
+print(model_laso) 
+model_laso$bestTune
+varImp(model_laso)
+```
+
+```{r}
+set.seed(7332)
+model_lasopred_ts <- predict(model_laso,newdata=tsdata)
+model_lasoperformance_ts <- data.frame(RMSE=RMSE(model_lasopred_ts,tsdata$medv),
+                                       Rsquare=R2(model_lasopred_ts,tsdata$medv))
+print(model_lasoperformance_ts)
+```
+
+## Question 8
+# Fit a Elastic Net Regression model on the training set, with α and  λ chosen by cross-validation. What are the tuning parameters? Report the test RMSE and Rsquare.
+
+Tuning parameters:
+  Alpha = 0
+  Lambda = 0.9435121
+
+R^2 = 0.7689196	
+RMSE = 4.93175	
+
+```{r}
+set.seed(7332)
+model_net <- train(medv~.,data=trdata,
+                    method="glmnet",
+                    tuneGrid=expand.grid(alpha=seq(0,0.5, length=10),lambda=lambda_grid),
+                    trControl=cntrl)
+
+print(model_net) 
+model_net$bestTune
+varImp(model_net)
+```
+
+```{r}
+model_netpred_ts <- predict(model_net,newdata=tsdata)
+model_netperformance_ts <- data.frame(RMSE=RMSE(model_netpred_ts,tsdata$medv),
+                                       Rsquare=R2(model_netpred_ts,tsdata$medv))
+print(model_netperformance_ts)
+```
+
+## Question 9
+# What’s the best performing model from LASSO, RIDGE and ELASTIC NET? Describe the best model.
+
+With a R-squared of 0.5970171 and RMSE of 6.293392, my RIDGE and ELASTIC NET models were the best. 
+
+```{r}
+comp_ts <- matrix(c(model_olsperformance_ts,model_lasoperformance_ts,model_rdgperformance_ts,model_netperformance_ts ),ncol=2,byrow=TRUE)
+colnames(comp_ts) <- c("RMSE","Rsquare")
+rownames(comp_ts) <- c("OLS","LASSO","RIDGE","Net")
+print(comp_ts, digits=3)
+```
+
