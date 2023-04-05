@@ -1,0 +1,59 @@
+---
+title: "Week 4: Tommy's Sports Emporium"
+author: "Carter Rudek, Chris Garcia"
+output: html_document
+---
+
+*Tommy's Sports Emporium* is a primary producer and distributor of footballs for the Northern Flag Football League.  It is crucial that all balls are inflated to the proper level (between 12.5 and 13.5 psi) when sent out for use on gameday.  Recently, Tommy's has been accused of failing to meet these standards (a lot of underinflated balls discovered).  If the ball is underinflated (<12.5 psi), it is easier to catch and throw because it deforms and can be more easily gripped. If it is over inflated (>13.5 psi), it is too hard and can cause weakening of the leather over time.
+
+Tommy's competitor, *Manning's Miscellaneous Sports Equipment*, suspects there is something amiss.  According to Tommy's specifications, the football air pressure of their balls is normally distributed with a mean of 12.9 psi and an sd of 0.3 psi.  Assuming this is correct, what is the probability that a randomly selected ball is NOT in the acceptable range (under OR overinflated)?
+
+```{r}
+1-(pnorm(13.5, 12.9, .3) - pnorm(12.5, 12.9, .3))
+```
+
+The probability randomly selected ball is NOT in the acceptable range (under OR over inflated) is .1139614.
+
+Every week, Tommy's randomly selects 30 balls from their production line and tests to see if they are in the proper inflation range.  If 5 or more (out of the sample) fall outside the specified range, they shut the process down for recalibration.  What is the probability they will have to shut down on a given week *when the process is working correctly* (i.e., when the specs on the distribution of pressures are correct)?  
+
+```{r}
+pbinom(4, 30, .1139614, lower.tail = FALSE)
+```
+
+The probability they will have to shut down on a given week is .2523096. The pros of this policy is that as a company, they are taking steps to ensure a certain quality of product. This should lead to better customer satisfaction. The downside is that when 5 or more balls tested fall outside the specified range, they stop production. Machines and workers are then not being used which is a waste of resources. Depending on how long production is shut down, this could have a negative impact on the business.
+
+
+Tommy's hates to shut down.  He would like to shut down no more than 1\% of the time *when the process is working correctly.*  Given this constraint, how many balls (out of 30) must fail before shutting down?
+
+```{r}
+prob <- 100
+n <- 5
+
+while (prob > 1) {
+  prob <- pbinom(n, 30, .1139614, lower.tail = FALSE)*100
+  print(paste('balls:',n,'prob:',prob))
+  n <- n+1
+}
+```
+In order to shut down no more than 1% of the time, 8 balls out of 30 would need to fail. Changing this number may lead to more faulty balls going out to customers since we are not shutting down as often to recalibrate the machines.
+
+When presented with the argument to raise the minimum number of failed balls needed to recalibrate the system (to prevent unnecessary shutdowns), Tommy balked and said he felt that would simply lead to more dissatisfied customers.  Why is that?
+
+This is because more customers might receive balls that are outside the specified psi range.
+
+He instead decided to improve his process! He would like to maintain the same rule (shutdown and recalibrate if 5 or more balls fail inspection out of 30), but shutdown no more 1\% of the time when the process is acceptable.  To do this, he will add lean measures to his production line to maintain the mean of 12.9 psi but reduce the standard deviation.  To what must he reduce his production standard deviation to insure unnecessary shutdowns no more than 1\% of the time when shutting down with 5 or more balls out of 30 failing inspection?
+
+```{r}
+prob <- 100
+sd <- .3
+
+while (prob > 1) {
+  prob <- pbinom(5, 30, 1-(pnorm(13.5, 12.9, sd) 
+                           - pnorm(12.5, 12.9, sd)), lower.tail = FALSE)*100
+  print(paste('sd:',sd,'Prob:',prob))
+  sd <- sd - .01
+}
+```
+
+When shutting down with 5 or more balls out of 30 failing inspection, he must reduce his production standard deviation to .25 to insure unnecessary shutdowns no more than 1%. I agree with Tommy that he should try to reduce his production standard deviation in order to shut down no more than 1% of the time. This is a better approach than increasing the number of faulty balls found when testing. Reducing production standard deviation should lead to a truly better production process, resulting in less faulty balls. 
+

@@ -1,0 +1,104 @@
+---
+title: 'Week 6 In-class: LaQuinta'
+author: "Carter Rudek, Chris Garcia"
+output: html_document
+---
+
+```{r setup, include=FALSE, warning=F, message=F}
+library(tidyverse)
+library(car)
+library(GGally)
+```
+
+## Introduction
+
+LaQuinta is trying to decide where to locate a new motel.  As analysts, your team is tasked with determining which factors are relevant in determing profitability and predicting strong locations for expansion.  A group of strategists determined factors worthy of exploration are competition, market awareness, demand generators, socio-economic factors, and location.
+
+In preparation, the company has identified and compiled a variety of potential predictors for profitability (measured via operating margin--Margin--of current hotels). They are:
+
+* Number: Total motel and hotel rooms within a 3 mile radius
+* Nearest: Number of miles to closest copmetition
+* OfficeSpace: Volume of office space in surrounding community, in 1000s sqft 
+* Enrollment: Number of college and university students in the community, in 1000s
+* Income: Median household income, $1000s
+* Distance: Distance (in miles) to the downtown core
+
+## Exploratory Analysis
+
+First, load the data and explore some features of interest.
+```{r, warning = F, message = F}
+laquinta <- read_csv("https://raw.githubusercontent.com/jddbucknole/SMB-A/master/LaQuinta.csv")
+
+summary(laquinta)
+
+plot(laquinta)
+
+```
+
+Examine the scatterplots relating the explanatory variables to the response (Margin) as well as the correlation.  Include any of the scatter plots you think are of interest and the correlation matrix (using the cor() function).  Comment on what you see.  Which variables appear to be impactful in predicting margin? Which influence in a positive manner? Negative manner? Is that what you expected?
+```{r, message = F}
+ggpairs(laquinta)
+
+cor(laquinta)
+
+```
+
+"Number", "OfficeSpace" and "Income" seem to be impactful in predicting Margin. Number impacts Margin negatively while OfficeSpace and Income impact it positively. This make sense to me and aligns with what I expected. For the two largest correlations, it makes sense that Margin appears to go down with more motel/hotel rooms within a 3 mile radius and Margin appears to go up with more offices surrounding.
+
+## Simple Linear Regression
+
+Fit a linear model to predict Margin from the single variable that is the **most correlated** with the response.  Interpret both coefficients **in context** if they are sensible. If not, explain why not.
+
+```{r, echo = FALSE}
+# OfficeSpace: Volume of office space in surrounding community, in 1000s sqft 
+# Margin = 34.18846 + .02347(officespace)
+
+lm(Margin ~ OfficeSpace, data = laquinta)
+
+```
+
+If the volume of office space in the surrounding community was 0, Margin is expected to be 34.189. As volume of office space per 1000 sq ft increases by 1, Margin is expected to increase by .02347.
+
+## Model Fitting
+
+Fit a multiple linear regression model to predict Margin from the other predictors.  Produce the "best" model according to whatever criteria you choose.  After you have finalized your model, report the summary and any requisite diagnostic plots below (only run the final model in this R markdown file). 
+
+
+
+```{r, echo = FALSE}
+mm <- lm(Margin ~ Number + OfficeSpace, data = laquinta)
+
+summary(mm)
+
+
+#plot(mm$residuals)
+#plot(mm)
+#vif(mm)
+
+```
+
+## Conclusion and Recommendations
+
+Discuss why you chose the model you settled on.  Focus on the model fit, residuals, significance, etc.  This is the most important part of the assignment. Make sure to give concrete recommendations to LaQuinta in context. You should use common business language explaining what factors are relevant without focusing solely on the statistical jargon.  
+
+There is a location of interest that has 3815 rooms within 3 miles, the closest hotel is 0.9 miles away, the amount of office space  is 476,000 square feet, there is one college and one university with a total enrollment of 24,500, the median income in the area is $35,000, and the distance to the downtown core is 11.2 miles.  Form a 95% prediction interval for the operating margin at this location **based on your model**.  Profitable inns are defined by those with operating margins greater than 50\%. Would you recommend this site?
+
+```{r}
+newlocation <- data.frame(Number = 3815, OfficeSpace = 476000/1000)
+
+predict(mm, newdata = newlocation, interval = "predict")
+
+```
+The model we picked to predict Margin uses two explanatory variables: (1) the total motel and hotel rooms within a 3 mile radius and (2) Volume of office space in surrounding community. 
+
+As mentioned before, there were 3 potential predictors we felt appeared to be impactful in predicting margin. Of those 3, we decided to leave out Income because it could have a different value/meaning in the future (i.e. Inflation). We kept in OfficeSpace and Number, which were both significant, not correlated and will remain consistent over the years so should help the model generalize better.
+
+We can interpret our model as the following:
+1. We expect our Margin to be 57.17 when there are 0 room within 3 miles and 0 office space in the community.
+2. For every 1 increase in the number of rooms within 3 miles, we expect Margin to decrease 0.007392, as long as the amount of office space in the community remains constant.
+3. For every 1 increase in square feet of office space in the community, we expect Margin to increase .021597, as long as the number of rooms within 3 miles remains constant.
+
+When examining the residuals of our model, we can see they are centered at zero, the points are scattered and there is a constant vertical width.
+
+For the new location with 3815 rooms within 3 miles and 476,000 square feet of office space in the community, we predict the Margin to be between 27.28 and 51.22. Based on this, we do not see this new location as a profitable inn and would not recommend the site. 
+

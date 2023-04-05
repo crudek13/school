@@ -1,0 +1,196 @@
+---
+title: "BUSOBA 6400: In-class Week 1"
+author: "Carter Rudek"
+output: html_document
+---
+
+```{r, warning = FALSE, message = FALSE}
+#Note: the warning and message are shut off to avoid the list of overrides.  It won't be an issue but it cleans up the output!
+library(tidyverse)
+```
+
+# Part 1: Data Wrangling
+
+## Introduction
+
+Bike sharing systems are rapidly becoming the norm in most big cities.  This analysis will examine data from the Capital Bike Share company in DC from 2011-2012. The goal is to have a better understanding of when people use the service and what we can do to be more efficient in deployment.  
+
+First, examine the following [website](https://archive.ics.uci.edu/ml/datasets/bike+sharing+dataset) to get a better understanding for the background of the project and the dataset characteristics.  
+
+## The Data
+
+The dataset of daily usage and weather is loaded below.
+
+```{r}
+url_day <- "https://raw.githubusercontent.com/jddbucknole/bikesharing/master/bike_sharing-day.csv"
+bike_day <- read.csv(url_day)
+```
+
+Explore the dataset a bit on your own here.  See what variables exist and what you may be interested in learning about. The function `str()` prints out the 'structure' of the data.  It gives the variable names and a few initial values.  Make sure you understand the key variables for analysis.  Think about what the key inputs and outputs are for the bike sharing company. No need to type any responses here.
+
+```{r eval == FALSE}
+str(bike_day)
+```
+
+
+## Analysis
+
+### Day of Week
+
+Does daily ridership change based on day of the week? What about weekend and holiday use?
+
+Using the bike_day dataset, find the average cnt of bikes grouped by day of the week.  Feel free to explore the workingday and holiday variables if you'd like as well. Make sure to understand which number represents which day of the week! Don't be afraid to look outside the data.
+
+```{r}
+bike_day %>%
+  group_by(weekday) %>%
+  summarise(avg_riders = mean(cnt))
+
+```
+
+*Most people ride during the week, lowest amount of people riding on Sundays, with the most riding on Thursdays and Fridays*
+
+
+### Weather
+
+How does ridership change based on the weather? Also, does the weather impact casual and registered users use differently? To accomplish this, do the following:
+
+1. Change the weathersit from 1-4 to the appropriate labels from the website above.  Use a mutate and either a series of nested ifelse statements (like you'd do in excel) or examine the `case_when` function.  Documentation can be found [here]("https://dplyr.tidyverse.org/reference/case_when.html").
+2. Stack the number of casual and registered users into one column to form a tidy dataframe (one column for a label and one column for the counts).  This involves the `gather()` or `pivot_longer()` function.  I recommend using `pivot_longer()`
+3. Use the appropriate dplyr verbs to summarize those data points to answer the question
+
+```{r message = FALSE}
+bike_day %>%
+  mutate(weathersit_txt = case_when(
+    weathersit == 1 ~ "Clear, Few clouds, Partly cloudy, Partly cloudy",
+    weathersit == 2 ~ "Mist + Cloudy, Mist + Broken clouds, Mist + Few clouds, Mist",
+    weathersit == 3 ~ "Light Snow, Light Rain + Thunderstorm + Scattered clouds, Light Rain + Scattered clouds",
+    weathersit == 4 ~ "Heavy Rain + Ice Pallets + Thunderstorm + Mist, Snow + Fog"
+  )) %>% pivot_longer(cols = c(casual, registered), 
+               names_to = "rider_type", 
+               values_to = "rider_count") %>%
+  group_by(weathersit_txt) %>%
+  summarise(total_riders = sum(rider_count))
+
+
+bike_day %>%
+  mutate(weathersit_txt = case_when(
+    weathersit == 1 ~ "Clear, Few clouds, Partly cloudy, Partly cloudy",
+    weathersit == 2 ~ "Mist + Cloudy, Mist + Broken clouds, Mist + Few clouds, Mist",
+    weathersit == 3 ~ "Light Snow, Light Rain + Thunderstorm + Scattered clouds, Light Rain + Scattered clouds",
+    weathersit == 4 ~ "Heavy Rain + Ice Pallets + Thunderstorm + Mist, Snow + Fog"
+  )) %>% pivot_longer(cols = c(casual, registered), 
+               names_to = "rider_type", 
+               values_to = "rider_count") %>%
+  group_by(weathersit_txt, rider_type) %>%
+  summarise(total_riders = sum(rider_count))
+
+
+
+```
+
+*Ridership does seem to change based on weather. When there is precipitation (rain, snow), ridership is low. When there is mist and there might be low visibility, ridership also drops off but not as much as when there is rain/snow. Ridership is high when it is a clear day or partly cloudy. Weather does not seem to have an impact on casual vs registered users. Regardless if you are registered or casual, ridership is higher when it is clear/partly cloudy and low when there is precipitation or low visibility.*
+
+### Temperature
+
+The temperature variable has been 'normalized' such that 0 is (close to) the lowest temperature recorded and 1 is the highest.  First, we will convert the temperature in the hourly dataset into a standard Celsius form for ease of interpretation then find the average number of users on days with freezing temperature (<0 C). 
+
+1. Use the mutate function to create a new column `Temp_in_C = temp * 47 - 8` (see the website for details)
+2. Filter out days below 0 temperature.
+3. Find the average number of users on these days.
+
+Ideally, this is handled in a single piped set of commands without saving the intermediate steps.
+
+```{r}
+bike_day %>%
+  mutate(Temp_in_C = temp * 47 - 8) %>%
+  filter(Temp_in_C < 0) %>%
+  summarise(avg_riders = mean(cnt))
+
+
+# for comparison purposes, avg riders when temp > 0
+# bike_day %>%
+#   mutate(Temp_in_C = temp * 47 - 8) %>%
+#   filter(Temp_in_C > 0) %>%
+#   summarise(avg_riders = mean(cnt))
+
+```
+
+*The average number of riders when the temperature is below 0 degrees Celsius is ~1500 which is significantly less (~3x) than when temperatures are above 0 degrees Celsius*
+
+### Outliers
+
+One day has a particularly low usage.  Use the appropriate verb this low usage day.  Once you have found the day, see if you can find out why this usage was so low (Google is a wonderful tool!). Do NOT print out the entire dataset!! If you'd like to print the top day, use the head() function or the top_n() function.
+
+```{r}
+bike_day %>%
+  pivot_longer(cols = c(casual, registered), 
+               names_to = "rider_type", 
+               values_to = "rider_count") %>%
+  select(dteday, rider_count) %>%
+  group_by(dteday) %>%
+  summarise(total_riders = sum(rider_count)) %>%
+  arrange(total_riders) %>%
+  head(1)
+
+```
+
+*On 10/29/2012, there were an unusually low number of riders. We believe this may be due to Hurricane Sandy that affected atleast 24 states *
+
+### Conclusion
+
+*Write a few sentences about what you've learned by exploring this dataset and what may be of interest to the company going forward.*
+
+
+# Part 2: Data Joins
+
+For this study, we will be looking at a large database of baseball statistics.  Don't worry if you are not familiar with baseball.  All of the desired results will be clearly outlined.
+
+First, we will load the `Lahman` package.  This the Sean Lahman database of nearly every baseball statistic from 1871 until 2019.  It is incredibly comprehensive and the information is spread across many tables forming a relational database (of sorts). To find specifics on the data tables, please visit [this website]('https://www.rdocumentation.org/packages/Lahman/versions/8.0-0').
+
+```{r}
+library(Lahman)
+```
+
+## Top 10 all-time homerun hitters
+
+While this can easily be found on Google, follow the below steps to find the top 10 all time homerun hitters (a homerun is the best offensive play in baseball and is denoted as HR in the `Batting` table).
+
+1. Find the number of homeruns hit by each person over their career.  Each player has a unique playerID that is the first 5 letters of their last name, the first 2 letters of their first name, and a number designating which player in history they were to have that designation (for example, Ken Griffey Jr has the ID griffke02--his father, Ken Griffey Sr. is griffke01).  The `Batting` table contains each players statistics separated by season.  You will need to aggregate the homerun numbers.
+2. Only include the top 10 using top_n()
+3. Appropriately join the results to the `People` table to get the players names. Note, the `People` table has two ID's.  Examine the data to find the appropriate one.
+4. Display the top 10 including only nameFirst, nameLast, and career homeruns.
+
+```{r}
+deleteme <- 0
+```
+
+## Top 10 strikout leaders
+
+Now, repeat the same process as above for strikeouts.  Strikeouts are a defensive statistic that you can find in the `Pitching` table under `SO`.  Note how you can essentially copy the code you created above and make a few edits!
+
+```{r}
+deleteme <- 0
+```
+
+## Stolen Bases by Birth Country
+
+Are the most fleet of foot from a specific locale? Stolen Bases will be our 'metric' for speed.  Stolen bases can be found in the `Batting` table under `SB` and `birthCountry` can be found on the `People` table.
+
+1. Create a table of number of career stolen bases for every player.
+2. Filter to only include those with more than 200 career steals (this is arbitrarily selected).
+3. Join this with the `People` table to add `birthCountry`.  Count how many people in this set come from each `birthcountry` and save this dataset as `topBaseStealers`
+4. Create a table that counts the number of players in the `People` table separated by `birthCountry` and save this as `allPlayers`.
+5. Join `topBaseStealers` and `allPlayers` by the `birthCountry` variable.
+6. Create a new column that finds the percent of top tier base stealers out of the number of all players from a given country called `fast_percentage`.
+7. Arrange them in descending order of `fast_percentage`.  Is it what you expected? Why or why not?
+
+```{r}
+deleteme <- 0
+```
+
+*Comment on what you found.*
+
+## Conclusion
+
+*Write a few sentences summarizing the findings from the baseball analysis*

@@ -1,0 +1,132 @@
+---
+title: 'Week 7: How much is a Fireplace Worth?'
+author: "YourNameHere"
+output: html_document
+---
+
+```{r, warning = F, message = F}
+library(tidyverse)
+library(car)
+library(GGally)
+```
+
+# Introduction
+
+As the housing market continues to bounce around wildly, it is common to try to zero in on what qualities of a house add value and if so, how much.  Another common task in the volatile house market is to predict the price of a house on the market based on its characteristics.  A realtor may be more interested in simply learning which aspects of a home provide significant value and if so, how much?
+	
+For this project, we will examine a dataset of 1728 homes in Saratoga County, New York in 2006.  1228 will be available as the 'training set'.  With this set of data, you will perform analyses and build your model.  The second set will be the test set.  This includes 500 houses NOT used in the model building phase to test prediction in a set not included.  The files are loaded below:
+
+```{r, warning = F, message = F}
+train <- read_csv("https://raw.githubusercontent.com/jddbucknole/MAcc/master/HouseSaratogaTrain.csv")
+test <- read_csv("https://raw.githubusercontent.com/jddbucknole/MAcc/master/HouseSaratogaTest.csv")
+```
+
+Included in the dataset are the following:
+A data frame with 1728 observations on the following 16 variables.
+
+*	price - price (1000s of US dollars)
+*	lotSize - size of lot (square feet)
+*	age - age of house (years)
+*	landValue - value of land (1000s of US dollars)
+*	livingArea - living are (square feet)
+*	pctCollege - percent of neighborhood that graduated college
+*	bedrooms - number of bedrooms
+*	fireplaces - number of fireplaces
+*	bathrooms - number of bathrooms (half bathrooms have no shower or tub)
+*	rooms - number of rooms
+*	heating - type of heating system
+*	fuel - fuel used for heating
+*	sewer - type of sewer system
+*	waterfront - whether property includes waterfront
+*	newConstruction - whether the property is a new construction
+*	centralAir - whether the house has central air
+*	hasfireplace - whether the house has at least one fireplace
+
+Your goal for this project contains 3 tasks (and a bonus).  You may simply answer each question separately, but they will all necessitate a short paragraph (or more) of explanation and output.  If you run computer analyses, provide relevant code and output.
+
+# Part 1
+
+Using the train data, discover if there is a significant difference in the average price of homes with a fireplace and homes without a fireplace (use the 'hasfireplace' variable).  Make sure to report relevant statistics and potentially graphs to support your argument. Construct a 95% confidence interval for the difference in the average price of homes with and without fireplaces.
+
+```{r}
+#two sample t.test unpaired
+t.test(price ~ hasfireplace, data = train, alternative = "two.sided")
+
+#boxplot
+#summary
+```
+
+# Part 2
+
+Fit a model to predict house price based on livingArea and hasfireplace.  Explain what you find and how to interpret those coefficients.   Your answer may be in conflict with question 1.  Why? Is this a surprise? It is highly recommended to form a visualization to show these relationships.
+
+```{r}
+
+mod <- lm(price ~ livingArea + hasfireplace, train)
+summary(mod)
+
+
+train %>%
+  ggplot(aes(x = price, y = livingArea, color = factor(hasfireplace))) +
+  geom_point() +
+  geom_smooth(method = "lm", se=FALSE)
+
+
+```
+
+# Part 3
+
+Fit the best model you can to predict price from the other factors.  Use your own intuition, visualizations, and trial and error.  What factors appear to be statistically and practically significant (and why)? Only report your final and supposed 'best' model.  Do not look at the test set at all at this phase.  Write a paragraph (or more) defending your model.  Why were the predictors you included chosen?  How do these different factors influence the price of the home?  There is no single 'correct' answer here.  I am more interested in your justification of the model you chose.  Do NOT simply run a model that includes everything.  That may be the best (or one of the best) according to some criteria, but it will likely not generalize to future predictions and have some severe collinearity concerns.  Note: don't include the hasfireplace and fireplaces variables together. I added the 'hasfireplace' variable so it wasn't in the original dataset--severe collinearity warning!.
+
+```{r}
+#living area should be included
+#fireplaces and hasfireplace, both should not be included
+
+#ksm <- lm(price ~., train)
+#summary(ksm)
+
+
+#mod1 <- (price ~ lotSize, train)
+
+
+#mod1 <- lm(price ~ lotSize + landValue + livingArea + bedrooms + bathrooms + waterfront + newConstruction + age + centralAir, data = train)
+#summary(mod1)
+
+#vif(mod1)
+
+
+
+stepAIC(mod1)
+
+
+lm(formula = price ~ lotSize + age + landValue + livingArea + 
+    bedrooms + bathrooms + "rooms" + "heating" + waterfront + newConstruction + 
+    centralAir, data = train)
+
+
+lm(formula = price ~ lotSize + landValue + livingArea + bedrooms + 
+    bathrooms + waterfront + newConstruction + age + centralAir, 
+    data = train)
+
+
+
+summary(mod1)
+
+
+
+UpdatedModel_joe <- lm(formula = price ~ lotSize + age + landValue + livingArea + heating + waterfront + newConstruction
+    , data = train)
+summary(UpdatedModel_joe)
+vif(UpdatedModel)
+
+
+
+```
+
+# For Fun
+
+4)	Test your model vs. your classmates!  Who has the 'best' predictive model? To do this, I have included the code to run.  Simply copy and paste.  The result that is given is the root mean squared error on the hold-out test data.  Low man wins!  Make sure your final model is called 'bestModel' then run the following code.  Report your RMSE in your report.  Don't be afraid to see a high number.  Out of sample predictions are often worse than insample. The function is already coded below. Make sure to uncomment before you knit.
+
+```{r}
+(RMSE <- sqrt(mean((predict(mod1, test) - test$price)^2)))
+```

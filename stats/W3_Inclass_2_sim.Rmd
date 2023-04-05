@@ -1,0 +1,110 @@
+---
+title: "TV Sales: In-class Week 4"
+author: "YourNamesHere"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+This problem is slightly modified from _Business Analytics: Data Analysis and Decision Making_ by Albright and Winston; 6th edition
+
+A used electronics store is planning on a seven-day promotion on a discontinued model of a 31 in TV.  At a price of \$575 per TV, the estimated daily demand is:
+
+|Demand|0|1|2|3|4|5|
+|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|
+| Probability | 0.15|0.20|0.30|0.20|0.10|0.05|
+
+They can order up to 50 TVs from a surplus dealer at a cost \$325.  The dealer will buy back whatever is left after the promotion for \$250 per TV.
+
+1) First, write a line of code to calculate net income for a single scenario.  For example, what is the net income if we bought 30 TVs and sold a total of 20 TVs over the seven days. Write your code below.  You answer should be \$4250.
+
+```{r}
+
+income <- function(buy,sell) {
+  if(buy < sell)
+    sell = buy
+    return(sell*575 - buy*325 + (buy-sell)*250)
+}
+
+```
+
+2) Next, let's add in variable demand.  Set your seed to 100 (for reproducibility) and simulate 7 days of demand.  Once again, test your code with a purchase of 30 and random demand to see if your net income makes sense (I got \$1000). There is a special case you need to consider -- as a hint, when I purchased 5 TVs (and reset the seed), the profit should be \$1250 (some of you might get \$2875)
+
+```{r}
+set.seed(100)
+
+demand <- sum(sample(x = 0:5, size = 7, prob = c(0.15,0.20,0.30,0.20,0.10,0.05), replace = T))
+
+income(5,demand)
+
+```
+
+3) This is only one single instance of demand, but good simulations/probabilistic estimation would encourage us to repeat this process many times to get an idea of expected value and variability in net income.  Repeat the simualtion of demand and calculate the net income 500 times for a purchase of 30 TVs.  If you have reset the seed to 100, you should get an average net income of \$2450.80 and a standard deviation of \$1161.04.
+
+```{r}
+set.seed(100)
+netincome <- rep(0,500)
+for (i in 1:500){
+  demand <- sum(sample(x = 0:5, size = 7, prob = c(0.15,0.20,0.30,0.20,0.10,0.05), replace = T))
+
+  netincome[i] <- income(30,demand)
+  
+}
+
+mean(netincome)
+sd(netincome)
+
+
+```
+
+4) To come up with an optimal number of TVs to buy, write a function with one argument (buy) that allows the user to specify how many TVs are bought and returns the average net income for 500 simulations at of buying 'buy' TVs. To test your function, set your seed to 100 and run the fucntion with buy = 30.  You function should return the same as the previous section (\$2450.80)
+
+```{r}
+set.seed(100)
+
+profit <- function(buy) {
+  
+  netincome <- rep(0,500)
+  
+  for(i in 1:500) {
+    bought<-buy
+    demand <- sum(sample(x = 0:5, size = 7, prob = c(0.15,0.20,0.30,0.20,0.10,0.05), replace = T))
+    sold <- min (demand, bought)
+    netincome[i] <- sold*575 - bought*325 + (bought-sold)*250
+  }
+  mean(netincome)
+}
+profit(50)
+
+
+```
+
+5) Almost done! Now it is time to find the optimal number of TVs to buy (according to expected net income).  Wrap your function call in a loop that tries different numbers of TVs to buy (0 to 50) and store the incomes in a vector called incomes. 
+
+```{r}
+set.seed(100)
+
+avg_profit <- rep(0,50)
+
+for (i in 1:50){
+  avg_profit[i] <- profit(i)
+}
+
+```
+
+6) Now visualize and summarize your results.  Make a line graph of incomes vs. TVs bought.  To do this create a data frame with a first column order and the second income (I have put this line in the code below commented--uncomment when in use).  Now that you have a data frame, you can use ggplot!
+
+```{r}
+TVincomes <- data.frame(order = 1:50, income = avg_profit)
+
+ggplot(TVincomes, aes(x=order, y=income)) +
+  geom_line() +
+  ggtitle("Incomes vs. TVs Bought") +
+  labs(y="Income", x = "TVs Bought")
+
+```
+
+7) When looking at Income vs. Tvs Bought, we see early positive linear growth until around 17 TVs bought. At that point, Income begins to trend downward. With this information, we would conclude that the optimal number of tvs to buy would be 17. Beyond 17 tvs bought, our income would go down. 

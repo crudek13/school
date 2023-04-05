@@ -1,0 +1,80 @@
+---
+title: 'Week 5: Pizzaria a la Paulie'
+author: "Carter Rudek, Chris Garcia"
+output: html_document
+---
+```{r, message = F, warning = F}
+library(tidyverse)
+```
+
+# Part 1: Paulie's Pizzeria: Time to expand?
+
+According to Tom Larkin in his article, "8 Factors for Choosing a New Restaurant Location," the number 1 requirement is visibility.    He advises "to determine visibility, look at foot and car traffic patterns."  Who's walking by?  Who's driving by?  And of course, not only "who" matters, but also "how many."
+
+Tony Soprano is considering opening a new franchise in New Jersey called Paulie's Pizzaria.  Based on financial analyses, the site is acceptable only if the number of pedestrians passing the location averages more than 100 per hour. To determine if this site is acceptable, Tony hired a consulting firm to help with the collection and analysis of sample data.  The consulting firm arranged for the number of pedestrians for each of 40 randomly selected hours to be observed and recorded.  This data can be found on the web and can be downloaded with the following code.
+
+```{r, warning = F, message = F}
+ped <- read_csv("https://raw.githubusercontent.com/jddbucknole/SMB-A/master/week5PauliesPizza.csv")
+```
+
+Unfortunately, the consulting company reneged on the analysis phase of the project.  Your team has been hired to complete the necessary analysis of the data.  Tony knows very little about statistical methodology or terminology, but he knows about risk.  Sal has made it clear that he is very interested in this location and doesn't want to miss the opportunity if the site is acceptable, but he cannot afford to lose the capital investment if the restaurant fails.
+
+## Summary Statistics
+
+Before embarking any further, Tony would like to know some summary statistics and a simple graph showing the distribution of the number of pedestrians passing the site per hour.  
+
+```{r}
+summary(ped)
+
+hist(ped$Pedestrians)
+```
+
+
+## Time to test!
+
+Formulate the appropriate hypotheses, run the test, and draw appropriate conclusions.  You are in control of all specifics of the problem (i.e., choosing alpha and deciding how to manage the risks--there are no wrong answers, but you should justify your choices).  Fill in  your hypotheses below and make sure your conclusions are stated *in terms of the problem*.
+
+H0: number of pedestrians passing the location average is >= 100 per hour 
+
+HA: number of pedestrians passing the location averages less than 100 per hour
+
+```{r}
+t.test(ped$Pedestrians, mu = 100, alternative = "less")
+```
+
+With a 95% confidence level, we would fail to reject the null and conclude that Tony should open the restaurant. We are confident that we will see the average number of pedestrians passing the location above 100 per hour.
+
+
+# Part 2: The current Paulie's Pizzeria: How much are servers being tipped?
+
+While the analysts were diligently working on discovering if the new location was viable, Tony was thinking about moving to a cashless business, and has proposed this to his employees.  His employees at the current restaurant are extremely concerned that moving to credit card only will affect the percentage of the bill left as a tip.  To test this hypothesis, the employees collect data of the last 157 transactions.  The data is located in the dataset `RestaurantTips`. Visualize the percentage tip (`PctTip`) separated by `Credit` using an appropriate visualization.  Comment on what you found.
+
+```{r}
+library(Lock5Data)
+head(RestaurantTips)
+#Visualization code
+
+num_list <- RestaurantTips %>%
+  group_by(Credit) %>%
+  summarise(summ_list = list(fivenum(PctTip))) %>%
+  unnest()
+
+ggplot(data = RestaurantTips, aes(x = Credit, y = PctTip)) +
+  geom_boxplot() +
+  geom_text(data = num_list, aes(x = Credit, y = summ_list, label = summ_list), nudge_x = .5)
+
+```
+
+The median percent tip is slightly higher for credit card payments. When just looking at the median, it seems credit card does affect the percentage of the bill left as a tip but in a positive way (for the employees).
+
+## Make a confidence interval for the difference of means
+
+The employees desire a 95/% confidence interval for the difference of the average of tip percentage between credit and cash payments.  From this, the employee union can make a decision on whether to agree to the cashless proposal or not.  You may use a built in R function or use R to calculate from the component stats. After finding the confidence interval, explain what the employee union should do with this information.  Should they fight or agree to the proposal (assuming we're not worried about *sleeping with the fishes*)?
+
+```{r}
+t.test(PctTip ~ Credit, data = RestaurantTips)
+
+```
+
+There is significant evidence that there is no difference in the tip percentage between credit and cash payments. So, they should agree to the proposal.
+
