@@ -1,6 +1,8 @@
 library(tidyverse)
 
-data <- read.csv("Broadwayshow.csv")
+getwd()
+
+data <- read.csv("predictive/datasets/Broadwayshow.csv")
 
 #Q1
 sum(is.na(data)) 
