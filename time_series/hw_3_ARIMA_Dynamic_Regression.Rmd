@@ -1,0 +1,832 @@
+---
+title: "Lab 3 - ARIMA and Dynamic Regression"
+author: "Carter Rudek"
+date: "4/19/2023"
+output:
+  pdf_document: default
+  toc: yes
+  word_document: null
+toc_depth: 3
+---
+  
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Load packages, echo=FALSE, message=FALSE, warning=FALSE}
+if( sum(!('pacman' %in% .packages(all.available = TRUE)))>0){ install.packages(pacman)}
+library(pacman)
+pacman::p_load(imputeTS, gridExtra, feasts, GGally, fpp3 )    #install/load our packages!
+```
+
+# Lab Description
+
+Welcome to lab three!  This lab assignment is broken into 5 sections, with the 5th section serving as the answer sheet.  The four lab sections are described below.
+
+## Section I
+
+This portion of the lab is designed to provide you with the methods you will use in R to fit ARIMA models.  Note that this will serve as a reference for Section II and for future labs!  You should read/work through this portion of the lab, stopping to answer questions when prompted to do so.  This section will discuss how to:
+  
+* Simulate ARIMA time series
+* Evalute stationarity of a series
+* Transform and difference a series to make it stationary
+* Evaluate ACF and PACF plots to determine appropriate models
+* Fit an ARIMA model to data
+* Evaluate ARIMA model residuals
+* Compare ARIMA models using AIC
+* Use ARIMA to automatically select a model
+
+Please make sure to pay attention to the prompts for answering questions.
+
+## Section II
+
+In this section you will apply the same methods to complete the ARIMA model selection process for two time series.
+
+## Section III
+This section will discuss how to:
+  
+*	Fit a dynamic regression model
+* Evaluate the residuals of a dynamic regression
+
+This will serve as a reference for completing section IV and future labs.
+
+## Section IV
+
+In this section you will complete the model selection process for the dataset.
+
+## Lab Three Answer Sheet
+
+This section (at the very bottom of the markdown file) is where the questions for the lab will be answered.  When prompted, you can scroll to the given question to write down your answers.
+
+
+___________________________________________________________
+
+# Section I
+
+## Data
+
+### Data description
+
+Our first data set for this lab we will simulate using the arima.sim function.
+
+```{r} 
+#View data in the script window 
+#set the random seed so that everyone's data looks the same
+set.seed(22)  
+
+#simulate 300 observations of white noise using arima.sim
+simwhitenoise <- arima.sim(n=300, list(order=c(0,0,0))) %>% as_tibble
+
+
+#create sequence of dates for this dataset
+simwhitenoise <- simwhitenoise %>% mutate(
+         week = seq(as.Date("2013-06-01"), length.out = 300, by="weeks")
+)
+
+```
+
+Note that we can use arima.sim to simulate from any non-seasonal ARIMA process, we just need to specify the ar and ma components!  Now that we have our similuated white noise converted into a tsibble, let's also upload some other time series that we can use for the first part of the lab.
+
+```{r}
+#read in other time series
+dataset1=read.csv("Lab3dataset1.csv", header = TRUE, sep=",")  
+
+#create sequence of dates for dataset1
+dataset1 <- dataset1 %>% mutate(
+         week = seq(as.Date("2013-06-01"), length.out = 300, by="weeks")
+)
+```
+
+### Data Wrangling
+
+Let's turn these time series in to tsibbles!
+
+```{r}
+#rename variable to 'Series1'
+simwhitenoise <- simwhitenoise %>% rename(Series1 = x)
+
+#convert dates to year week format
+simwhitenoise <- simwhitenoise %>% mutate(week = yearweek(week))
+
+#convert to tsibble
+s1 <- simwhitenoise %>% as_tsibble(index=week)
+
+#convert dates to year week format
+dataset1 <- dataset1 %>% mutate(week = yearweek(week))
+
+#convert to tsibble
+dataset1 <- dataset1 %>% as_tsibble(index=week)
+
+#split data into 4 separate series
+s2 <- dataset1 %>% select(week, Series2)
+s3 <- dataset1 %>% select(week, Series3)
+s4 <- dataset1 %>% select(week, Series4)
+s5 <- dataset1 %>% select(week, Series5)
+```
+
+Great, we now have 5 time series to play with!
+
+##Analysis
+###Visualization
+
+Let's plot each of the 5 times series.
+
+```{r}
+#plot each series
+s1 %>% autoplot(Series1) + 
+  xlab('Time (in Weeks)') + ylab('Values') +
+  ggtitle('Series 1 plot')
+
+s2 %>% autoplot(Series2) + 
+  xlab('Time (in Weeks)') + ylab('Values') +
+  ggtitle('Series 2 plot')
+
+s3 %>% autoplot(Series3) + 
+  xlab('Time (in Weeks)') + ylab('Values') +
+  ggtitle('Series 3 plot')
+
+s4 %>% autoplot(Series4) + 
+  xlab('Time (in Weeks)') + ylab('Values') +
+  ggtitle('Series 4 plot')
+
+s5 %>% autoplot(Series5) + 
+  xlab('Time (in Weeks)') + ylab('Values') +
+  ggtitle('Series 5 plot')
+```
+
+```{r}
+s2 %>% features(Series2, c(unitroot_kpss, unitroot_ndiffs, unitroot_nsdiffs))
+s3 %>% features(Series3, c(unitroot_kpss, unitroot_ndiffs, unitroot_nsdiffs))
+s4 %>% features(Series4, c(unitroot_kpss, unitroot_ndiffs, unitroot_nsdiffs))
+s5 %>% features(Series5, c(unitroot_kpss, unitroot_ndiffs, unitroot_nsdiffs))
+```
+
+
+
+
+
+--------------------
+  
+  Answer Question 1 on the Answer Sheet at the bottom of the script
+
+--------------------
+
+
+### ARIMA Modeling
+
+We know that Series 1 should be stationary (at least it better be!).  Let's use our tests to evaluate this.
+
+```{r}
+#check stationarity with KPSS and check for suggested differences
+s1 %>% features(Series1, c(unitroot_kpss, unitroot_ndiffs, unitroot_nsdiffs))
+```
+
+Great, we got the results we expected.  We fail to reject the hypothesis that this data is stationary!  Typically, once we know the data is stationary, we can check the ACF plots and PACF plots to identify a benchmark ARIMA model to try.  Let's plots these now.
+
+```{r}
+#plot ACF and PACF plots with series
+s1 %>% gg_tsdisplay(Series1, 'partial')
+```
+
+Hmmm, we have a few spikes outside of the 95% lines.  Let's follow up with a Ljung-Box test to check for autocorrelation here!
+
+```{r}
+#run Ljung-Box test for autocorrelation
+s1 %>% features(Series1, ljung_box, lag = 10, dof = 0)  
+```
+
+Phew!  We fail to reject the hypothesis that this data has no autocorrelation, so it looks like our simulated data does appear similar to white noise.  So, if this were a series we were attempting to model, we would start with ARIMA(0,0,0) because it took no differences to make the data stationary and there appears to be no autocorrelation!  Let's fit an ARIMA(0,0,0) model.
+
+```{r}
+#fit ARIMA(0,0,0)
+fit_s1 <- s1 %>% model(
+  arima1 = ARIMA(Series1 ~ pdq(0,0,0) + PDQ(0,0,0)),
+)
+report(fit_s1)
+```
+
+OK, well this is not very exciting...but we could see if R identifies the same model.  Let's ask R to identify the best model.
+
+```{r}
+#use ARIMA to find the best model
+fit_s1_2 <- s1 %>% model(
+  arima1 = ARIMA(Series1),
+)
+report(fit_s1_2)
+```
+
+Here is the problem with automated procedures...what in world is happening here?  Note that ARIMA has identified a model that fits WORSE than our original random walk model according to AIC, AICc, and BIC.  However, note that the likelihood is the same (probably improved in some very small decimal).  This is a good reason to always take the time to think through the process yourself before you ask R to do it!
+
+Lets move on to the second series.  Here we have an obvious problem with stable variance.  The way to deal with this is a Box-Cox transformation.  Let's have R tell us the best lambda using the guerrero function.
+
+```{r}
+#get optimal lambda and pull value
+opt_lambda <- s2 %>% features(Series2, features=guerrero) %>%   
+  pull(lambda_guerrero)        
+
+#use optimal lamba to transform the data
+BCT_s2 <- s2 %>% mutate(Series2 = box_cox(Series2, opt_lambda))
+```
+
+Now lets plot these two line graphs together to see how the data has changed!
+
+```{r}
+#build plot for original data
+plot1 <- s2 %>% autoplot(Series2) + 
+  xlab('Time (in Weeks)') + ylab('Values') +
+  ggtitle('Series 2 plot')    
+
+#build plot for Box-Conx transformed data
+plot2 <- BCT_s2 %>% autoplot(Series2) + 
+  xlab('Time (in Weeks)') + ylab('Values') +
+  ggtitle('Box-Cox Transformed Series 2 plot')  
+
+#plot both
+grid.arrange(plot1,plot2)
+```
+
+The variance appears to be more stable, but what about the cycles here?  Let's proceed with a first difference, plot it, then check to see if the result is stationary!  
+
+```{r}
+#get optimal lambda and pull value
+FDiff_BCT_s2 <- BCT_s2 %>% mutate(Series2 = difference(Series2,1))       
+
+#build plot for first differenced Box-Conx transformed data
+plot3 <- FDiff_BCT_s2 %>% autoplot(Series2) + 
+  xlab('Time (in Weeks)') + ylab('Values') +
+  ggtitle('First Differenced, Box-Cox Transformed Series 2 plot') 
+
+#plot all three graphs
+grid.arrange(plot1,plot2,plot3)
+
+#check stationarity with KPSS and check for suggested differences
+FDiff_BCT_s2 %>% features(Series2, c(unitroot_kpss, unitroot_ndiffs, unitroot_nsdiffs))
+```
+OK, we fail to reject the hypothesis that this data is stationary.  Let's proceed by checking the ACF and PACF plots to identify a benchmark ARIMA model.
+
+```{r}
+#plot ACF and PACF plots with series
+FDiff_BCT_s2 %>% gg_tsdisplay(Series2, 'partial')
+```
+
+Alright, looks like this might be a random walk (ARIMA(0,1,0))!  Lets use ARIMA to identify the optimal model and see if we're right.  Note that we can enter the dependent variable using our original dataset together with the transformation we identified as optimal!
+
+```{r}
+#ask R to identify the best fitting ARIMA model for series 2
+fit_s2 <- s2 %>% model(
+  ARIMA(box_cox(Series2, opt_lambda))
+)
+report(fit_s2)
+```
+
+Great!  Let's check the residuals of the ARIMA to see if they fit with the assumptions of the model optimal model and see if we're right.
+
+```{r}
+#check residuals with plots/graphs
+fit_s2 %>% gg_tsresiduals 
+
+#run Ljung-Box test for autocorrelation
+fit_s2 %>% augment %>% features(.resid, ljung_box, lag = 10)  
+```
+
+These residuals look good, there is no autocorrelation here!  Let's move on to create a forecast, and get the output
+
+```{r}
+#create forecast for 12 weeks
+fit_s2_forecast <- fit_s2 %>% forecast(h=12)
+
+#look at the entries of the forecast
+fit_s2_forecast
+```
+
+Here we can see the forecasts for Series2 under the ".mean" variable.   We can also see that R is automatically adjusting for the fact that our data was transformed.  This is very important as R will back-transform the data when it creates our forecast!  Also note that "Series 2" variable includes the distribution for the prediction intervals!  Let's plot the results.
+
+```{r}
+#create plot of forecast for s2
+fit_s2_forecast %>% autoplot(s2) + xlab("Time (in Weeks)") +
+      ylab("Value") +ggtitle("Series 2 Forecast")	
+```              
+
+Cool!  check out the very large upper bound for the prediction interval.  This is due to the nature of a random walk!
+
+Let's do one more for practice, and start with a seasonal difference for s4.  We will follow this up by checking for stationarity with a KPSS test.
+
+```{r}
+#seasonally difference series 4
+SDiff_s4 <- s4 %>% mutate(Series4 = difference(Series4,52))       
+
+#create original plot for series 4
+plot1 <- s4 %>% autoplot(Series4) + 
+  xlab('Time (in Weeks)') + ylab('Values') +
+  ggtitle('Series 4 plot')
+
+#build plot for seasonally differenced Box-Conx transformed data
+plot2 <- SDiff_s4 %>% autoplot(Series4) + 
+  xlab('Time (in Weeks)') + ylab('Values') +
+  ggtitle('Seasonally Differenced Series 4 plot') 
+
+#plot both graphs
+grid.arrange(plot1,plot2)
+
+#check stationarity with KPSS and check for suggested differences
+SDiff_s4 %>% features(Series4, c(unitroot_kpss, unitroot_ndiffs, unitroot_nsdiffs))
+```
+
+
+OK, looks like we are stationary (enough).  Let's take a look at the ACF and PACF plots, note that I will use lag_max to set the number of lags high enough to evaluate seasonal relationships!
+
+```{r}
+#plot ACF and PACF plots with series
+SDiff_s4 %>% gg_tsdisplay(Series4, 'partial', lag_max=104)
+```
+
+Here we see a gradual decay on the non-seasonal part of the ACF and a drop after two lags on the PACF.  This suggest that the non-seasonal portion of ARIMA is likely AR(2).  Note that it also appears that there is a seasonal effect of some type here! Looks to be AR(1), but these are a bit harder to identify.  Regardless, a good starting point would be ARIMA(1,0,1)(1,1,0).  Let's have R take a look for us.  Note that because of the seasonality, R will be searching over many models.  This will take some time!
+
+```{r}
+#ask R to identify the best fitting ARIMA model for series 4
+fit_s4 <- s4 %>% model(
+  ARIMA(Series4)
+)
+report(fit_s4)
+```
+
+OK, R identified a different model than the one we suspected.  Note that we would have tried this as a variant of our benchmark, but it was nice to let R do the dirty work!  Let's check the residuals.
+
+```{r}
+#check residuals with plots/graphs
+fit_s4 %>% gg_tsresiduals(lag_max=104)
+
+#run Ljung-Box test for autocorrelation
+fit_s4 %>% augment %>% features(.resid, ljung_box, lag = 104, dof = 3)  
+```
+
+Ohhh, unfortunately it looks like there is still quite a bit of remaining autocorrelation here. Again, this doesn't mean the forecasts will be useless, but we need to careful with our prediction intervals if we use this model.  Before we do, let's try fitting a few others of our own and see if we can do better.
+
+```{r}
+#fit new model to see if we can improve the fit
+fit_s4_2 <- s4 %>% model(
+  arima1 = ARIMA(Series4 ~ 0 + pdq(1,0,1) + PDQ(1,1,0)),
+  arima2 = ARIMA(Series4 ~ 0 + pdq(2,0,1) + PDQ(1,1,0)),
+  arima3 = ARIMA(Series4 ~ 0 + pdq(1,0,0) + PDQ(1,1,0)),
+  arima4 = ARIMA(Series4 ~ 0 + pdq(2,0,0) + PDQ(1,1,0)),
+  arima5 = ARIMA(Series4 ~ 0 + pdq(1,0,0) + PDQ(1,1,0)),
+  arima6 = ARIMA(Series4 ~ 0 + pdq(1,0,1) + PDQ(0,1,0)),
+  arima7 = ARIMA(Series4 ~ 0 + pdq(1,0,1) + PDQ(0,1,1)),
+  arima8 = ARIMA(Series4 ~ 0 + pdq(2,0,1) + PDQ(0,1,1)),
+  arima9 = ARIMA(Series4 ~ 0 + pdq(2,0,0) + PDQ(0,1,1)),
+  arima10 = ARIMA(Series4 ~ 0 + pdq(1,0,0) + PDQ(0,1,1)),
+  arima11 = ARIMA(Series4 ~ 0 + pdq(0,0,1) + PDQ(0,1,1)),
+)
+#check AICc for each model
+glance(fit_s4_2) %>% select(AICc)
+```
+
+Wow, turns out we found four models with better fit.  Let's plot the residuals for arima7 and see if they improve!
+
+
+```{r}
+#check residuals with plots/graphs
+fit_s4_2 %>% select(arima7) %>% gg_tsresiduals(lag_max=104)
+
+#run Ljung-Box test for autocorrelation
+fit_s4_2  %>% select(arima7) %>% augment %>% features(.resid, ljung_box, lag = 104, dof = 3)  
+```
+
+That is a ton better, note that the ma seasonal component removed almost all of the seasonal autocorrelation.  Let's build some forecasts.
+
+
+```{r}
+#create forecast for 12 weeks
+fit_s4_forecast <- fit_s4_2 %>% select(arima7) %>% forecast(h=12)
+
+#look at the entries of the forecast
+fit_s4_forecast
+```
+
+```{r}
+#create plot of forecast for s2
+fit_s4_forecast %>% autoplot(s4) + xlab("Time (in Weeks)") +
+      ylab("Value") +ggtitle("Series 4 Forecast")	
+``` 
+
+Cool!
+
+
+
+# Section II
+
+Work through the ARIMA model selection process above for Series 3 and Series 5.
+
+
+```{r s3 stationary}
+
+### Handle unstable variance with box-cox
+
+#get optimal lambda and pull value
+opt_lambda <- s3 %>% features(Series3, features=guerrero) %>%   
+  pull(lambda_guerrero)        
+
+#use optimal lamba to transform the data
+BCT_s3 <- s3 %>% mutate(Series3 = box_cox(Series3, opt_lambda))
+
+
+### Handle trends with first difference
+
+#get optimal lambda and pull value
+FDiff_BCT_s3 <- BCT_s3 %>% mutate(Series3 = difference(Series3,1))       
+
+
+### plots
+
+#build plot for original data - series 3
+plot1 <- s3 %>% autoplot(Series3) + 
+  xlab('Time (in Weeks)') + ylab('Values') +
+  ggtitle('Series 3 plot')  
+
+#build plot for Box-Cox transformed data
+plot2 <- BCT_s3 %>% autoplot(Series3) + 
+  xlab('Time (in Weeks)') + ylab('Values') +
+  ggtitle('Box-Cox Transformed Series 3 plot')  
+
+#build plot for first differenced Box-Cox transformed data
+plot3 <- FDiff_BCT_s3 %>% autoplot(Series3) + 
+  xlab('Time (in Weeks)') + ylab('Values') +
+  ggtitle('First Differenced, Box-Cox Transformed Series 3 plot') 
+
+#plot all three graphs
+grid.arrange(plot1,plot2,plot3)
+
+
+### KPSS test to check for stationarity
+
+#check stationarity with KPSS and check for suggested differences
+FDiff_BCT_s3 %>% features(Series3, c(unitroot_kpss, unitroot_ndiffs, unitroot_nsdiffs))
+
+
+### ACF and PACF plots
+
+#plot ACF and PACF plots with series
+FDiff_BCT_s3 %>% gg_tsdisplay(Series3, 'partial')
+
+```
+
+Based on KPSS p-value of .1 we are good.
+
+p=2
+d=1
+q=0
+
+```{r s3 auto}
+
+#ask R to identify the best fitting ARIMA model for series 4
+fit_s3 <- s3 %>% model(
+  ARIMA(Series3)
+)
+report(fit_s3)
+
+
+#check residuals with plots/graphs
+fit_s3 %>% gg_tsresiduals(lag_max=104)
+
+#run Ljung-Box test for autocorrelation
+fit_s3 %>% augment %>% features(.resid, ljung_box, lag = 104, dof = 3)  
+
+```
+
+
+```{r s5}
+
+### handle trends with first difference
+
+#get optimal lambda and pull value
+FDiff_s5 <- s5 %>% mutate(Series5 = difference(Series5,1))     
+
+
+
+### plots
+
+
+#build plot for original data - series 3
+plot1 <- s5 %>% autoplot(Series5) + 
+  xlab('Time (in Weeks)') + ylab('Values') +
+  ggtitle('Series 5 plot') 
+
+#build plot for first differenced Box-Cox transformed data
+plot2 <- FDiff_s5 %>% autoplot(Series5) + 
+  xlab('Time (in Weeks)') + ylab('Values') +
+  ggtitle('First Differenced Series 5 plot') 
+
+grid.arrange(plot1, plot2)
+
+### ACF and PACF plots
+
+#plot ACF and PACF plots with series
+FDiff_s5 %>% gg_tsdisplay(Series5, 'partial')
+
+
+# check if anything else needs differenced
+FDiff_s5 %>% features(Series5, c(unitroot_kpss, unitroot_ndiffs, unitroot_nsdiffs))
+
+```
+
+p = 3
+i = 1
+q = 0
+
+
+```{r}
+
+#ask R to identify the best fitting ARIMA model for series 4
+fit_s5 <- s5 %>% model(
+  ARIMA(Series5)
+)
+report(fit_s5)
+
+
+#check residuals with plots/graphs
+fit_s5 %>% gg_tsresiduals(lag_max=104)
+
+#run Ljung-Box test for autocorrelation
+fit_s5 %>% augment %>% features(.resid, ljung_box, lag = 104, dof = 3)  
+
+```
+
+
+--------------------
+  
+  Answer Question 2 on the Answer Sheet at the bottom of the script
+
+--------------------
+
+
+___________________________________________________________
+
+# Section III
+
+In this section we will combine the power of ARIMA with time series regression by allowing the errors in a time series regression to follow an ARIMA process. This is called dynamic regression and can be extremely helpful in situations when there is significant autocorrelation left in the residuals, something that violates the assumptions of a linear model.  In dynamic regression, we use the information remaining in the autocorrelated residuals to improve our forecasts.  Also not that this requires very little extra in terms of coding!
+
+## Data
+### Data Description
+
+The dataset we will use for the third section of this lab is the orangeJuice dataset within the bayesm Package. This is the same dataset we used when we studied time series regression. Recall that this data is selected from a single store over a subset of time wherein the data is complete. The variables are:
+
+*logmove    -Log of number of units sold of Tropicana Premium 64oz.
+*price1     -Price of Tropicana Premium 64 oz.
+*price2	    -Price of Tropicana Premium 96 oz.
+*price3	    -Price of Florida's Natural 64 oz.
+*price4	    -Price of Tropicana 64 oz.
+*price5	    -Price of Minute Maid 64 oz.
+*price6	    -Price of Minute Maid 96 oz.
+*price7	    -Price of Citrus Hill 64 oz.
+*price8	    -Price of Tree Fresh 64 oz.
+*price9	    -Price of Florida Gold 64 oz.
+*price10	  -Price of Dominicks 64 oz.
+*price11	  -Price of Dominicks 128 oz.
+*deal 	    -Dummy for whether a coupon is available in-store (yes=1)
+*feat	      -Dummy for whether there is feature advertisement (yes=1)
+*profit 	  -Profit
+
+Note that prices are per-ounce.  Let's begin by opening the csv file already included in the project folder.
+
+```{r}
+#read in the first dataset from a csv file
+data1 <- read.csv("Lab3Dataset2.csv", header = TRUE, sep=",")  
+
+#visualize the dataset using the head command.  
+data1 %>% head                              
+```
+
+Let's turn this time series in to a tsibble and create the log prices again.
+
+```{r}
+#convert the week variable into a date
+data1 <- data1 %>% mutate(week=as.Date(week))
+data1 <- data1 %>% mutate(week=yearweek(week))
+
+#create a time series object
+OJSales <- as_tsibble(data1, index = week)
+
+#create log prices
+OJSales <- OJSales %>% mutate(logprice1 = log(price1),
+                              logprice2 = log(price2),
+                              logprice3 = log(price3),
+                              logprice4 = log(price4),
+                              logprice5 = log(price5),
+                              logprice6 = log(price6),
+                              logprice7 = log(price7),
+                              logprice8 = log(price8),
+                              logprice9 = log(price9),
+                              logprice10 = log(price10),
+                              logprice11 = log(price11)
+                              )
+```
+
+
+### Visualization
+Let's again take a look at the line graph for the log sales
+
+```{r}
+#create the line graph
+OJSales %>% select(week, logmove) %>%
+  autoplot(logmove) +
+  xlab('Time (in weeks)') + ylab('log of Units Sold') +
+  ggtitle('Weekly Log Units Sold of Tropicana Pure Premium 64oz.')
+```
+
+
+## Analysis
+### Time Series Regression
+In Lab 2 we used time series to model log sales as a function of log prices. Let's begin by fitting a standard time series linear model and checking the residuals.
+
+```{r}
+#fit simple TSLM
+fitTslm <- OJSales %>% model(
+ TSLM(logmove ~ logprice1 + logprice2 + feat)
+)
+
+#check residuals
+fitTslm %>% gg_tsresiduals()
+
+
+#test for autocorrelation
+augment(fitTslm) %>% features(.resid, ljung_box, lag = 10, dof = 3)  
+
+#report model
+report(fitTslm)
+```
+
+
+### Dynamic Regression
+Ok, so this TSLM model seems to fit well, and the residuals appear to pass the Ljung-Box test. However, we can still see how a dynamic regression can fit the data.  To do this, we simply replace TSLM with ARIMA and R will automatically search over possible ARIMA models for the errors!
+
+
+```{r}
+#fit simple TSLM
+fitARIMA <- OJSales %>% model(
+ ARIMA(logmove ~ logprice1 + logprice2 + feat)
+)
+```
+
+Great!  R has fit a linear model with ARIMA (1,0,0) errors to this data. Let's check the ARIMA residuals with plots and a Ljung-Box test.  Note that for the degrees of freedom here we must include the time series variables and the ARIMA variables!
+
+```{r}
+#check residuals
+fitARIMA %>% gg_tsresiduals()
+
+#test for autocorrelation
+augment(fitARIMA) %>% features(.resid, ljung_box, lag = 10, dof = 4)  
+
+report(fitARIMA)
+```
+
+The ARIMA residuals pass the Ljung-Box test and look somewhat similar to white noise.  Done!  We could now use this model to forecast in the exact same way we used Time Series Regression models in Lab 2!
+
+With that said, we can still search over several possible models usinf forward stepwise regression
+
+
+# Section IV
+
+For this section, repeat the process of fitting the dynamic regression above using forward stepwise regression until you find at least one explanatory variable that improves the fit of the model (according to AICc). 
+
+
+```{r}
+#fit simple TSLM 2
+fitTslm2 <- OJSales %>% model(
+ #TSLM(logmove ~ .-week-logmove)
+  TSLM(logmove ~ logprice1 + logprice2 + feat + price1)
+)
+
+#check residuals
+fitTslm2 %>% gg_tsresiduals()
+
+#test for autocorrelation
+augment(fitTslm2) %>% features(.resid, ljung_box, lag = 10, dof = 4)  
+
+#report model
+report(fitTslm2)
+```
+
+
+
+
+```{r}
+#fit ARIMA 2
+fitARIMA2 <- OJSales %>% model(
+ ARIMA(logmove ~ logprice1 + logprice2 + feat + price1)
+)
+
+#check residuals
+fitARIMA2 %>% gg_tsresiduals()
+
+#test for autocorrelation
+augment(fitARIMA2) %>% features(.resid, ljung_box, lag = 10, dof = 5)  
+
+report(fitARIMA2)
+```
+
+--------------------
+  
+  Answer Question 3 on the Answer Sheet at the bottom of the script
+
+--------------------
+  
+  
+  
+______________________________________________________________________________
+
+----------  Please Do Not Include Code Chunks Beyond This Point  -------------
+  (you may expand the above section)
+______________________________________________________________________________
+
+
+
+# Lab Assignment Three Questions
+## Name(s)
+
+My name is:  Carter Rudek
+  
+  
+## Question 1
+  Use the plots for each variable to answer the following
+  
+  a) Is Series 2 likely to be stationary?  Explain why or why not, and what you would do to verify if this is the case.
+  
+No. There is a downward trend and the variance is not stable - the variance decreases as the series decreases. We can use a KPSS test to verify this. If the p-value is .01, we would reject the null hypothesis that this data is stationary. If the p-value is .1, we would fail to reject the null hypothesis that the data is stationary.
+  
+  
+  b) Is Series 3 likely to be stationary?  Explain why or why not, and what you would do to verify if this is the case.
+  
+No. There is an upward trend and the variance is not stable - the variance decreases as the series decreases. We can use a KPSS test to verify this. If the p-value is .01, we would reject the null hypothesis that this data is stationary. If the p-value is .1, we would fail to reject the null hypothesis that the data is stationary.
+  
+  
+  c) Is Series 4 likely to be stationary?  Explain why or why not, and what you would do to verify if this is the case.
+  
+Yes. However, there may be seasonality which if that is the case, the answer is no. We can use a KPSS test to verify this. If the p-value is .01, we would reject the null hypothesis that this data is stationary. If the p-value is .1, we would fail to reject the null hypothesis that the data is stationary.
+  
+  
+  d) Is Series 5 likely to be stationary?  Explain why or why not, and what you would do to verify if this is the case.
+
+No. The variance seems to be relatively stable, however the mean of the series does not seem to be constant. We can use a KPSS test to verify this. If the p-value is .01, we would reject the null hypothesis that this data is stationary. If the p-value is .1, we would fail to reject the null hypothesis that the data is stationary. 
+  
+  
+## Question 2
+  Work through the same process used above for the remaining series (Series3 and Series5) using ARIMA to choose a model and answer the following questions
+  a) What transformations and/or differences were required to make Series3 stationary?
+
+I first did a Box-cox transformation, which was used to handle the unstable variance. I then took the first difference to handle trends. 
+
+  
+  b) Using the ACF and PACF plots, what model would you have started with as a benchmark and why?
+
+I would start with an ARIMA(2,1,0) model. The ACF gradually decays over many lags and the PACF decays immediately after two lags, resulting in a AR(2) model. We took a first order difference so d = 1.
+
+  
+  c) What model did ARIMA choose for Series3?
+  
+ARIMA(1,1,2) 
+  
+  
+  d) What did you find in the residual plots and Ljung-Box test for this model?
+
+The residuals look good. There is one spike that is significant in the ACF plot but based on the p-value from the Ljung-Box test we fail to reject the hypothesis that this data has no autocorrelation.
+  
+  
+  e) What transformations and/or differences were required to make Series5 stationary?
+
+I took the first difference to handle the trends.
+  
+  
+  f) Using the ACF and PACF plots, what model would you have started with as a benchmark and why?
+  
+I would start with an ARIMA(3,1,0). While oscilating, the ACF plot decays to zero, which is why i put q as 0. I took a first difference so d = 1. Finally, I chose p equal to 3 from looking at the pacf plot. Although it looks like the fourth lag is significant, it is just outside the threshold.
+  
+  
+  g) What model did ARIMA choose for Series5?
+
+ARIMA(2,1,3)(1,0,0)[52] w/ drift 
+  
+  
+  h) What did you find in the residual plots and Ljung-Box test for this model?
+
+The residuals look good and the p-value from the Ljung-Box test is large so we fail to reject the hypothesis that this data has no autocorrelation.
+  
+
+## Question 3
+  a) Which model did you identify improving the fit?
+  
+  ARIMA(logmove ~ logprice1 + logprice2 + feat + price1)
+  
+  
+  b) What was the corresponding (improved) value for AICc?
+  
+  AICc=69.6
+  
+  
+  c) Consider the size of the ARIMA components in the errors.  Do the size of these coefficient make sense in terms of the autocorrrelation of the residuals from the linear model without ARIMA?
+  
+  In our original linear model, we see a couple of significant lags in the acf plot and our p-value from the ljung-box test is pretty small at 0.08. The coefficient for the ARIMA component makes sense. It helps us explain some of that autocorrelation and we now see only one lag in the acf plot as significant (closer to inside the bands than for the linear model), and the p-value for the ljung-box test gets slightly better at 0.094.
+  
+  
+  
+  
+ 

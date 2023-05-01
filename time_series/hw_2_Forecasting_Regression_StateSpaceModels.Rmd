@@ -1,0 +1,1238 @@
+---
+title: "Lab 2 - Forecasting with Time Series Regression and State Space Models"
+author: "Carter Rudek"
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
+  word_document:
+    toc: yes
+    toc_depth: 3
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Load packages, echo=FALSE, message=FALSE, warning=FALSE}
+if( sum(!('pacman' %in% .packages(all.available = TRUE)))>0){ install.packages(pacman)}
+library(pacman)
+pacman::p_load(imputeTS, gridExtra, feasts, GGally, seas, seasonal, xts,fpp3 )    #install/load our packages!
+```
+
+# Lab Description
+
+Welcome to lab two!  Please recall that you are allowed to work on these labs in pairs!  This lab assignment is broken into 5 sections, with the 5th section serving as the answer sheet.  The four lab sections are described below.
+
+## Section I
+
+This portion of the lab is designed to provide you with the methods you will use in R to perform the analysis methods we have discussed in the last two weeks.  Note that this will serve as a reference for Section II and for future labs!  You should read/work through this portion of the lab, stopping to answer questions when prompted to do so.  This section will discuss how to:
+
+* Aggregate data to a low frequency
+* Fit a time series linear model
+* Evaluate these models
+* Compare models using measures of fit
+* Create forecasts using scenario forecasting
+
+Please make sure to pay attention to the prompts for answering questions.
+
+## Section II
+
+In this section you will apply the same methods to further the model selection process for the dataset, and complete a new scenario forecast using your chosen model
+
+## Section III
+This section will discuss how to:
+
+*	Find missing values
+*	Impute/fill missing values
+*	Create training and test sets
+* Fit a state space model
+*	Decompose a time series using a state space model
+*	Construct forecasts with a state space model
+*	Test the forecasts made by a state space model
+
+This will serve as a reference for completing section IV and future labs.
+
+## Section IV
+
+In this section you will complete the model selection process for the data, and provide final forecasts using your selected state space model.
+
+## Lab Two Answer Sheet
+
+This section (at the very bottom of the markdown file) is where the questions for the lab will be answered.  When prompted, you can scroll to the given question to write down your answers.
+
+
+___________________________________________________________
+
+# Section I
+
+## Data
+
+### Data description
+
+The first dataset we will use for this lab is extracted from the orangeJuice dataset within the bayesm Package. The include data is selected from a single store over a subset of time wherein the data is complete. The variables are:
+
+*logmove    -Log of number of units sold of Tropicana Premium 64oz.
+*price1     -Price of Tropicana Premium 64 oz.
+*price2	    -Price of Tropicana Premium 96 oz.
+*price3	    -Price of Florida's Natural 64 oz.
+*price4	    -Price of Tropicana 64 oz.
+*price5	    -Price of Minute Maid 64 oz.
+*price6	    -Price of Minute Maid 96 oz.
+*price7	    -Price of Citrus Hill 64 oz.
+*price8	    -Price of Tree Fresh 64 oz.
+*price9	    -Price of Florida Gold 64 oz.
+*price10	  -Price of Dominicks 64 oz.
+*price11	  -Price of Dominicks 128 oz.
+*deal 	    -Dummy for whether a coupon is available in-store (yes=1)
+*feat	      -Dummy for whether there is feature advertisement (yes=1)
+*profit 	  -Profit
+
+Note that prices are per-ounce
+
+### Importing the data
+
+Let's begin by opening the csv file already included in the project folder. 
+
+```{r}
+#read in the first dataset from a csv file
+data1 <- read.csv("Lab2dataset1.csv", header = TRUE, sep=",")  
+
+#visualize the dataset using the head command.  
+data1 %>% head                              
+
+#You can highlight and run  View(data1)  separately if you prefer to see data in the Source window
+
+str(data1) #week is a character
+```
+
+
+### Data Wrangling
+
+Let's turn this time series in to a tsibble!
+
+```{r}
+#convert the week variable into a date
+data1 <- data1 %>% mutate(week=as.Date(week))
+data1 <- data1 %>% mutate(week=yearweek(week))
+
+#create a time series object
+OJSales <- as_tsibble(data1, index = week)
+```
+
+Recall that we will typically log transform prices when modeling demand.  Let's create log price variables using mutate().  We can also transform logmove back in the original units sold.
+
+```{r}
+#create log prices
+OJSales <- OJSales %>% mutate(logprice1 = log(price1),
+                              logprice2 = log(price2),
+                              logprice3 = log(price3),
+                              logprice4 = log(price4),
+                              logprice5 = log(price5),
+                              logprice6 = log(price6),
+                              logprice7 = log(price7),
+                              logprice8 = log(price8),
+                              logprice9 = log(price9),
+                              logprice10 = log(price10),
+                              logprice11 = log(price11)
+                              )
+
+#create units sold in 1000's
+OJSales <- OJSales %>% mutate(move = exp(logmove)/1000
+                              )
+```
+
+Before we continue, note that there are sometimes cases where the project requires the time series to have a lower frequency (e.g. weekly to monthly).  There are packages to perform these operations (xts, zoo), but we can also do this with basic tidy functions once you have created a date variable. The method of aggregation will be up to you (e.g. sum to totals, average), so keep in mind the questions you are trying to answer as you make this decision.  Let's calculate the average weekly price for each month, and the average weekly log units sold.  Note that we could take the mean of the feat and deal variables, but the variation in these variables will tend to diminish a great deal when aggregated.
+
+```{r}
+#create log prices
+OJSalesMonth <- data1 %>% mutate(Month = yearmonth(week)) %>%                 #get months
+            group_by(Month) %>% summarise(
+                              meanweeklogmove = log(mean(exp(logmove))),      #group and aggregate
+                                          meanweekprice1 = mean(price1),
+                                          meanweekprice2 = mean(price2),
+                                          meanweekprice3 = mean(price3),
+                                          meanweekprice4 = mean(price4),
+                                          meanweekprice5 = mean(price5),
+                                          meanweekprice6 = mean(price6),
+                                          meanweekprice7 = mean(price7),
+                                          meanweekprice8 = mean(price8),
+                                          meanweekprice9 = mean(price9),
+                                          meanweekprice10 = mean(price10),
+                                          meanweekprice11 = mean(price11),
+                                          )
+
+#see monthly data
+OJSalesMonth %>% head
+```
+
+Note the necessity to transform logmove back to the original units before aggregation.  It is always best to do this, as nested transformations will frequently cause problems!  We will not use this data in the lab, but it's important to see how this can be done.
+
+## Analysis
+
+### Visualization
+Let's now take a look at the line graph for the log sales
+
+```{r}
+#create the line graph
+OJSales %>% select(week, logmove) %>%
+  autoplot(logmove) +
+  xlab('Time (in weeks)') + ylab('log of Units Sold') +
+  ggtitle('Weekly Log Units Sold of Tropicana Pure Premium 64oz.')
+
+#create the line graph
+OJSales %>% select(week, move) %>%
+  autoplot(move) +
+  xlab('Time (in weeks)') + ylab('log of Units Sold') +
+  ggtitle('Weekly Units in thousands Sold of Tropicana Pure Premium 64oz.')
+```
+
+There doesn't appear to be much in the way of seasonality, but we can check quickly to see if there are seasonal patterns in the data.
+
+```{r}
+#creat seasonal plot
+OJSales %>% gg_season(logmove, labels= 'both') +
+            xlab('Time (in Weeks)') + ylab('Log of Units Sold') +
+            ggtitle('Seasonal plot of Weekly Log Units Sold for Tropicana 64oz.')
+```
+
+OK. Now let's spend some time investigating our independent variables.  Let's start out by plotting them.  Note that we can start by pivoting the data longer so each variable can be graphed simultaneously.  Since all of the variables are roughly close in range, we can also plot them on the same graph (though you may want to remove deal and feat for this purpose if presenting these graphs to management)
+
+```{r}
+#Pivot data longer for creating graphs for each variable
+OJ_long_dep <- OJSales %>% 
+           select(logprice1, logprice2, logprice3, logprice4, logprice5, logprice6, logprice7,                    logprice8, logprice9, logprice10, logprice11, -deal, -feat)%>% 
+            pivot_longer(-week) %>%  
+            as_tsibble(key=c(name),index=week)   
+
+#create single plot with all variables
+OJ_long_dep %>%
+  autoplot(value) +
+  xlab('Time (in weeks)') + ylab('Explanatory variables') +
+  ggtitle('Weekly Log Prices of Orange Juice Brands')
+  
+#create the line graph
+OJ_long_dep %>%
+  ggplot(aes(x = week, y = value, group = name))+
+  geom_line() +                                           #Line graph aesthetic
+  facet_grid(vars(name), scales = "free_y") +             #Add facets to stack values
+  xlab('Time (in weeks)') + ylab('Explanatory variables') +
+  ggtitle('Weekly Log Prices of Orange Juice Brands')
+```
+
+Note that the graphs here might be concerning, especially given what we see in the graph of the dependent variable.  We would want to consider using the detrended values of the variables here.  We can create them using STL here.  Lets detrend both the dependent variable and its price, as well as the price of the larger size here to see how this works.  
+
+
+```{r}
+#Create STL objects
+STL_logmove <- OJSales %>% 
+  model(STL(logmove ~ trend() + season(window='periodic'),
+            robust = TRUE)) %>%                                            	#model using STL
+  components() %>%				    		                                          #extract components
+   select(-.model)
+
+STL_logmove <- STL_logmove %>% mutate(detrend = season_year + remainder)     #Add detrended data
+
+# log price 1
+
+STL_logprice1 <- OJSales %>% 
+  model(STL(logprice1 ~ trend() + season(window='periodic'),
+            robust = TRUE)) %>%                                            	#model using STL
+  components() %>%				    		                                          #extract components
+   select(-.model)
+
+STL_logprice1 <- STL_logprice1 %>% mutate(detrend = season_year + remainder) #Add detrended data
+
+# log price 2
+
+STL_logprice2 <- OJSales %>% 
+  model(STL(logprice2 ~ trend() + season(window='periodic'),
+            robust = TRUE)) %>%                                            	#model using STL
+  components() %>%				    		                                          #extract components
+   select(-.model)
+
+STL_logprice2 <- STL_logprice2 %>% mutate(detrend = season_year + remainder) #Add detrended data
+
+#add detrended variables to data
+OJSales <- OJSales %>% mutate(logmove_detr = STL_logmove$detrend,
+                              logprice1_detr = STL_logprice1$detrend,
+                              logprice2_detr = STL_logprice2$detrend)
+                    
+
+#see new data
+OJSales %>% head
+
+```
+
+```{r}
+#Pivot data longer for creating graphs for each variable
+OJ_long_dep2 <- OJSales %>% 
+           select(logmove_detr, logprice1_detr, logprice2_detr)%>% 
+            pivot_longer(-week) %>%  
+            as_tsibble(key=c(name),index=week)   
+
+#create single plot with all variables
+OJ_long_dep2 %>%
+  autoplot(value) +
+  xlab('Time (in weeks)') + ylab('Explanatory variables') +
+  ggtitle('Weekly Log Prices of Orange Juice Brands')
+  
+#create the line graph
+OJ_long_dep2 %>%
+  ggplot(aes(x = week, y = value, group = name))+
+  geom_line() +                                           #Line graph aesthetic
+  facet_grid(vars(name), scales = "free_y") +             #Add facets to stack values
+  xlab('Time (in weeks)') + ylab('Explanatory variables') +
+  ggtitle('Weekly Log Prices of Orange Juice Brands')
+```
+
+Note that our new detrended variables have been added and we can use these to investigate potential issues in our model.  
+
+### Time Series Modeling
+Let's begin modeling by creating a model using units sold in 1000's ('move') as the dependent variable, and the first two prices (the non-logged own prices) as the independent variables. Before we do this, we can create a scattermatrix for these variables to have an initial visualization of the relationships.  
+
+```{r}
+#create scattermatrix
+OJSales %>% select( week, move, price1, price2) %>%
+  ggpairs(col=c(2:4))
+
+TSmodel1 <- OJSales %>%                                                #fit tslm
+  model(
+    tslm = TSLM(move ~ price1 + price2)
+  )
+
+#report output
+report(TSmodel1)
+```
+
+Make sure to investigate the fit statistics provided here. As mentioned in the lecture, bivariate scatterplots will not necessarily show the relationships that exist in a multivariate model.  With that said, they can be indicative of the existence of non-linear relationships!   
+
+Now that we have fit the model, let's take a look at the residuals.  We can use a few different plots for this.  First, the gg_tsresiduals() function is a great way to check for the normality, mean zero, and no autocorrelation requirements.  We can also look for problems with heterscedasticity and non-linear relationships with plots of the residuals versus the fitted values or the residuals versus the explanantory variables.  This can be done by using the augment() function to extract the residuals and fitted values from the model object.  Nte we will use gridarrange from the GridExtra package to combine these plots in the latter graph.
+
+```{r}
+#check residuals
+TSmodel1 %>% gg_tsresiduals()
+
+#plot residuals versus fitted
+TSmodel1 %>% augment() %>%
+  ggplot(aes(x=.fitted, y=.resid)) +
+  geom_point() +
+  labs(x = "Fitted", y = "Residuals", title='Residuals Versus Fitted Values')
+
+#plot residuals versus explanatory
+OJSales_M1out <- left_join(OJSales, augment(TSmodel1))
+p1 <- ggplot(OJSales_M1out, aes(x=price1, y=.resid)) +
+  geom_point() + ylab("Residuals")
+p2 <- ggplot(OJSales_M1out, aes(x=price2, y=.resid)) +
+  geom_point() + ylab("Residuals")
+grid.arrange(p1,p2, nrow=1)
+```
+
+Hmmm...interesting.  These plots are concerning for a few reasons, consider why!  There does seem to be a little autocorrelation in the residuals, but we can run a Ljung-Box hypothesis test for autocorrelation to check this (setting lag=10 and dof = 8 as we subtract two for our number of independent variables).   
+
+```{r}
+#test for autocorrelation
+augment(TSmodel1) %>% 
+  features(.resid, ljung_box, lag = 10, dof = 8)  
+```
+
+So we reject the null hypothesis that there is no autocorrelation (this happens quite often in time series models).  Let's fit an alternative model with 'logmove' as the dependent variable and the first four log prices as the independent variables.  
+
+```{r}
+#create scattermatrix
+OJSales %>% select( week, logmove, logprice1, logprice2) %>%
+  ggpairs(col=c(2:4))
+
+TSmodel2 <- OJSales %>%                                                #fit tslm
+  model(
+    tslm = TSLM(logmove ~ logprice1 + logprice2)
+  )
+
+#report output
+report(TSmodel2)
+
+#check residuals
+TSmodel2 %>% gg_tsresiduals()
+
+```
+
+What a difference!  Let's take a look at the residuals for this model.
+
+```{r}
+#check residuals
+TSmodel2 %>% gg_tsresiduals()
+
+#plot residuals versus fitted
+TSmodel2 %>% augment() %>%
+  ggplot(aes(x=.fitted, y=.resid)) +
+  geom_point() +
+  labs(x = "Fitted", y = "Residuals", title='Residuals Versus Fitted Values')
+
+#plot residuals versus explanatory
+OJSales_M2out <- left_join(OJSales, augment(TSmodel2))
+p1 <- ggplot(OJSales_M2out, aes(x=logprice1, y=.resid)) +       #create resid vs logprice1
+  geom_point() + ylab("Residuals")
+p2 <- ggplot(OJSales_M2out, aes(x=logprice2, y=.resid)) +       #create resid vs logprice2 
+  geom_point() + ylab("Residuals")
+grid.arrange(p1,p2, nrow=1)
+```
+
+These are definitely different! Now let's plot the fitted values of TSmodel2 compared to the original series.  We can do this by pivoting the output of TSmodel2 into long form and using autoplot as we have in previous examples.
+
+```{r}
+# actual vs fitted for model 2
+# remove logmove (c(logmove, .fitted)), just look at fitted
+TSmodel2_out_long <- TSmodel2 %>% augment() %>% 
+                         pivot_longer(c(.fitted), names_to = 'Series') %>%                          
+                         as_tsibble(key=c(Series),index=week)                                      
+  
+TSmodel2_out_long %>% autoplot(value) +
+  xlab('Time (in Weeks)') + ylab('Log Units Sold') +
+  ggtitle('Weekly Log Units Sold for Tropicana 64oz.')
+  
+```
+
+Great!  We can see that our simple model is doing quite a good job of predicting the dependent variable! 
+
+One question you might have is whether or not we should investigate the relationship between these variables by regressing logmove on the detrended price variables (you will do this later!)
+
+--------------------
+
+Answer Question 1 on the Answer Sheet at the bottom of the script
+
+--------------------
+
+Now lets try a few new models.  Typically, we would use a stepwise appraoch to identify the best predictive model (note that you might use a different depending on the goals of the analysis).  Let's consider adding a trend first.
+
+```{r}
+#create scattermatrix
+TSmodel3 <- OJSales %>%                                                #fit tslm
+  model(
+    tslm = TSLM(logmove ~ logprice1 + logprice2 + trend())
+  )
+
+#report output
+report(TSmodel3)
+
+#check residuals
+TSmodel3 %>% gg_tsresiduals()
+```
+
+```{r}
+# actual vs fitted for model 3
+# remove logmove (c(logmove, .fitted)), just look at fitted
+TSmodel3_out_long <- TSmodel3 %>% augment() %>% 
+                         pivot_longer(c(.fitted), names_to = 'Series') %>%                          
+                         as_tsibble(key=c(Series),index=week)                                      
+  
+TSmodel3_out_long %>% autoplot(value) +
+  xlab('Time (in Weeks)') + ylab('Log Units Sold') +
+  ggtitle('Weekly Log Units Sold for Tropicana 64oz.')
+```
+
+Now let's compare the fit of our models using the glance() function
+
+```{r}
+#get fit measures
+TSmodel2 %>% glance  %>% select(adj_r_squared, AIC, AICc, BIC, CV)     
+TSmodel3 %>% glance  %>% select(adj_r_squared, AIC, AICc, BIC, CV)     
+```
+
+Using CV, we see that the addition of the trend has increase the mean squared error of the predictions for the hold-one-out sample.  Interesting.
+
+Lets try adding the other prices.  Note that in forward stepwise regression we would typically do this one-at-a-time, but here let's jump ahead for the sake of anaylzing a more complicated model.
+
+```{r}
+#create scattermatrix
+TSmodel4 <- OJSales %>%                                                #fit tslm
+  model(
+    tslm = TSLM(logmove ~ logprice1 + logprice2 + logprice3 + 
+                          logprice4 + logprice5 + logprice6 +
+                          logprice7 + logprice8 + logprice9 +
+                          logprice10 + logprice11
+                          )
+  )
+
+#report output
+report(TSmodel4)
+
+#check residuals
+TSmodel4 %>% gg_tsresiduals()
+
+#get fit measures
+TSmodel4 %>% glance  %>% select(adj_r_squared, AIC, AICc, BIC, CV)    
+```
+
+Wow, notice that CV has again increased, even though adjusted R-squared has increased!  Situations like this are why you will need to choose a fit metric.
+
+```{r}
+# actual vs fitted for model 4
+# remove logmove (c(logmove, .fitted)), just look at fitted
+TSmodel4_out_long <- TSmodel4 %>% augment() %>% 
+                         pivot_longer(c(.fitted), names_to = 'Series') %>%                          
+                         as_tsibble(key=c(Series),index=week)                                      
+  
+TSmodel4_out_long %>% autoplot(value) +
+  xlab('Time (in Weeks)') + ylab('Log Units Sold') +
+  ggtitle('Weekly Log Units Sold for Tropicana 64oz.')
+```
+
+--------------------
+
+Answer Question 2 on the Answer Sheet at the bottom of the script
+
+--------------------
+
+### Forecasting
+ 
+Suppose that we chose to use TSmodel2.  If we had a model that only depended upon values we know ex-ante, we could construct forecasts using available data.  However, this is not the case here.  Instead, we can create forecasts using scenario forecasting.
+ 
+Since price 1 and price 2 are chosen by the manager (these are prices for Tropicana products), this can be done by assuming values for the variables, then evaluating our subsequent forecasts.  Lets consider two situations.  First, what would happen if the manager sets prices at the median price for each product.  Second, what would happen if the manager lowered price by 5% (from the median price).  Note that for each scenario we must create a time series that provides the values of these explanatory variables for each period.  This can be done by using the new_data() function to continue the series into the future, then assign the values using mutate().
+ 
+```{r}
+#set number of periods to forecast
+h=12
+ 
+#create newdata for first scenario
+scen_data <- scenarios(
+  
+"Median Comp. Prices" = new_data(OJSales, h) %>% mutate(
+                        logprice1 = rep(log(median(OJSales$price1)),h),    #replicate median prices h times
+                        logprice2 = rep(log(median(OJSales$price2)),h)
+                        ),
+ 
+ 
+#create newdata for second scenario
+"5% < Median Comp. Prices" = new_data(OJSales, h) %>% mutate(
+                        logprice1 = rep(log(median(OJSales$price1)*.95),h),
+                        logprice2 = rep(log(median(OJSales$price2)*.95),h)
+                        ),
+  names_to = "Scenario"
+)
+```
+ 
+Note the math can be tricky here, we need to use the original prices to make sure we are actually getting the correct value for the median prices.  Once we have the correct values, we can log those values! 
+ 
+Given this, we can now use TSmodel2 to build forecasts using the forecast function.  The textbook shows how to add both forecasts to the same graph, but since they can overlap this is not always a great way to show them.  Below we will show the graphs together, then also separately. 
+ 
+```{r}
+#enter model and new data to create forecast for both scenarios
+m2fc_both<- forecast(TSmodel2, new_data=scen_data)
+ 
+#enter model and new data to create forecast for Median scenario alone
+m2fc_Med<- forecast(TSmodel2, new_data=scen_data$`Median Comp. Prices`)
+ 
+#enter model and new data to create forecast for 5% < Median scenario alone
+m2fc_5per<- forecast(TSmodel2, new_data=scen_data$`5% < Median Comp. Prices`)
+```
+ 
+Great!  We can see the difference here.  Note that the forecasts are constant because our independent variables have constant values in the new data.  You could provide a vector of new prices that changed through time, and this would result in forecasts that changed respectively.
+ 
+We can graph these separately.
+```{r}
+#create plot for Both
+OJSales %>%
+  autoplot(logmove) +
+  autolayer(m2fc_both) +
+  ylab('Log Units Sold') +
+  xlab('Time (in Weeks)') +
+  ggtitle('Forecast for Log Units Sold of Tropicana Pure Premium 64oz using Both Price Scenarios')
+ 
+#create plot for Median
+OJSales %>%
+  autoplot(logmove) +
+  autolayer(m2fc_Med) +
+  ylab('Log Units Sold') +
+  xlab('Time (in Weeks)') +
+  ggtitle('Forecast for Log Units Sold of Tropicana Pure Premium 64oz using Median Price Scenario')
+ 
+ 
+#create plot for 5% < Median
+OJSales %>%
+  autoplot(logmove) +
+  autolayer(m2fc_5per) +
+  ylab('Log Units Sold') +
+  xlab('Time (in Weeks)') +
+  ggtitle('Forecast for Log Units Sold of Tropicana Pure Premium 64oz using 5% < Median Price Scenario')
+```
+ 
+As mentioned above, combined plots such as these are not always helpful as one forecast tends to mask the other.  Still, this can be a great way to show the differences in the scenarios.
+_____________________________________________________
+
+## Section II
+
+In this section of the lab, you will work through more modeling for the OJSales data, using logmove as the independent variable.  
+
+First, let's investigate our relationships in model 2 by regressing logmove on the detrended variables for logprice1 and logprice2.  Consider what changes in the result and what this might mean for the whether or not the relationship between these variables is spurious.
+
+Now lets investigate a few more models.  You can start with TSmodel2 as your base model. Note that using copy and past you should be able to fit and compare these models very quickly.  You should try at least 3 new models (or until you find a better fitting model!) and compare them using the fit measure of your choice.
+
+Once you have worked through the process of model selection, use the method above to create at least one scenario forecast (for example, median for all prices, no coupons, on sale for the first 6 periods). Feel free to choose whatever scenario details you would like to try.
+
+```{r}
+#fit/evaluate TSmodeldetrend
+#OJSales %>% head
+
+#create scattermatrix
+TSmodeldetrend <- OJSales %>%                                                #fit tslm
+  model(
+    tslm = TSLM(logmove ~ logprice1_detr + logprice2_detr)
+  )
+
+#report output
+report(TSmodeldetrend)
+
+#check residuals
+TSmodeldetrend %>% gg_tsresiduals()
+
+
+# actual vs fitted for TSmodeldetrend
+# remove logmove (c(logmove, .fitted)), just look at fitted
+TSmodeldetrend_out_long <- TSmodeldetrend %>% augment() %>% 
+                         pivot_longer(c(logmove,.fitted), names_to = 'Series') %>%                          
+                         as_tsibble(key=c(Series),index=week)                                      
+  
+TSmodeldetrend_out_long %>% autoplot(value) +
+  xlab('Time (in Weeks)') + ylab('Log Units Sold') +
+  ggtitle('Weekly Log Units Sold for Tropicana 64oz.')
+
+```
+```{r}
+#OJSales %>% head
+
+OJSales <- OJSales %>% mutate(feat = if_else(feat == "0", "0", "1"))
+
+OJSales$deal <- factor(OJSales$deal)
+OJSales$feat <- factor(OJSales$feat)
+
+str(OJSales)
+```
+
+```{r}
+#fit/evaluate TSmodel5
+#create scattermatrix
+TSmodel5 <- OJSales %>%                                                #fit tslm
+  model(
+    tslm = TSLM(logmove ~ price1 + price2 + price3 + price4 + price5 + price6 + price7 + price8 + price9 + price10 + price11 + deal + feat + profit  +  logprice1 + logprice2 + logprice3 + logprice4 + logprice5 + logprice6 + logprice7 + logprice8 + logprice9 + logprice10 + logprice11 + logprice1_detr +  logprice2_detr)
+  )
+
+#report output
+report(TSmodel5)
+
+#check residuals
+TSmodel5 %>% gg_tsresiduals()
+
+
+# actual vs fitted for TSmodeldetrend
+# remove logmove (c(logmove, .fitted)), just look at fitted
+TSmodel5_out_long <- TSmodel5 %>% augment() %>% 
+                         pivot_longer(c(logmove,.fitted), names_to = 'Series') %>%                          
+                         as_tsibble(key=c(Series),index=week)                                      
+  
+TSmodel5_out_long %>% autoplot(value) +
+  xlab('Time (in Weeks)') + ylab('Log Units Sold') +
+  ggtitle('Weekly Log Units Sold for Tropicana 64oz.')
+
+```
+
+```{r}
+#fit/evaluate TSmodel6
+#create scattermatrix
+TSmodel6 <- OJSales %>%                                                #fit tslm
+  model(
+    tslm = TSLM(logmove ~ price1 + price2 + deal + feat)
+  )
+
+#report output
+report(TSmodel6)
+
+#check residuals
+TSmodel6 %>% gg_tsresiduals()
+
+
+# actual vs fitted for TSmodeldetrend
+# remove logmove (c(logmove, .fitted)), just look at fitted
+TSmodel6_out_long <- TSmodel6 %>% augment() %>% 
+                         pivot_longer(c(logmove,.fitted), names_to = 'Series') %>%                          
+                         as_tsibble(key=c(Series),index=week)                                      
+  
+TSmodel6_out_long %>% autoplot(value) +
+  xlab('Time (in Weeks)') + ylab('Log Units Sold') +
+  ggtitle('Weekly Log Units Sold for Tropicana 64oz.')
+
+```
+
+```{r}
+#fit/evaluate TSmodel7
+#create scattermatrix
+TSmodel7 <- OJSales %>%                                                #fit tslm
+  model(
+    tslm = TSLM(logmove ~ price1 + feat)
+  )
+
+#report output
+report(TSmodel7)
+
+#check residuals
+TSmodel7 %>% gg_tsresiduals()
+
+
+# actual vs fitted for TSmodeldetrend
+# remove logmove (c(logmove, .fitted)), just look at fitted
+TSmodel7_out_long <- TSmodel7 %>% augment() %>% 
+                         pivot_longer(c(logmove,.fitted), names_to = 'Series') %>%                          
+                         as_tsibble(key=c(Series),index=week)                                      
+  
+TSmodel7_out_long %>% autoplot(value) +
+  xlab('Time (in Weeks)') + ylab('Log Units Sold') +
+  ggtitle('Weekly Log Units Sold for Tropicana 64oz.')
+
+```
+
+```{r}
+#create new data for scenario forecast
+
+deal_l <- c("0","1","1","1","1","1","1","1","1","1","1","1")
+feat_l <- c("1","0","0","0","0","0","0","0","0","0","0","0")
+
+#set number of periods to forecast
+h=12
+ 
+#create newdata for first scenario
+scen_data_2 <- scenarios(
+  "Ads_Coupons_Opposite" = new_data(OJSales, h) %>% mutate(
+                price1 = rep(mean(OJSales$price1),h),   # average p1
+                price2 = rep(mean(OJSales$price2),h),   # average p2
+                deal = deal_l,
+                feat = feat_l,
+  names_to = "Scenario"))
+
+```
+
+```{r}
+#create forecast
+
+#enter model and new data to create forecast for Median scenario alone
+m6fc_ads<- forecast(TSmodel6, new_data=scen_data_2)
+
+#create plot
+OJSales %>%
+  autoplot(logmove) +
+  autolayer(m6fc_ads) +
+  ylab('Log Units Sold') +
+  xlab('Time (in Weeks)') +
+  ggtitle('Forecast for Log Units Sold of Tropicana Pure Premium 64oz using Avergage Price and Coupon/Deal Scenario')
+
+```
+
+--------------------
+
+Answer Question 3 on the Answer Sheet at the bottom of the script
+
+--------------------
+________________________________________________________
+
+# Section III
+
+Suppose you are working for an online retailer.  Following insights from exploratory research, the firm believes they may have a problem with service failures and decreasing customer satisfaction.  Managers have received regular reports about the average customer level of satisfaction on a 7 point scale (7 being excellent) for over 5 years.  Note that in this time, the number of orders through the site has more than quadrupled and this may be causing some growing pains in terms of logistics, service quality, etc.  The firm must make a decision in terms of how to invest in improving customer satisfaction and retention.  Potential solutions abound, but managers want to know more about the problem before they invest! You will use the last 9 months of the data as a test set, and the rest as a training set to fit your models. 
+
+## Data
+
+### Data Description
+
+The data you will use for this section of the lab consists of monthly satisfaction ratings for your firm, on a 7-point scale (7 being excellent).
+
+### Data Import
+
+Let's upload and take a look at this dataset!
+
+```{r}
+#read in the first dataset from a csv file
+data2=read.csv("Lab2dataset2.csv", header = TRUE, sep=",")      
+
+#visualize the dataset using the head command.  
+data2 %>% head  
+```
+
+### Date Wrangling
+
+Now we can continue with our typical method of converting to dates.
+
+```{r}
+#convert Date variable to date object
+data2 <- data2 %>% mutate(Date = as.Date(Date))
+
+#create window view of data2
+view(data2)
+```
+
+At first glance this data may look great, but note that there are missing months.  This can be handled in a few ways, but the first thing to do is to identify these missing dates and make sure that there is an NA in those locations.  To do this, we can create a full list of the dates we expect using the seq() function, then merge the datasets.
+
+```{r}
+#create a list of dates matching the data
+fulldates <- seq(as.Date("2013-11-28"), as.Date("2019-01-28"), by="months") %>%
+             as.data.frame()
+#name Date column
+fulldates <- fulldates %>% rename( 'Date' ='.')
+
+#merge data frame
+data2NA=merge.data.frame(fulldates,data2,by.x=1,by.y=1,all.x=T)  
+
+#create tsibble object
+satisdata <- as_tsibble(data2NA, index=Date)
+```
+                                          
+Note that R has now identified (through merging the above data frames) which values are missing and has create a row of NA values for these missing observations!  You can find these values using the  View(satisdata)  command or clicking on this data frame in the environment and scrolling down.  The question is, what should we do with the NA values?
+
+One potential solution is to impute these values. This can be done in many different ways including means, seasonal effects, adding random errors, etc.  Here we will use the na.interpolate() function from the imputeTS package to use a simple linear interpolation.  Once we have done this, we can create our tsibble object!
+
+```{r}
+#interpolate missing values
+satisdata <- satisdata %>% na_interpolation(option='linear')
+
+#create tsibble
+satisdata <- satisdata %>% mutate(Month = yearmonth(Date)) %>%
+                       as_tsibble(index = Month) %>%
+                       select(-Date)
+
+#look a view of satisdata
+view(satisdata)
+```
+
+Great, the NA's no longer exist and we have our tsibble object!
+
+## Analysis
+
+### Visualization
+
+```{r}
+#create line graph
+satisdata %>% autoplot(SatisScore) +
+      ylab("Satisfaction Score") + xlab("Time") +    
+      ggtitle("Average Monthly Satisfaction Scores for an Online Retailer")  
+```
+
+Wow...not a great looking situation here for the firm.  Let's break this down further with a decomposition.
+
+```{r}
+satisdata %>% 
+  model(x11 = feasts:::X11(SatisScore, type="additive")) %>%               #model using X11
+  components() %>%                                                         #pipe components into autoplot
+  autoplot() + xlab("Time (in Months)") +
+  ggtitle("Average Monthly Satisfaction Scores for an Online Retailer")
+
+
+```
+
+A fairly substantial seasonal effect here!
+
+--------------------
+
+Answer Question 4 on the Answer Sheet at the bottom of the script
+
+--------------------
+
+## State Space Modeling
+
+Let's begin modeling by breaking the data into a test set and a training set.
+
+```{r}
+#create test and training sets
+satisTest = satisdata %>% filter(Month >= yearmonth(as.Date('2018-05-01')))
+satisTrain = satisdata %>% filter(Month < yearmonth(as.Date('2018-04-01')))
+```
+
+Looking at the data, there are clearly trend/cycles effects and a seasonal effect.  So lets begin by fitting an ETS AAA model.
+
+```{r}
+#fit ETS AAA model
+SSPmodel1 <- satisTrain %>% 
+  model( ETS(SatisScore ~ error("A") + trend("A") + season("A")))
+
+#report output
+report(SSPmodel1)
+```
+
+Now let's create a forecast with this model, and visualize the forecast.
+
+```{r}
+#construct the forecasts for 9 months into the future
+SSP_m1fc <- SSPmodel1 %>% forecast(h = 9) 
+
+SSP_m1fc  %>%
+  autoplot(satisTrain, level=NULL) +
+  autolayer(satisTest, SatisScore) +
+  xlab("Time (in Months)") +
+  ggtitle("Forecast for Average Monthly Satisfaction Scores for an Online Retailer") +
+  guides(colour = guide_legend(title = "Forecast"))
+```
+
+Here we see that the forecast underpredicts the test data.  Let's quantify this with our measures of accuracy using the accuracy() function.
+
+```{r}
+#calculate accuracy measures
+accuracy(SSP_m1fc, satisdata)
+```
+
+Great, we know have quantifiable measures of how close out forecasts are to the TestSet data! Let's try another model!  Let's fit a damped linear trend.
+
+```{r}
+#fit ETS AAA model
+SSPmodel2 <- satisTrain %>% 
+  model( ETS(SatisScore ~ error("A") + trend("Ad", phi=.85) + season("A")))
+
+#report output
+report(SSPmodel2)
+```
+
+Note that AIC, AICc, and BIC are quite close across the two models.  Let's see if the damped trend performs better in predicting the test set.
+
+```{r}
+#construct the forecasts for 9 months into the future
+SSP_m2fc <- SSPmodel2 %>% forecast(h = 9) 
+
+SSP_m2fc  %>%
+  autoplot(satisTrain, level=NULL) +
+  autolayer(satisTest, SatisScore) +
+  xlab("Time (in Months)") +
+  ggtitle("Forecast for Average Monthly Satisfaction Scores for an Online Retailer") +
+  guides(colour = guide_legend(title = "Forecast"))
+
+#calculate accuracy measures
+accuracy(SSP_m2fc, satisdata)
+```
+
+Note that MASE has dropped significantly here.  Let's build a single modeling object to put both of these forecasts on the same graph.
+
+
+```{r}
+#fit ETS AAA models
+SSPAAAmodels <- satisTrain %>% 
+  model( 'Linear Trend' = ETS(SatisScore ~ error("A") + trend("A") + season("A")),
+         'Damped Linear Trend' = ETS(SatisScore ~ error("A") + trend("Ad", phi=.85) + season("A"))
+         )
+
+#fit ETS AAA model
+SSPAAAmodels %>% forecast(h=9) %>% 
+  autoplot(satisTrain) +
+  autolayer(satisTest) +
+  xlab("Time (in Months)") +
+  ggtitle("Decomposition for Average Monthly Satisfaction Scores for an Online Retailer")
+```
+
+Hmmm...not perfect but well within our confidence bounds. Maybe we can do better?
+
+______________________________________________________________________________
+
+# Section IV
+
+To continue the investigation, fit at least three additional State Space Models using ETS (you can fit more).  Make sure to consider which models are likely to fit the data given what you have seen.  Note that some may not work with this dataset (R will prevent you from fitting some models). For each model, you should:
+*	fit it to the data, 
+*	check the residuals, 
+*	look at the decomposition, and 
+*	test it on the test data
+
+Pick the model that you believe works best, then complete the forecast generation process by fitting the model to the entire dataset, generating a 12 step forecast and a subsequent plot.
+
+```{r}
+#fit/evaluate SSPmodel3
+#fit model
+SSPmodel3 <- satisTrain %>% 
+  model(m3 = ETS(SatisScore ~ error("M") + trend("Ad", phi=.85) + season("A")))
+
+#residuals 
+SSPmodel3 %>%
+  gg_tsresiduals()
+
+#decompose
+SSPmodel3 %>%
+  components() %>%
+  autoplot()
+
+#report output
+report(SSPmodel3)
+
+#construct the forecasts for 9 months into the future
+SSP_m3fc <- SSPmodel3 %>% forecast(h = 12) 
+
+SSP_m3fc  %>%
+  autoplot(satisTrain, level=NULL) +
+  autolayer(satisTest, SatisScore) +
+  xlab("Time (in Months)") +
+  ggtitle("Forecast for Average Monthly Satisfaction Scores for an Online Retailer") +
+  guides(colour = guide_legend(title = "Forecast"))
+
+#calculate accuracy measures
+accuracy(SSP_m3fc, satisdata)
+
+```
+
+```{r}
+#fit/evaluate SSPmodel4 
+#fit model
+SSPmodel4 <- satisTrain %>% 
+  model(m4 = ETS(SatisScore ~ error("A") + trend("Ad", phi=.85) + season("M")))
+
+#residuals 
+SSPmodel4 %>%
+  gg_tsresiduals()
+
+#decompose
+SSPmodel4 %>%
+  components() %>%
+  autoplot()
+
+#report output
+report(SSPmodel4)
+
+#construct the forecasts for 9 months into the future
+SSP_m4fc <- SSPmodel4 %>% forecast(h = 12) 
+
+SSP_m4fc  %>%
+  autoplot(satisTrain, level=NULL) +
+  autolayer(satisTest, SatisScore) +
+  xlab("Time (in Months)") +
+  ggtitle("Forecast for Average Monthly Satisfaction Scores for an Online Retailer") +
+  guides(colour = guide_legend(title = "Forecast"))
+
+#calculate accuracy measures
+accuracy(SSP_m4fc, satisdata)
+
+```
+
+```{r}
+#fit/evaluate SSPmodel5
+#fit model
+SSPmodel5 <- satisTrain %>% 
+  model(m5= ETS(SatisScore ~ error("A") + trend("M", phi=.85) + season("M")))
+
+#residuals 
+SSPmodel5 %>%
+  gg_tsresiduals()
+
+#decompose
+SSPmodel5 %>%
+  components() %>%
+  autoplot()
+
+#report output
+report(SSPmodel5)
+
+#construct the forecasts for 9 months into the future
+SSP_m5fc <- SSPmodel5 %>% forecast(h = 12) 
+
+SSP_m5fc  %>%
+  autoplot(satisTrain, level=NULL) +
+  autolayer(satisTest, SatisScore) +
+  xlab("Time (in Months)") +
+  ggtitle("Forecast for Average Monthly Satisfaction Scores for an Online Retailer") +
+  guides(colour = guide_legend(title = "Forecast"))
+
+#calculate accuracy measures
+accuracy(SSP_m5fc, satisdata)
+
+```
+
+```{r}
+#fit/evaluate SSPmodel6 
+#fit model
+SSPmodel6 <- satisTrain %>% 
+  model(m6 = ETS(SatisScore ~ error("M") + trend("Ad", phi=.85) + season("M")))
+
+#residuals 
+SSPmodel6 %>%
+  gg_tsresiduals()
+
+#decompose
+SSPmodel6 %>%
+  components() %>%
+  autoplot()
+
+#report output
+report(SSPmodel6)
+
+#construct the forecasts for 9 months into the future
+SSP_m6fc <- SSPmodel6 %>% forecast(h = 12) 
+
+SSP_m6fc  %>%
+  autoplot(satisTrain, level=NULL) +
+  autolayer(satisTest, SatisScore) +
+  xlab("Time (in Months)") +
+  ggtitle("Forecast for Average Monthly Satisfaction Scores for an Online Retailer") +
+  guides(colour = guide_legend(title = "Forecast"))
+
+#calculate accuracy measures
+accuracy(SSP_m6fc, satisdata)
+```
+
+```{r}
+#fit/evaluate SSPmodel8
+#fit model
+SSPmodel8 <- satisTrain %>% 
+  model(m8 = ETS(SatisScore ~ error("M") + trend("Ad", phi=.1) + season("M")))
+
+#residuals 
+SSPmodel8 %>%
+  gg_tsresiduals()
+
+#decompose
+SSPmodel8 %>%
+  components() %>%
+  autoplot()
+
+#report output
+report(SSPmodel8)
+
+#construct the forecasts for 9 months into the future
+SSP_m8fc <- SSPmodel8 %>% forecast(h = 12) 
+
+SSP_m8fc  %>%
+  autoplot(satisTrain, level=NULL) +
+  autolayer(satisTest, SatisScore) +
+  xlab("Time (in Months)") +
+  ggtitle("Forecast for Average Monthly Satisfaction Scores for an Online Retailer") +
+  guides(colour = guide_legend(title = "Forecast"))
+
+#calculate accuracy measures
+accuracy(SSP_m8fc, satisdata)
+```
+
+
+
+```{r}
+SSPmodel_T <- satisTrain %>% 
+  model(m_T = ETS(SatisScore ~ error("A") + trend("Ad") + season("N")))
+
+tidy(SSPmodel_T)
+
+```
+
+```{r}
+#fit/evaluate SSPmodel7
+#fit model
+SSPmodel7 <- satisTrain %>% 
+  model(m7 = ETS(SatisScore ~ error("A") + trend("Ad", phi=.93) + season("A")))
+
+#residuals 
+SSPmodel7 %>%
+  gg_tsresiduals()
+
+#decompose
+SSPmodel7 %>%
+  components() %>%
+  autoplot()
+
+#report output
+report(SSPmodel7)
+
+```
+
+```{r}
+#create forecasts/plot for chosen model
+
+#construct the forecasts for 9 months into the future
+SSP_m7fc <- SSPmodel7 %>% forecast(h = 12) 
+
+SSP_m7fc  %>%
+  autoplot(satisTrain, level=NULL) +
+  autolayer(satisTest, SatisScore) +
+  xlab("Time (in Months)") +
+  ggtitle("Forecast for Average Monthly Satisfaction Scores for an Online Retailer") +
+  guides(colour = guide_legend(title = "Forecast"))
+
+#calculate accuracy measures
+accuracy(SSP_m7fc, satisdata)
+
+```
+
+--------------------
+
+Answer Question 5 on the Answer Sheet at the bottom of the script
+
+--------------------
+
+
+______________________________________________________________________________
+
+----------  Please Do Not Include Code Chunks Beyond This Point  -------------
+                  (you may expand the above section)
+______________________________________________________________________________
+
+
+
+# Lab Assignment Two Questions
+## Name
+
+My name is:  Carter Rudek
+
+
+## Question 1
+
+a) Note the upward movement in log units sold in the line graph.  Would you consider this a trend or a cycle?  Explain.
+
+This looks to be a long term (2 years) increase, so the upward movement in the line graph is a trend, although not very strong. There are no signs of a cycle in the time frame of data we have. If we had more data we maybe could see that this was part of a longer cycle.
+
+b) Consider the differences in the scatterplot matrices and the residual plots between TSmodel1 and TSmodel2.  What can you see in terms of the bivariate patterns/relationships?  What (if any) concerns does this raise about TSmodel1? 
+
+For a linear model, we assume the relationship between the forecast variable and the predictor variables is linear.
+In the scatterplot between move and price1, especially, this relationship does not seem to be linear and this is problematic when it comes to TSmodel1. In the scatterplot between logmove and logprice1 in TSmodel2, the assumption that the relationship between the forecast variable and independent variables (predictors) is linear, is now true as we can see in the scatterplot. Also, compared to TSmodel1, the residuals for TSmodel2 look much better as they are more randomly distributed.
+
+c) Note the significant differences in the fit between TSmodel1 and TSmodel2.  What might explain these differences?
+
+The adjusted R^2 is .2 higher in model 2 than model 1. The difference can be attributed to the log transformation that occurred. This normalized the data making the relationship between the DV and IV's more linear, which results in a better fit for TSLM. 
+
+d) Why would we want to create detrended values for the independent variables here?  What potential problem could we identify by regressing logmove on the detrended independent variables?
+
+The series for logmove shows an upward trend and the series for both logprice1 and logprice2 seem to be showing a downward trend. We detrend, or, remove the trend in order to make these data stationary. Another reason we detrend is to avoid spurious relationships due to the trends.
+
+## Question 2
+
+a) Note that there seems to be an apparent trend in the logmove series. Using what we have learned so far about the variables/models, why does adding a trend in model3 not improve the model fit?
+
+When looking at the adjusted R^2 for TSmodel2, we get .707. In TSmodel3, we add Trend, and our adjusted R^2 gets worse (.706). We also saw that the p-value for Trend in TSmodel3 was .417, which was not significant. So, Trend might not be adding in value to our model. The adjusted R^2 got worse because it penalizes for more predictors. 
+
+
+b) Consider the various prices we have included in model4.  Note that while we are provided with the p-values for each of these prices, we want to avoid simply removing the variables with large p-values.  Why?  (hint: consider the relationships between these variables!) 
+
+The coefficients and their significance are determined from all the variables in the model. So, by removing one, it could have impact on the coefficients/significance of the other predictors as well. Also, individual p-values are not measures of overall predictive accuracy. For that we would want to look at measures like adjusted R^2, AIC, BIC or Cross Validation.
+
+## Question 3
+
+Please answer the following questions about the Section II results
+
+a)	What does the regression using detrended independent variables show about the relationship between these variables?
+
+This regression shows us that logmove is negatively related to the detrended value of logprice1 and positively related to the detrended value of logprice2. The relationship of these detrended values is pretty much the same as the relationship between logmove and the original logprice1 and logprice2 variables.
+
+b)  Describe the best fitting model that you found.
+
+The best model i found includes four predictors - price1, price2, deal and feat. This model produces an adjusted R^2 of .7678. 3 of the four predictors included are significant at alpha = .05.
+
+b)  Describe how you built the scenario forecast(s).
+
+For my scenario forecast, I used the average of price1 and price2. For 'coupons available in-store' and 'feature advertisement', I did the opposite senario for each. I had coupons available in store (1) for each week except the first. On the other hand, for feature advertisement, I had one for the first week, but not any of there rest.
+
+c)  What is the maximum value for logmove in your forecast?
+
+The maximum value for logmove in my forecast was just under 9.5.
+
+## Question 4
+
+a) Describe a situation where you might NOT want to use the mean of the two adjacent values for interpolation of a missing value.
+
+The mean does not do good with outliers. If you have an outlier and are missing the next period so want to interpolate, using the mean would result in another large/small value that could also be an outlier. For example, If a series has values of all 1's, a 20, and a missing value after the 20. If we interpolate using the mean that would result in a 10 while it should probably be a 1.
+
+b) Consider why this online retailer might be seeing such dramatic seasonal effects in satisfaction rating.  What might they look into as far as further research?
+
+Customers might be ordering from this retailer around the holidays and if there are growing pains in terms of logistics, these customers might not be getting their items in time for the holidays which would be frustrating as a customer. As further research, I would look in to the delivery dates of orders. If orders are not arriving to customers until after the holidays, that might be what is driving the poor satisfactions scores during that time of the year.
+
+## Question 5
+
+a) Note that the SSPmodel1 is underpredicting the satisisfaction scores.  Given this, why does the damped trend fit better?
+
+In the linear model SSPmodel1, the downward trend is considered. This ultimately leads to under forecasting. We dampen the trend so that it approaches a constant some time in the future. This makes the under forecasting issue better.
+
+b) Which model did you choose and why?
+
+I chose a damped linear trend model with phi = .93. I chose this model because it performed best in earlier test and .93 was the estimated phi given. A phi value of .1 gave me the lowest MASE but it is suggested not to use a phi value below .8.

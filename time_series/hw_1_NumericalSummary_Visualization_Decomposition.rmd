@@ -1,0 +1,853 @@
+---
+title: "Lab One Example Code - Numerical Summary, Visualization, and Decomposition"
+author: "Roger Bailey"
+date: "04/15/2021, revised 03/01/2023"
+output:
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
+  word_document:
+    toc: yes
+    toc_depth: 3
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Load packages, echo=FALSE, message=FALSE, warning=FALSE}
+if (!require("pacman")) install.packages("pacman",repos = "http://cran.us.r-project.org")
+library(pacman)
+pacman::p_load(slider, feasts, GGally, seasonal, fpp3)    #install/load our packages!
+```
+
+# Lab Description
+
+Welcome to lab one!  This lab assignment is broken into 3 sections, with the 3rd section serving as the answer sheet.  The two lab sections are described below.
+
+## Section I
+
+This portion of the lab is designed to provide you with the methods you will use in R to perform the analysis we have discussed in the last two weeks.  Note that this will serve as a reference for Section II and for future labs!  You should read/work through this portion of the lab, stopping to answer questions when prompted to do so.  This lab will discuss how to:
+
+* Import a dataset (Excel/CSV)
+* Convert factors to dates
+* Construct time-series objects
+* Create a line graph and multiple line graphs
+* Create a seasonal plot for a time series
+* Use a moving average as a smooth measure of center
+* Visualize a decomposition and compare decomposition methods
+* Learn how to use decomposition to descriptively analyze a time series 
+* How to create and visualize seasonally adjusted data
+* How to create and visualize detrended data
+* Analyze the correlation between two time series
+* Analyze the autocorrelation of a time series
+
+Make sure to pay attention to the prompts for answering questions!
+
+## Section II
+
+In this section you will apply these methods to brief case study to answer questions about the data and help inform managerial decisions!
+
+## Lab One Answer Sheet
+
+This section (at the very bottom of the markdown file) is where the questions for the lab will be answered.  When prompted, you can scroll to the given question to write down your answers.
+
+___________________________________________________________
+
+# Section I
+
+## Data
+
+### Data description
+
+The data we will use for this lab comes from finance.yahoo.com. The data include prices for oil and gold aggregated for each month from january 2007 to end of 2017.  The variables are:
+
+*OilOpen	      -average opening price for oil
+*OilHigh	      -highest price for the month for oil
+*OilLow	      -lowest price for the month for oil
+*OilClose	    -average closing price for oil
+*OilAdjClose	  -average adjusted closing price for oil
+*OilVolume	    -total trade volume for oil
+*GoldOpen		  -average opening price for gold
+*GoldHigh	    -highest price for the month for gold
+*GoldLow	      -lowest price for the month for gold
+*GoldClose	  -average closing price for gold
+*GoldAdjClose  -average adjusted closing price for gold
+*GoldVolume    -total trade volume for gold
+
+
+### Importing the data
+
+Let's begin by opening the csv file already included in this project folder. 
+
+```{r}
+#read in the first dataset from a csv file
+data1 <- read.csv("Lab1dataset1.csv", header = TRUE, sep=",")  
+
+data1 <- as.data.frame(data1)
+
+#visualize the dataset using the str command.  
+data1 %>% head                              
+str(data1)
+#You can highlight and run  View(data1)  separately if you prefer to see data in the Source window
+```
+
+If only we could have predicted these prices, we would be rich!
+
+
+### Data Wrangling
+
+Once again, the data associated with each monthly aggregated observation in the series has been coded as a factor.  Let's change this to a date!
+
+```{r}
+data1 <- data1 %>% mutate(Month = as.Date(Month, format="%m/%d/%y"))                 #Convert "Week" to date object
+
+data1 %>% head
+```
+
+Unfortunately, the way the dates are code sometimes fall on the last day of the month, or on the first day of the next month.  This can be a problem for R as it will code two observations in the same month!  However, now that we have the dates coded correctly we can simply add some number of days to make sure they are all pushed into the following month. Given this, we will use the time class function "yearmonth()" to tell R how to write this data as year and month.
+
+```{r}
+#Convert "Month" to yearmonth object
+data1 <- data1 %>% mutate(Month = yearmonth(Month + 2))                         
+
+data1 %>% head
+```
+
+Great!  Now we can use the "tsibble()" function to create a time series object. Let's split this into two different time series, one for oil and one for gold.
+
+```{r}
+#Create a time series tibble for Oil by selecting each column
+Oil <- data1%>% select(Month,OilOpen,
+                       OilHigh,
+                       OilLow,
+                       OilClose,
+                       OilAdjClose,
+                       OilVolume) %>%
+                as_tsibble(index=Month) 
+
+#Create a time series tibble for Gold by selecting columns using a colon
+Gold <- data1%>% select(Month,GoldOpen:
+                       GoldVolume) %>%
+                as_tsibble(index=Month)   
+```
+
+Great!  We now have two time series to work with. 
+
+
+## Analysis
+
+### Visualization
+
+Let's begin with visualizing the closing prices using a line graph.  
+
+```{r}
+#create line graph for Oil
+Oil %>% autoplot(OilClose) + 
+      labs(title='Oil Closing Price') +
+     	xlab("Time")                                                        
+
+#create line graph for gold
+Gold %>% autoplot(GoldClose) + 
+      labs(title='Gold Closing Price') +
+     	xlab("Time") 
+```
+
+
+OK, do we see any patterns?  Trends?  Seasonality?
+
+Both appear to have trends and there appears to be no seasonality for Oil. Maybe there is some seasonality for gold.  Let's create a seasonal plot for GoldClose to investigate.
+
+```{r}
+#fit seasonal plot for gold
+Gold %>% gg_season(GoldClose, labels = "both")
+```
+
+Alright, it appears that the answer is that there is no seasonality after all.  Moving on, let's try to understand how the level of GoldClose is changing over time.  Let's use a few moving averages to investigate this, we can try a 7-MA, a 10-MA, and a 2x10-MA, and a 41-MA.  Recall that we must first create these using slide_dbl.
+
+```{r}
+Gold <- Gold %>% mutate(                                        
+              SevenMA = slide_dbl(GoldClose, mean, .before = 3, .after = 3, .align = "center"),       #create 7-MA moving average
+              TenMA = slide_dbl(GoldClose, mean, .before = 4, .after = 5, .align = "center-left"),   #create 10-MA moving average
+              TwobyTenMA = slide_dbl(TenMA, mean, .before = 1, .after = 0, .align = "center-left"),   #create 2x10-MA moving average
+              FortyOneMA = slide_dbl(GoldClose, mean, .before = 20, .after = 20, .align = "center"),   #create 41-MA moving average
+)
+Gold %>% autoplot(GoldClose) +                                                          #create line graph of UnitsSold
+                 autolayer(Gold, SevenMA, color='red') +                                #layer the 7-MA trend
+                 labs(title='Monthly Average Closing Price of Gold with 7-MA Trend Line') +
+                 xlab("Time in Months")  
+Gold %>% autoplot(GoldClose) +                                                          
+                 autolayer(Gold, TenMA, color='red') +                                  
+                 labs(title='Monthly Average Closing Price of Gold with 10-MA Trend Line') +
+                 xlab("Time in Months")  
+Gold %>% autoplot(GoldClose) +                                                          
+                 autolayer(Gold, TwobyTenMA, color='red') +                         
+                 labs(title='Monthly Average Closing Price of Gold with 2x10-MA Trend Line') +
+                 xlab("Time in Months")  
+Gold %>% autoplot(GoldClose) +                                                          
+                 autolayer(Gold, FortyOneMA, color='red') +                         
+                 labs(title='Monthly Average Closing Price of Gold with 41-MA Trend Line') +
+                 xlab("Time in Months")  
+
+```
+
+Great!  Note in the code above that we called the 10-MA as the input to create the 2x10-MA.  
+
+We now have a nice picture of the trend.  Note that our choice of the order makes a large difference in the smoothness.  Too litte and we will fail to remove the seasonal effects and the "noise," but too much and we start losing the features of the trend (it is no longer in the "center" of the series)! 
+
+Now let's return to the oil data and stack plots of the oil variables in one graph.  Recall that this requires us to convert to long form.
+
+```{r}
+#convert data to long form
+Oil_long <- Oil %>% pivot_longer(                                   
+                              cols=c(2:7),          
+                              names_to = "Measure",                       #name of new variable
+                              values_to = "Value") %>%                    #name for observations
+                  as_tsibble(key=c(Measure),index=Month)                  #create the time-series tibble 
+
+Oil_long %>% head
+```
+
+Now we can create the graph.
+
+```{r}
+#plot line graphs for crude oil
+Oil_long %>%
+  ggplot(aes(x = Month, y = `Value`, group = 'Measure')) +             
+  geom_line() +                                                       
+  facet_grid(vars(Measure), scales = "free_y") +                       
+  ggtitle('Monthly Averages/Totals for Crude Oil') +
+  ylab('Price/Volume') +
+  xlab('Time in Months')
+```
+
+Naturally, there appears to be a strong relationship between the prices.  We can investigate the relationship between prices and volume later in the code. 
+
+
+--------------------
+
+Answer Question 1 on the Answer Sheet at the bottom of the script
+
+```{r}
+Oil_long %>%
+  filter(Measure == 'OilClose') %>%
+  arrange(desc(Value))
+```
+
+
+--------------------
+
+
+### Time Series Decomposition
+
+Let's decompose a few of these Oil measures!  Note that we have monthly data so we can use any of the decomposition methods.  Let's start with a classical decomposition.  This requires a question, which type should we use?
+
+You can typically make this decision from inspection of the variation in the line graph.  When the seasonality is increasing proportionally with the trend, you should use a multiplicative model.  Here we don't really have seasonality, but the general fluctations about the trend do appear to be getting smaller when the series gets very small.  This suggests a multiplicative model, so we will start by assuming this is the best model.   Still, we can compare the outputs from both decompositions.  Let's try both and decide.
+
+```{r}
+#decompose Crude oil closing price with classical additive
+Oil %>%
+  model(classical_decomposition(OilClose, type = "additive")) %>%
+  components() %>%
+  autoplot() + xlab("Time in Months") +
+  ggtitle("Monthly Average Closing Price of Oil")
+
+#decompose Crude oil closing price with classical multiplicative
+Oil %>%
+  model(classical_decomposition(OilClose, type = "multiplicative")) %>%
+  components() %>%
+  autoplot() + xlab("Time in Months") +
+  ggtitle("Monthly Average Closing Price of Oil")
+```
+
+```{r}
+# Get components
+
+Oilclassical_mult <- Oil %>% 
+  model(classical_decomposition(OilClose, type = "multiplicative")) %>%                      
+  components() %>%				    		                                          #extract components
+   select(-.model)		
+
+
+Oilclassical_add <- Oil %>% 
+  model(classical_decomposition(OilClose, type = "additive")) %>%                      
+  components() %>%				    		                                          #extract components
+   select(-.model)
+```
+
+
+Huh, look at that.  Maybe there was some seasonality after all.  One way we can start to analyze and compare these outputs is to look at the relative size of the seasonal and remainder components compared to the original series.  We can do this by looking at the average differences across the peaks and troughs of the seasonal component or the remainder component to get a rough average of the range of variation.  In the example above the seasonal component seems to fluctuate between -2 and +2, and the remainder appears to fluctuate between +5 and -5 units in most places. So, it appears as if the seasonal effect is not very large at all (a range of about 4 units).  It also appears that there are about 10 units worth of range left over after the trend and season account for variation. Be aware that it is not necessarliy a bad thing for the remainder to have a small number of large positive or negative values, it could just be that those time periods are outliers.  
+
+Notice that the units on the left are not equivalent for the additive and multiplicative decompositions. This is because of the structure of the models.  You can still approximate the range of the seasonality and error, but the units in the multiplicative model are quite different.  Looking at the example above, this will only tell you percentage change based on the trend and season! For example, most of the differences in the remainder fall between 1.2 and .8, indicating a 40% difference!  However, note that the trend is around 25 units, so 40% of 25 is a difference of about 10 units (roughly the same as the additive example).  
+
+You can also use the shaded rectangles on the left to get an idea of scale.  To see how much of the variation in the original data is made up by the seasonal component, note that the size of that shaded rectangle is essentially a "Zoom In" of the shaded rectangle in the original data.  In other words, there is not much variation in the original series that is explained by seasonality! 
+
+Let's try both versions of the X11 too.
+
+```{r}
+#decompose Crude oil closing price with X11 additive
+Oil %>% 
+  model(x11 = feasts:::X11(OilClose, type='additive')) %>%                      
+  components() %>%
+  autoplot() + xlab("Time in Months") +
+  ggtitle("Monthly Average Closing Price of Oil")
+
+#decompose Crude oil closing price with X11 multiplicative
+Oil %>% 
+  model(x11 = feasts:::X11(OilClose, type='multiplicative')) %>%                      
+  components() %>%
+  autoplot() + xlab("Time in Months") +
+  ggtitle("Monthly Average Closing Price of Oil")
+```
+
+```{r}
+# Get components
+
+Oilx11_mult <- Oil %>% 
+  model(x11 = feasts:::X11(OilClose, type='multiplicative')) %>%                      
+  components() %>%				    		                                          #extract components
+   select(-.model)		
+
+
+Oilx11_add <- Oil %>% 
+  model(x11 = feasts:::X11(OilClose, type='additive')) %>%                      
+  components() %>%				    		                                          #extract components
+   select(-.model)
+```
+
+
+
+You can again compare the relative size of the remaining variation for both cases.  Which model appears to fit the data better?
+
+So what have you decided?  Additive?  Multiplicative?  
+
+Notice how in both decompositions the seasonality is trailing off.  If the multiplicative model had made the seasonality constant across the series, I would say you should definitely stick with that model as it would indicate that the seasonality might be changing with the size of the trend.  However, the multiplicative model did not help this much.  While I would stick with the multiplicative model here, in truth we could use the additive model here for the sake of simiplicity.  
+
+Note that we could also easily analyze a subset of the data.  For example, we could fit the additive decomposition on the OilClose data from the start of 2009 through 2014.  This can be done using "filter()" as in previous coursework
+
+```{r}
+#decompose Crude oil closing price with X11 additive in smaller window of time
+Oil %>% filter(Month >= yearmonth("2009-01-01") & Month <= yearmonth("2015-01-01"))%>%
+  model(x11 = feasts:::X11(OilClose, type='additive')) %>%                      
+  components() %>%
+  autoplot() + xlab("Time in Months") +
+  ggtitle("Monthly Average Closing Price of Oil")
+```
+
+This didn't really change much, but "windowing" the data is helpful in some circumstances!
+
+Since we have not used it yet, let's apply an STL decomposition on both the OilClose and the OilVolume series.  We will save these as objects for later retrieval instead of graphing them.
+
+```{r}
+#create an STL decomposition object for OilClose
+OilCSTL <- Oil %>% 
+  model(STL(OilClose ~ trend(window=11) + season(window='periodic'),
+            robust = TRUE)) %>%                                            	#model using STL
+  components() %>%				    		                                          #extract components
+   select(-.model)						                                              #remove the .model column                  
+
+#create an STL decomposition object for OilVolume
+OilVSTL <- Oil %>% 
+  model(STL(OilVolume ~ trend(window=11) + season(window='periodic'),
+            robust = TRUE)) %>%                                         
+  components() %>%				    		                                     
+  select(-.model)						                                               
+```
+
+It is important to note how flexible the STL decomposition can be!  We get to choose the window that we would like to smooth over here.  I chose 11, but you could just as easily have chosen something different.  Just like in moving averages, you want to make sure the smoothing occurs over a wide enough interval to remove seasonality from the trend you create.  We can also set the time interval for the season (periodic indicates annual, which is the typical way to set this).
+
+The last thing we'll cover here is extracting features from an STL decomposition.  We can do this with the features function!
+
+```{r}
+#extract features of STL decomposition with window size of 11
+Oil %>%
+  features(OilClose, feat_stl)    
+```
+
+There we have it.  A very strong trend, a weak seasonal effect, and some significant positive autocorrelation in the remainder. 
+
+--------------------
+
+Answer Question 2 on the Answer Sheet at the bottom of the script
+
+--------------------
+
+
+### Adjustments
+
+As discussed in lecture, adjustments will be an important part of handling time series data (Seasonal adjustment, detrending, Box-cox transformations, differencing, and more).  Let's practice a bit with seasonal adjustments and detrending with a decomposition.  Since we saved the output for the STL decomposition above, we can use these.  Let's take a look at the de-trended and the seasonally adjusted graphs for OilClose and Oil Volume.  We can start by creating a variable that stores the detrended data.
+
+```{r}
+#create detrended OilClose variable using mutate
+OilCSTL <- OilCSTL %>% mutate(detrend = season_year + remainder)
+
+#plot detrended OilClose
+OilCSTL %>%
+  ggplot(aes(x = Month)) +					 		
+  geom_line(aes(y = OilClose, colour = "Data")) +	
+  geom_line(aes(y = detrend, colour = "De-trended")) + 
+  geom_line(aes(y = trend, colour = "Trend")) +		
+  xlab("Time in Months") + ylab("Monthly Units Sold") +
+  ggtitle("STL Components of Crude Oil Monthly Average Closing Price") +
+  scale_colour_manual(values=c("gray","blue","red"),
+                      breaks=c("Data","De-trended","Trend"))
+
+#plot seasonally adjusted OilClose (adding back remainder here just for learning purposes)
+  OilCSTL %>%
+  ggplot(aes(x = Month)) +					 		
+  geom_line(aes(y = OilClose, colour = "Data")) +	
+  geom_line(aes(y = season_adjust, colour = "Seasonally Adjusted")) + 
+  geom_line(aes(y = trend, colour = "Trend")) +		
+  xlab("Time in Months") + ylab("Monthly Units Sold") +
+  ggtitle("STL Components of Crude Oil Monthly Average Closing Price") +
+  scale_colour_manual(values=c("gray","blue","red"),
+                      breaks=c("Data","Seasonally Adjusted","Trend"))
+
+#create detrended OilVolume
+OilVSTL <- OilVSTL %>% mutate(detrend = season_year + remainder)
+
+#plot detrended OilVolume
+OilVSTL %>%
+  ggplot(aes(x = Month)) +					 		
+  geom_line(aes(y = OilVolume, colour = "Data")) +	
+  geom_line(aes(y = detrend, colour = "De-trended")) + 
+  geom_line(aes(y = trend, colour = "Trend")) +		
+  xlab("Time in Months") + ylab("Monthly Units Sold") +
+  ggtitle("STL Components of Crude Oil Monthly Total Volume") +
+  scale_colour_manual(values=c("gray","blue","red"),
+                      breaks=c("Data","De-trended","Trend"))
+
+#plot seasonally adjusted OilVolume  
+OilVSTL %>%
+  ggplot(aes(x = Month)) +					 		
+  geom_line(aes(y = OilVolume, colour = "Data")) +	
+  geom_line(aes(y = season_adjust, colour = "Seasonally Adjusted")) + 
+  geom_line(aes(y = trend, colour = "Trend")) +		
+  xlab("Time in Months") + ylab("Monthly Units Sold") +
+  ggtitle("STL Components of Crude Oil Monthly Total Volume") +
+  scale_colour_manual(values=c("gray","blue","red"),
+                      breaks=c("Data","Seasonally Adjusted","Trend"))
+```
+
+Notice that the seasonally adjusted data is not very different due to the small seasonal effect.  However, by removing the seasonal component, the remaining changes in the time series (the trend and remainder components) can be visualized more easily. Note that this means we can more readily compare the time series across different weeks.   Also notice that the removal of the trend is a significant change! By removing the trend we can evaluate the series relative to where the trend would predict the series should be.
+
+Recall the previous X11 decomposition above tells us that the effect of the seasonality component may not be constant, even in the multiplicative format.  One way to consider adjusting the data is to use a Box-Cox transformation. This can be especially helpful if you want to fit an STL decomposition to data that appears to have a multiplicative seasonal effect. 
+
+Recall that the input lambda determines how the box-cox transformation operates.  We would want to choose a lambda that results in a constant seasonal effect.  We can choose different values of lamba and try them out, but we can also try to let R find the best lambda!
+
+Let try the "guerrero()" function to extract the optimal lambda from the OilClose data!
+
+```{r}
+#calculate optimal box-cox transformation using guerrero and pull the lamba
+lambda <- Oil %>% features(OilClose, features = guerrero) %>%
+                        pull(lambda_guerrero)
+lambda
+```
+
+So, it looks like our optimal lambda is  - .313914  Let's use this to create a new transformed variable by applying box-cox with the above lambda to the OilClose series!
+
+```{r}
+#create new transformed variable
+Oil <- Oil %>% mutate( OilClose_BC = box_cox(OilClose, lambda))
+```
+
+Great!.  Now let's decompose our new variable using the X11 decomposition again and see if the seasonal effect has changed significantly.
+
+```{r}
+#decompose Crude oil closing price with X11 multiplicative
+Oil %>% 
+  model(x11 = feasts:::X11(OilClose_BC, type='additive')) %>%                      
+  components() %>%
+  autoplot() + xlab("Time in Months") +
+  ggtitle("Monthly Average Closing Price of Oil")
+				                                                
+```
+
+Note that all of the units on the left have changed because of the transformation.  If we want to use this transformed data it will require us to inverse-transform the data back to the original units (more complexity). Since this doesn't seem to have helped much, it's probably best just to stick with the additive model on the original series!
+
+
+### Analyzing Relationships with Correlation
+
+When we get to time series regression next week we will be analyzing relationships.  Let's start here by looking at the relationship between all of the Oil variables using correlation.
+
+```{r}
+#create scattermatix
+Oil %>% ggpairs(columns = 2:7)                                   
+```
+
+Interesting!  As we would expect, there is very strong (nearly perfect) correlation between the price variables.  However, notice the relationship between Price and Volume.  A correlation of almost -.6!  This is fairly strong.  Looking at the scatterplot, it seems a bit less like a linear relationship!  This is an example of why we need to be careful using numerical point estimates for analyzing relationships!
+
+Both of these variables have an overall trend.  We could use one of our decompositions to see if there is a relationship between the de-trend series.  We can use the results of the previous STL decomposition for this since we saved them as objects.
+Let's correlate the detrended series and see what we find!  We can start by creating a new series with both detrended series using right_join(), note
+
+```{r}
+#join detrended series
+Oil_CDT_VDT <- right_join(OilCSTL %>% select(Month, detrend), OilVSTL %>% select(Month, detrend), by="Month", suffix=c("_Close", "_Vol"))
+
+#create scattermatrix
+Oil_CDT_VDT %>% ggpairs(columns=c(2:3))
+```
+
+Interesting.  It appears that once you remove the respective trends, the month-to-month correlation of the differences from the respective trends has very little correlation.  Note that this is not saying there is not relationship between trade volume and closing price, but rather that the relationship appears to be through the overall trends.  Note that there could also be relationships between lags as well, but we'll save this for next week!
+
+
+### Autocorrelation
+
+Autocorrelation will be one of the most important summary tools we use in forecasting.  For example, in time series regression we will use autocorrelation to evaluate how well a lagged value can predict future values, and whether or not the assumptions of a model are violated.  Let's take a look at the autocorrelation of both Gold and Oil closing prices.
+
+```{r}
+#plot autocorrelations of crude oil closing price 
+Oil %>% ACF(OilClose, lag_max = 24) %>%                                         #get autocorrelations
+  autoplot +                                                                    #plot the autocorrelations
+  ggtitle('Autocorrelation of Monthly Average Closing Price of Crude Oil') +     
+  xlab('Lag')
+
+#plot autocorrelations of crude oil closing price 
+Gold %>% ACF(GoldClose, lag_max = 24) %>%                                        
+  autoplot +                                                                    
+  ggtitle('Autocorrelation of Monthly Average Closing Price of Gold') +     
+  xlab('Lag')
+```
+
+Wow!  That is some significant autocorrelation in both series, but remember that this is expected.  Both of these series have significant trends. We would not expect gold to spike and plummet across many consecutive months. Let's detrend the gold data and see what king of autocorrelation is left in the remainder.
+
+Let's start with an STL decomposition then create the detrended variable.  We can then graph the resulting series.
+
+```{r}
+#create an STL decomposition object for GoldClose
+GoldCSTL <- Gold %>% 
+  model(STL(GoldClose ~ trend(window=11) + season(window='periodic'),
+            robust = TRUE)) %>%                                         
+  components() %>%				    		                                     
+   select(-.model)						                              
+
+#create detrended GoldClose variable using mutate
+GoldCSTL <-GoldCSTL %>% mutate(detrend = season_year + remainder)
+
+#plot detrended OilClose
+GoldCSTL %>%
+  ggplot(aes(x = Month)) +					 		
+  geom_line(aes(y = GoldClose, colour = "Data")) +	
+  geom_line(aes(y = detrend, colour = "De-trended")) + 
+  geom_line(aes(y = trend, colour = "Trend")) +		
+  xlab("Time in Months") + ylab("Monthly Units Sold") +
+  ggtitle("STL Components of Gold Monthly Average Closing Price") +
+  scale_colour_manual(values=c("gray","blue","red"),
+                      breaks=c("Data","De-trended","Trend"))
+
+```
+
+Now that we have a detrended series ready to analyze, let's look at the autocorrelation for this series!
+
+```{r}
+#plot autocorrelations of detrended GoldClose
+GoldCSTL %>% ACF(detrend, lag_max = 24) %>%                                        
+  autoplot +                                                                    
+  ggtitle('Autocorrelation of Detrended Monthly Average Closing Price of Gold') +     
+  xlab('Lag')
+```
+
+What a change, only the first autocorrelation is significant, and it is only around .35!  In other words, once you remove the trend, the explanatory power of the previous period drops significantly.  What is left is nearly white noise!
+
+
+--------------------
+
+Answer Question 3 on the Answer Sheet at the bottom of the script
+
+--------------------
+
+
+# Section II
+
+For this portion of the lab you will use the methods above to analyze a new dataset.  
+
+## Data
+
+### Data Description
+
+Suppose that you have been hired by a firm that sells frozen pies to analyze their market. The goal is to help them to forecast demand for the following year and to understand the threat from a competitor. You are provided with a dataset that details their sales (brand A) as well as a close competitor’s sales (brand B).  You are also provided with estimates of the market share for both brands.
+
+### Data Import
+
+Write and run the code to import the dataset Lab1dataset2.csv from the RProject folder.
+
+```{r}
+data2 <- read.csv("Lab1dataset2.csv", header = TRUE, sep=",")  
+
+data2 <- as.data.frame(data2)
+```
+
+-------------------
+
+Answer Question 4 on the Answer Sheet at the bottom of the script by writing new code below
+
+--------------------
+
+### Date Wrangling
+
+Use this section to include any and all code you write/run organize the data
+
+```{r}
+str(data2)
+summary(data2)
+```
+
+```{r}
+data2 <- data2 %>%
+  mutate(Date = mdy(Date))
+```
+
+```{r}
+str(data2)
+summary(data2)
+
+
+#year-month-day
+data2 %>%
+  summarise(min = min(Date),
+            max = max(Date)) %>%
+  mutate(diff = as.numeric(difftime(min,max,units="days"))) %>%
+  mutate(diff_by_col = diff/183) # about 7 exactly
+
+#data is weekly, every Friday
+```
+
+Restructure new data
+
+```{r}
+#Create a time series tibble
+d2 <- data2 %>% select(Date,UnitsBrandA, UnitsBrandB, ShareBrandA, ShareBrandB) %>%
+                as_tsibble(index=Date) 
+```
+
+
+```{r}
+#convert data to long form
+d2_long <- data2 %>% pivot_longer(                                   
+                              cols=c(2:5),          
+                              names_to = "Measure",                       #name of new variable
+                              values_to = "Value") %>%                    #name for observations
+                  as_tsibble(key=c(Measure),index=Date)                  #create the time-series tibble 
+
+d2_long %>% head
+```
+
+## Analysis
+
+Use this section to include any and all code you write/run to analyze the data
+
+```{r}
+#q4.c
+d2_long %>%
+  filter(Measure == 'UnitsBrandA' | Measure == 'UnitsBrandB') %>%
+  ggplot(aes(x = Date, y = `Value`, group = 'Measure')) +             
+  geom_line() +     
+  geom_smooth(method = "lm") +
+  facet_grid(vars(Measure), scales = "free_y") +                       
+  ggtitle('Weekly Sales by Brand') +
+  ylab('Sales') +
+  xlab('Time in Weeks')
+
+
+```
+
+```{r}
+d2_new <- data2 %>%
+  mutate(month = lubridate::floor_date(Date, "month")) %>%
+  mutate(month = yearmonth(month + 2))  %>%
+  select(-c(Date,ShareBrandA,ShareBrandB)) %>%
+  group_by(month) %>%
+  summarise(across(c(UnitsBrandA, UnitsBrandB), sum)) %>%
+  as_tsibble(index=month) 
+
+```
+
+```{r}
+### UnitsBrandA
+#create an STL decomposition object
+Astl <- d2_new %>% 
+  filter_index("2011 Feb" ~.) %>%
+  model(STL(UnitsBrandA ~ trend(window=11) + season(window='periodic'),
+            robust = TRUE)) %>%                                            	#model using STL
+  components() %>%				    		                                          #extract components
+  select(-.model)						                                                #remove the .model column      
+
+
+#extract features of STL decomposition with window size of 11
+d2_new %>%
+  filter_index("2011 Feb" ~.) %>%
+  features(UnitsBrandA, feat_stl)    
+
+```
+
+
+```{r}
+#plot
+d2_new %>% 
+  filter_index("2011 Feb" ~.) %>%
+  model(STL(UnitsBrandA ~ trend(window=11) + season(window='periodic'),
+            robust = TRUE)) %>%                                     
+  components() %>%
+  autoplot()
+
+```
+
+```{r}
+### UnitsBrandB
+#create an STL decomposition object
+Bstl <- d2_new %>% 
+  filter_index("2011 Feb" ~.) %>%
+  model(STL(UnitsBrandB ~ trend(window=11) + season(window='periodic'),
+            robust = TRUE)) %>%                                            	#model using STL
+  components() %>%				    		                                          #extract components
+  select(-.model)						                                                #remove the .model column      
+
+
+#extract features of STL decomposition with window size of 11
+d2_new %>%
+  filter_index("2011 Feb" ~.) %>%
+  features(UnitsBrandB, feat_stl)   
+```
+
+```{r}
+#plot
+d2_new %>% 
+  filter_index("2011 Feb" ~.) %>%
+  model(STL(UnitsBrandB ~ trend(window=11) + season(window='periodic'),
+            robust = TRUE)) %>%                                     
+  components() %>%
+  autoplot()
+```
+
+```{r}
+#A
+d2_new %>%
+  filter_index("2011 Feb" ~.) %>%
+  ggplot(aes(x = month, y = UnitsBrandA)) +
+  geom_line() +
+  geom_smooth(method = "lm")
+
+#B
+d2_new %>% 
+  filter_index("2011 Feb" ~.) %>%
+  ggplot(aes(x = month, y = UnitsBrandB)) +
+  geom_line() +
+  geom_smooth(method = "lm")
+```
+
+
+
+
+
+
+
+_____________________________________________________________________________
+
+----------  Please Do Not Include Code Chunks Beyond This Point  -------------
+                  (you may expand the above section if needed)
+______________________________________________________________________________
+
+
+
+# Lab Assignment One Questions
+## Name
+
+My name is:  Carter Rudek
+
+
+## Question 1
+
+a) What is the frequency of the OilClose series?
+
+This data is Monthly. So, the frequency is 12.
+
+b) During what year did the closing price of Gold see the largest summer price increase?
+
+2012
+
+## Question 2
+
+Please use the output from the classical and X11 decomposition of OilClose to answer the following:
+
+a) Why did we assume the multiplicative decomposition was correct to start with?
+
+When looking at the variation in the line graph created, the general fluctuations seem to be getting smaller when the series gets very small. Or, the magnitude of the seasonal fluctuations do not vary with the level of the time series.
+
+b) Comparing the 4 methods, which of them has the largest seasonal change in the first several months of 2008, and how large was this effect in dollars (rough range of highest-lowest)?
+
+The X11 multiplicative model had the largest seasonal change in the first several months of 2008. The seasonal range is from .85 to 1.15. The trend is around 60, so the range in dollars would be 51 to 69.
+
+c) Consider the detrended STL decomposition data for Crude Oil Volume.  Notice that toward the end of 2014 the value of the detrended series takes relatively large negative values.  Explain what this means for Crude Oil Volumes in these months?
+
+Since STL is only additive, the detrended series values are the difference between the actual values and the trend values. The large negative values for the detrended series toward the end of 2014 means that the trend during these months was larger than the actual values. Since additive adds the 3 components together, when the trend is larger than the actual values, the remainder and seasonal has to be negative to get to the actual values. So, there was a large positive trend in Crude Oil Volumes in these months.
+
+
+## Question 3
+
+Please answer the following questions about the Section I results
+
+a)	Explain why the units for a multiplicative decomposition are different.
+
+This is because the models are different. For additive, we are adding the components (trend + seasonal + random) together. For multiplicative, we are instead multiplying these components together. Due to this, we gets some units in the form of a percentage in multiplicative decomposition.
+
+b)  What is the approximate size of the seasonal effect during 2012 (the change from lowest to highest point of the season)?
+
+For the X11 decomposition (after line 450) The range is -.0125 to .025 which is a change of .0375.
+
+c)  Explain why there is strong autocorrelation in the GoldClose series, but not the detrended series.
+
+There is strong autocorrelation because the price doesn't change much from one month to the next so last month is correlated with the next month. We can see this in the chart with the trended data (red line). For multiple months in a row the closing price is either going up or down. 
+Once we remove the trend and only look at the seasonal and remainder component, there is fluctuation up and down each month which now makes last month uncorrelated with the next month. 
+
+## Question 4
+
+Please analyze the data in Section II to answer the following questions:
+
+a) What is the frequency of this data?
+
+This data is weekly. More specifically, Fridays of each week. This would be a frequency of 52.
+
+b) What are the names of the four variables in the dataset?
+
+UnitsBrandA, UnitsBrandB, ShareBrandA, ShareBrandB
+
+c) Create a plot for the units sold for each brand and stack them in a single graph.  Explain the difference that you see between the brands in terms of cycles, trends, seasonality and total sales.
+
+* Cycle: Neither brand seem to show signs of cyclic behavior. If we were to revisits this data in future years, maybe something would be revealed for Brand B.
+* Trend: Brand A doesn not seem to show much of a trend. Brand B, however, does show a slightly positive trend. 
+* Seasonality: Both Brand A and Brand B seem to be seasonal. Brand B decreases during the first half of the year and increases during the second half the year. Brand A spikes during the last quarter of the year. Then, sales fall in the first quarter and remain low for the second and third quarter before spiking again.
+* Total Sales: Brand A has higher sales. Brand A ranges from 10,000 to 40,000 whereas Brand B ranges from 7,000 to 10,000. 
+
+d) Looking at the two plots from part c, decide the appropriate type of decomposition you would like to run.  Decompose sales for Brand A and for Brand B using your chosen method and compare.  Paste/insert the decomposition for both brands below.
+
+![BrandA Decomposition](BrandA.png) 
+![BrandB Decomposition](BrandB.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+e) Which brand has a larger seasonal effect?
+
+Brand A has a larger seasonal effect.
+
+f) Does either brand have a significant trend?
+
+Brand B has a stronger trend than Brand A but it doesn't seem to be significant.
+
+f) Summarize what the data is telling you about Brand B’s sales relative to Brand A’s sales?  Should management be concerned?  Use your plots and/or summaries created above to explain.
+
+Brand A has significnat seasonality that spikes towards the end of the year. This is very consistent. Brand A also does not have much of a trend. Relative to Brand A, Brand B sales are not as high. However, Brand B is heading in the right direction as it has a positive trend. For both brand A and brand B, I would say management does not have anything to worry about. For brand A, unless they stop seeing a large spike toward the end of the year, they should not be concerned. They can antcipate what sales might be for each month and prepare accordingly. For brand B, I would also say management has nothing to worry about and should be optimistic about the future. Unless sales for Brand B start to trend in the opposite direction, management may view this as a growth brand.
+
+
