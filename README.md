@@ -6,4 +6,3 @@ Coursework
 * Data Management
 * Predictive Analytics
 * Time Series Forecasting
-* Prescriptive Analytics
