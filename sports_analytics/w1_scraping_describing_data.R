@@ -102,6 +102,25 @@ nfl2000 %>%
   ggplot(aes(x = Y2000, y=Y2020, label = posteam)) + geom_abline(intercept = 0, slope = 1) + geom_text()
 
 
+### New Version FASTER
+
+install.packages("nflreadr")
+
+library(nflreadr)
+
+pbp2021 <- load_pbp(2021)
+
+ps2021 <- load_player_stats(2021)
+
+
+
+
+
+
+
+
+
+
 
 
 
