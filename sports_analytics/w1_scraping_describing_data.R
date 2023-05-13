@@ -112,16 +112,39 @@ pbp2021 <- load_pbp(2021)
 
 ps2021 <- load_player_stats(2021)
 
+test <- nflreadr::load_nextgen_stats()
 
 
+### Week 1 In Class
+
+ngs <- nflreadr::load_nextgen_stats()
 
 
+qb_records <- ngs %>%
+  filter(season == '2022' & season_type == 'REG' & week != 0) %>%
+  group_by(team_abbr, player_display_name) %>%
+  count() %>%
+  arrange(desc(n))
 
 
+ngs %>%
+  filter(season == '2022' & season_type == 'REG' & week != 0) %>%
+  inner_join(qb_records, by = c("team_abbr" = "team_abbr", "player_display_name" = "player_display_name")) %>%
+  filter(n >= 9) %>%
+  group_by(player_display_name, team_abbr) %>%
+  summarise(acay = mean(avg_completed_air_yards), attt = mean(avg_time_to_throw)) %>%
+  ggplot(aes(x=acay, y=attt, label=player_display_name)) + geom_text() + 
+  labs(title = "Good O line or Strong Arm?", x = "Avg Completed Air Yards", y = "Avg Time To Throw")
 
+library(ggrepel)
 
-
-
+ngs %>%
+  filter(season == '2022' & season_type == 'REG' & week != 0) %>%
+  inner_join(qb_records, by = c("team_abbr" = "team_abbr", "player_display_name" = "player_display_name")) %>%
+  filter(n >= 9) %>%
+  group_by(player_display_name, team_abbr) %>%
+  summarise(acay = mean(avg_completed_air_yards), attt = mean(avg_time_to_throw), atts = sum(attempts)) %>%
+  ggplot(aes(x=acay, y=attt, label=player_display_name, size=atts)) + geom_point() + ggrepel::geom_label_repel()
 
 
 ######################
