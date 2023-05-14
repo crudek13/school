@@ -46,11 +46,7 @@ Data = Data %>%
   mutate(Sales = CumSales - CumSalesLag)
 ```
 
-* The first mutate function generates N(t-1) by using lag function. Here, the
-default option in the lag function must be set to 0 because the lagged variable
-for the first time period would be NA without the default option. See Chapter 3
-of “R for Data Science” book (Chapter 5 in the web version) and R help (type ?
-dplyr::lag to see the help) for the details of the function.
+* The first mutate function generates N(t-1) by using lag function. Here, the default option in the lag function must be set to 0 because the lagged variable for the first time period would be NA without the default option. See Chapter 3 of “R for Data Science” book (Chapter 5 in the web version) and R help (type ? dplyr::lag to see the help) for the details of the function.
 
 * The second mutate function generates N(t-1)2 by computing the lagged variable to the power of 2. ^ is the exponent operator.
 
@@ -91,6 +87,8 @@ ols_out = lm(Sales ~ CumSalesLag + CumSalesLagSq, Data)
 * The first input of the function specifies the regression equation – S(t) = β0 + β1 N(t- 1) + β2 N(t-1)2 . For details, the left-hand side of the equation, i.e., dependent variable, is S(t), which is Sales variable. In the right-hand side of the equation, we have three independent variables – a constant, N(t-1), and N(t-1)2. The constant will be automatically added into the regression, so we need to specify only the other two variables, which are CumSalesLag and CumSalesLagSq. In the lm function, 4 the dependent variable is specified before the ~ symbol and the independent variables are listed after the ~ symbol with a separator (the + symbol).
 
 * The second input simply specifies the name of the data frame where the data exist. The command above stores the OLS regression result in ols_out.
+
+
 3.3. To see the result, take the summary of the result as follows. We will learn (or review) the summary of an OLS regression later.
 
 ```{r}
