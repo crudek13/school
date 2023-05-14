@@ -72,12 +72,70 @@ abline(h = 0, lty = 2, lwd = 2)
 * What we want to draw is a scatter plot. geom_point function is combined with the ggplot function to draw the scatter plot. ggplot uses + operator instead of %>% operator to pipe functions. See Chapter 1 of “R for Data Science” book (Chapter 3 in the web version) for the details of the function.
 
 
+### Question and Answers
+
+
+###### Q1. Interpret the following coefficient estimates of the regression model in the lab. (For example, what does price coefficient = -28.609 mean?)
+
+* Price = -28.609
+
+With a $1 increase in the average retail price, the weekly demand decreased by about 29 units.
+
+* Rep = 76.951
+
+Sales at stores with a designated sales representative were higher than at stores with no designated sales rep (the different is, on average, about 77 units).
+
+* Endcap = 304.960
+
+Weekly average sales increased by about 305 units per week during the weeks of the endcap competition.
+
+* Demo = 111.261
+
+The average sales increased by about 111 units in the week of the demo.
+
+* Demo1_3 = 73.663 
+
+The average sales increased by about 74 units if the demo took place between one and three weeks ago.
+
+* Demo4_5 = 67.700
+
+The average sales increased by about 68 units if the demo took place four weeks ago or more. 
+
+* Based on the interpretation, what's your conclusions on the effects of three promotion activities (in-store demo, face-to-face sales representative, and end-cap display)?
+
+The coefficient estimates and their p-values support that all of those activities boost the sales.
 
 
 
+###### Q2. In the residual plot of the lab, you may find that some outliers exist in specific regions. This suggests an inclusion of the region effects. In the dataset, we have the region variable (Region), which is a categorical variable. Add this variable into the regression model as an additional regressor and run the regression again, as follows:
+
+* When a categorical variable is added into a regression, it should be designated as a factor-type variable by using as.factor function, i.e., lm(Sales ~ Price + Rep + Endcap + Demo + Demo1_3 + Demo4_5 + as.factor(Region), Data).
+
+Does the inclusion of the region effects make changes in the effects you've found in Q1?
+
+```{r}
+#Code and results:
+reg_out = lm(Sales ~ Price + Rep + Endcap + Demo + Demo1_3 + Demo4_5 +
+as.factor(Region), Data)
+summary(reg_out)
+```
+
+```{r}
+reg_res = resid(reg_out)
+plot(reg_res, xlab = "observation", ylab = "residual")
+abline(h = 0, col = "gray")
+```
+
+Variables             Model w/o Region            Model w/ Region
+Price                     -28.609                    -33.114
+Rep                        76.951                     35.127
+Endcap                     304.960                    302.020
+Demo                       111.261                    113.056
+Demo1_3                    73.663                     74.044
+Demo4_5                    67.700                     65.957
 
 
-
+The table above summarizes coefficient estimates of the price and promotion variables for both the model w/o Region variables and the model w/ Region variables. With consideration of standard errors, the inclusion of Region variables affects only the sales representative promotion effect (76.951 -> 35.127). It does not affect all the other effects (the difference in coefficient estimates is relatively small, e.g., 111.261 -> 113.056 for Demo variable).
 
 
 

@@ -178,12 +178,103 @@ TRUE)),
 ```
 
 
+### Question and Answers
+
+###### Q1. In the lab, you may have p = 0.0007, q = 0.544, and m = 92.5 millions. Interpret those estimates of the model parameters:
+* What does 0.0007 of p imply?
+
+p in a Bass diffusion model is the innovation parameter, so 0.0007 of p means that, on average, 0.07% of non-adopters are estimated to adopt the service at each time period through external factors such as the effects of advertising and other mass media. This is quite small, implying that the service is estimated to have been adopted very slowly at first.
+
+* What does 0.544 of q imply?
+
+q in a Bass diffusion model is the imitation parameter, so 0.544 of q means that, on average, 54.4% of non-adopters are estimated to be influenced by others. This is high, implying that the service is estimated to rapidly grow once the adoptions take off.
+
+* What does 92.5 millions of m imply?
+
+This number indicates the estimated market potential. So, about 92.5 million people are estimated to finally adopt the service in the market.
+
+###### Q2. Compared to the total number of mobile subscriptions in the US (404.58 millions, as of 2018), the estimate of m from our analysis (92.5 millions) seems to be too small to reflect reality. This is a typical example of Bass diffusion model's limitation. What do you think leads to the extremely under-estimated market potential?
+
+This is a well-known limitation of Bass diffusion models: the models just extrapolate from the past trend of adoptions. The extrapolation can be valid only if the trend used for the extrapolation has been continuously found. But, the cell phone 20-30 years ago is a totally different animal from the current cell phones in terms of not only the service speed and quality but also what we can do with the cell phone. That is, the current trend is absolutely different from the trend used for the extrapolation, leading to the extremely under-estimated market potential.
+
+This is an example of why a long-run forecast is very difficult. We must, at least partially, rely on extrapolations for a long-run forecast and it is necessary to assume that the trend we’ve observed continues… But, this assumption is very dangerous: think about what we’ve decided and what have happened with COVID-19.
 
 
+###### Q3. Download the following csv data file (available in the assignment webpage)
+* Data file: AssassinsCreed7Data.csv and fit the data to the Bass diffusion model. Here is useful information:
+
+* The dataset contains weekly sales (not cumulative sales) of Assassin's Creed 7 video game for the first 15 weeks after release. Thus, you have to modify the R code of the data preparation part for estimation.
+
+Report p, q, and m estimates with your own interpretation of the estimates (you don't need to draw a fancy table to do this. Just list the numbers...). Generate and visualize the prediction of the sales. Can you provide any managerial suggestion(s) from the predicted diffusion curve?
+
+```{r}
+# read data file
+Data2 = read_csv("AssassinsCreed7Data.csv")
+Data2 = Data2 %>%
+  mutate(CumSales = cumsum(Sales)) %>%
+  mutate(CumSalesLag = lag(CumSales, default = 0)) %>%
+  mutate(CumSalesLagSq = CumSalesLag ^ 2)
+```
+
+```{r}
+# run OLS
+ols_out = lm(Sales ~ CumSalesLag + CumSalesLagSq, Data2)
+summary(ols_out)
+```
+
+```{r}
+# compute p, q, and m from the OLS coefficients
+beta0 = ols_out$coefficients[1]
+beta1 = ols_out$coefficients[2]
+beta2 = ols_out$coefficients[3]
+m_1 = (-beta1 - sqrt(beta1 ^ 2 - 4 * beta0 * beta2)) / (2 * beta2)
+m_2 = (-beta1 + sqrt(beta1 ^ 2 - 4 * beta0 * beta2)) / (2 * beta2)
+m_1
+```
+```{r}
+m_2
+```
+
+```{r}
+m = m_1 # Replace m_2 for m_1 if m_2 is positive...
+p = beta0 / m
+q = -m * beta2
+p
+```
+
+```{r}
+q
+```
 
 
+```{r}
+Data2 = Data2 %>% mutate(SalesPred = 0)
+N_lag = 0
+for(TIME in 1:nrow(Data2)) {
+  S_t = (p + q / m * N_lag) * (m - N_lag)
+  Data2$SalesPred[TIME] = S_t
+  N_lag = N_lag + S_t
+}
+plot(Data2$week, Data2$Sales, type = "p",
+  ylim = c(0, 1.2 * max(Data2$Sales, Data2$SalesPred, na.rm = TRUE)),
+  xlab = "Week", ylab = "Unit sales (in thousands)")
+points(Data2$week, Data2$SalesPred, type = "b",
+  pch = 23, col = "red", lty = 2)
+```
 
+```{r}
+# generate prediction of diffusion
+Data2 = Data2 %>% mutate(CumSalesPred = cumsum(SalesPred))
+plot(Data2$week, Data2$CumSales, type = "p",
+  ylim = c(0, 1.2 * max(Data2$CumSales, Data2$CumSalesPred, na.rm = TRUE)),
+  xlab = "Week", ylab = "Cumulative sales (in thousands)")
+points(Data2$week, Data2$CumSalesPred, type = "b",
+pch = 23, col = "red", lty = 2)
+```
 
+p = 0.1328, q = 0.1690, and m = 1710 (in thousands). See the graphs above in the code for the sales prediction based on the p, q, and m estimates.
+
+From the estimates and the cumulative sales prediction, the current sales have approached the saturation level. This means that no large additional increase in sales is expected without feeding gamers with extra benefits. So, it might be a good time to come up with a next movement, such as introducing an expansion pack, a new DLC (downloadable content), etc., to lift the market potential by enhancing benefits of the game.
 
 
 
