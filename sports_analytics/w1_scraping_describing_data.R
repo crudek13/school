@@ -173,3 +173,245 @@ pergamestats %>%
 pergamestats %>%
   group_by(pos) %>%
   summarise(mean(pts), num = n())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+##########################
+### Week 1 Problem Set ###
+##########################
+
+library(Lahman)
+library(tidyverse)
+
+# Q1
+# Which player in 2021 that faced MORE than 50 batters (BFP) had the LOWEST DICE? 
+# Use the Lahman package Pitching table and the formula given on page 53 of Mathletics. You may use the 'Constant' of 3.1.
+
+t < - Lahman::Pitching %>%
+  left_join(People, by = "playerID")
+
+View(Lahman::People)
+
+
+dice <- Lahman::Pitching %>%
+  filter(yearID == 2021 & BFP > 50) %>%
+  left_join(People, by = "playerID") %>%
+  mutate(DICE = 3.1 + (3 * (BB + HBP) + 13 * HR - 2 * SO)/(IPouts/3)) %>%
+  arrange(DICE) %>%
+  select(playerID, nameFirst, nameLast, DICE)
+  
+
+
+3.1 + (3*(11+2)+13*8-2*172)/149
+
+
+3.1 + ((13*1+3)*(13+0)-2*64)/(110/3)
+
+
+# Q2
+# Examine the Lahman database (specifically the Batting table).  If you do not recognize the playerID, you may simply enter it as is.
+# Most triples (X3B) in a season by a player after 1950.
+# When entering the player, enter the first initial and last name.  For example, Babe Ruth would be typed as 'B. Ruth' (without the quotes).  
+# If you don't recognize the player, you may enter the playerID exactly as is. Enter the year with 4 digits.
+
+View(Lahman::Batting)
+
+Lahman::Batting %>%
+  filter(yearID > 1950) %>%
+  arrange(desc(X3B))
+
+
+
+
+
+# Q3
+# Examine the Lahman database (specifically the Pitching table).  
+# Most total strikeouts by a team in a season up to and including 2021--the last year in the Lahman package.  
+# Note: strikeouts are listed as SO. Enter the teamID as it appears in the database and the year as a 4-digit number
+
+View(Lahman::Pitching)
+
+Lahman::Pitching %>%
+  group_by(yearID, teamID) %>%
+  summarise(totalso = sum(SO)) %>%
+  arrange(desc(totalso))
+
+
+
+# Q4
+# In the shootout between the Rams and Chiefs, rank these play types from most expected points added  
+# to fewest expected points added on average.  When using nflfastR, the GameID is 2018_11_KC_LA. 
+# The code to download the data is below.
+
+library(nflreadr)
+library(nflfastR)
+pbp18 <- nflreadr::load_pbp(seasons = 2018)
+ramschiefs <- pbp18 %>%
+  filter(game_id == "2018_11_KC_LA")
+  
+
+ramschiefs %>%
+  select(play_type, epa) %>%
+  group_by(play_type) %>%
+  summarise(avg_epa = mean(epa)) %>%
+  arrange(desc(avg_epa))
+
+
+
+# Q5
+# Looking at the play by play data from all of 2022, Pat Mahomes finished with the highest average expected points per pass (minimum 100 pass attempts).  
+# How many expected points per pass was Mahomes better than his Superbowl opponent, Jalen Hurts on average? 
+  
+# Note: Please make sure to focus on pass plays only.  The 'passer' column will help but you need to filter on play_type.
+
+
+pbp22 <- load_pbp(seasons = 2022)
+
+pbp22 %>%
+  filter(play_type == 'pass' & passer %in% c('J.Hurts', 'P.Mahomes') ) %>%
+  select(passer, epa) %>%
+  group_by(passer) %>% 
+  summarise(avg = mean(epa)) %>%
+  arrange(desc(avg))
+  
+
+
+#Q6
+#Looking at the play by play data from 2022, which rusher with more than 150 carries created the highest median expected points per attempt?  
+#In fact, NO ONE had a POSITIVE median expected points per rush!
+  
+#Make sure to only look at play_type == "run".  
+
+rb_150 <- pbp22 %>%
+  filter(play_type == 'run') %>%
+  count(rusher_player_name) %>%
+  arrange(desc(n)) %>%
+  filter(n > 150)
+
+rtbl <- pbp22 %>%
+  filter(play_type == 'run') %>%
+  inner_join(rb_150, by = "rusher_player_name") %>%
+  select(rusher_player_name, epa) %>%
+  group_by(rusher_player_name) %>%
+  mutate(med = median(epa)) %>%
+  select(rusher_player_name, med) %>%
+  unique()
+
+
+
+
+
+#Q7
+#Create a side by side boxplot utilizing the basketball season data provided below of assists separated by position from 2022-23 data 
+#(using hoopR to retrieve the data) only including people who have at least 1000 minutes played. 
+#Only include the 3 major positions (center, guard, and forward).  The code below will create a dataset with the appropriate variables.
+#Which position has a severe outlier?
+
+install.packages('hoopR')
+library(hoopR)
+
+dat <- load_nba_player_box() 
+seasondata <- dat %>%
+  group_by(athlete_display_name, athlete_position_name)  %>%
+  summarise(across(
+    .cols = minutes:fouls, 
+    .fns = list(sum = sum), na.rm = TRUE
+  )) %>%
+  mutate(position = case_when(athlete_position_name %in% c("Power Forward", "Small Forward")~ "Forward",
+                              athlete_position_name %in% c("Point Guard", "Shooting Guard") ~ "Guard",
+                              TRUE ~ athlete_position_name))
+
+
+
+
+seasondata %>%
+  filter(minutes_sum >= 1000) %>%
+  ggplot(aes(x=position, y=assists_sum, label=athlete_display_name)) + geom_boxplot() + geom_text()
+
+
+
+
+#Q8
+#Using the hoopR package, download the NBA per game data for 2018-19.  Data to accomplish this is below.  
+#Note: this is per game data (not totals).  How many MORE attempts per game (fga) did James Harden take than the person who attempted the 2nd most?
+
+
+dat <- load_nba_player_box(2019) 
+
+
+seasondata19 <- dat %>%
+  group_by(athlete_display_name, athlete_position_name)  %>%
+  summarise(across(
+    .cols = minutes:fouls, 
+    .fns = list(mean = mean), na.rm = TRUE
+  ))
+
+seasondata19 %>%
+  arrange(desc(field_goals_attempted_mean))
+
+
+
+
+
+
+dat %>%
+  filter(did_not_play == FALSE) %>%
+  group_by(athlete_display_name) %>%
+  summarise(tot = mean(field_goals_attempted)) %>%
+  arrange(desc(tot))
+
+
+dat %>%
+  filter(did_not_play == FALSE) %>%
+  group_by(athlete_display_name) %>%
+  summarise(tot = sum(field_goals_attempted)) %>%
+  arrange(desc(tot))
+
+
+seasondata19 %>%
+  select(athlete_display_name, field_goals_attempted_mean) %>%
+  arrange(desc(field_goals_attempted_mean))
+
+
+seasondata19 %>%
+  filter(athlete_display_name == 'James Harden')
+
+
+
+
+
+#Q11
+#Using the instructions in chapter 2 of Mathletics, find the runs created per game for all player seasons with at least 100 at bats (AB) 
+#in the Lahman database.  Mathletics says Barry Bonds in 2004 has the top at 20.7 (he should by your numbers as well).  
+#How many Runs created per game did the player/season in second have? Answer to the nearest 1 decimal place.
+
+q11 <- Lahman::Batting %>%
+  filter(yearID == 2016 & playerID == 'troutmi01') %>%
+  mutate(TotalBases = (H-X2B-X3B-HR) + (2*X2B) + (3*X3B) + (4*HR)) %>%
+  mutate(SluggingPercentage = TotalBases/AB) %>%
+  mutate(RunsCreated = ((H+HBP+BB) * TotalBases) / (AB+BB+HBP)) %>%
+  mutate(RCPG = ((RunsCreated / (((.982*AB) - H + GIDP + SF + SH + CS) / 26.83))))
+         
+q11 <- Lahman::Batting %>%
+  filter(AB > 100) %>%
+  mutate(TotalBases = (H-X2B-X3B-HR) + (2*X2B) + (3*X3B) + (4*HR)) %>%
+  mutate(SluggingPercentage = TotalBases/AB) %>%
+  mutate(RunsCreated = ((H+HBP+BB) * TotalBases) / (AB+BB+HBP)) %>%
+  mutate(RCPG = ((RunsCreated / (((.982*AB) - H + GIDP + SF + SH + CS) / 26.83)))) %>%
+  arrange(desc(RCPG))
+         
+         
+
+
+
