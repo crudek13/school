@@ -87,6 +87,123 @@ legend("topright", legend = c("X", "Y"), col = c("blue", "red"), lty = 1)
 
 
 
+# Exercise 1 Problems
+
+Q1. In the data, another marketing variable is available: the feature (in-store) display (feat_X for brand X and feat_Y for brand Y).  This variable is a binary (0-1) variable that indicates whether UPC was advertised or put on in-store display during the week.  Usually, a feature display promotion comes with a price discount. Let's analyze the feature display effect.  Please follow the steps below and answer the questions:
+
+  1.	Generate a contingency table of average demand and average price.  Because a feature display promotion comes with a price discount, we need to look at both the price promotion effect and the feature display effect at the same time.  So, group the data by the deal indicator (deal_X/deal_Y) and the feature indicator (feat_X/feat_Y) for each brand and generate the contingency table.
+
+```{r}
+# Y
+Data %>% group_by(deal_Y, feat_Y) %>%
+  summarise(n = n(), avg_demand = mean(oz_Y), avg_price = mean(pY))
+```
+
+```{r}
+# X
+Data %>% group_by(deal_X, feat_X) %>%
+  summarise(n = n(), avg_demand = mean(oz_X), avg_price = mean(pX))
+```
+
+
+  2. Add the feature (in-store) display effect into the model in the lab material for each brand.  For example, you need to regress log(oz_X) on log(pX) and feat_X for brand X.
+
+
+```{r}
+#X
+reg_X2 = lm(log(oz_X) ~ log(pX) + feat_X, Data)
+summary(reg_X2)
+```
+
+
+```{r}
+#Y
+reg_Y2 = lm(log(oz_Y) ~ log(pY) + feat_Y, Data)
+summary(reg_Y2)
+```
+
+3. Answer the following questions for each brand:
+  * Are there any differences in the average demand and the average price between the observations with the feature display promotion and those without the promotion?  Provide empirical evidence for your answer.
+
+Yes, for brand Y, the average demand increases from 2581 to 13343 with the feature display promotion and no price promotion. The average price decreases from .0303 to .0295 with the feature display and no price promotion. The average demand again, increases, with the feature display from 14118 to 37008 when on price promotion. The average price decreases from .0226 to .0217 with the feature display and the price promotion.
+
+Brand X is the same as brand Y, the average demand increases from 2329 to 4106 with the feature display promotion and no price promotion. The average price decreases from .03 to .0283 with the feature display and no price promotion. The average demand again, increases, with the feature display from 15275 to 27581 when on price promotion. The average price decreases from .0244 to .022 with the feature display and the price promotion.
+
+* Does the regression with the feature variable confirm your findings in the contingency table?  Provide empirical evidence for your answer.
+
+Yes, the regression results do confirm what we found in the contingency tables. Price is elastic for both brand x and y. The coefficient for the display feature for brand x is positive, at .4160. The coefficient for the display feature is also positive, at 1.6324.
+
+
+* What is the size of the effect (the feature display coefficient)?  Interpret the value of the coefficient. (hint: you can write down the demand equation with the coefficient estimates as: log(D) = α  +  β x log(P)  +  δ x feat, where α, β, and δ are the coefficient estimates of the intercept, the log price, and the feature, respectively.  This is equivalent to  D = eα  x  Pβ  x  eδ, if feat = 1; D = eα  x  Pβ, if feat = 0.  Then, what is the change that the feature variable makes?)
+
+For brand x, the coefficient for the feature display is .4160. This can be interpreted as, log(sales) increases .42% when brand x has a feature display. 
+For brand y, the coefficient for the feature display is 1.6324. This can be interpreted as, log(sales) increases 1.6% when brand y has a feature display. 
+
+* Compare the log price coefficient of your regression to that of the basic model in the lab material.  Does inclusion of the feature display effect affect the price promotion effect?  Provide empirical evidence for your answer.  (Drawing a demand curve w/ and w/o the feature display would be helpful to answer this question.)
+
+X – basic: -6.8103, new: -5.8874
+Y – basic: -6.4786, new: -3.7390 
+
+Yes, including the feature display variable in our regression increased the price coefficient in the new model compared to the basic model. However, both brands are still elastic.
+
+
+
+Q2. Let's analyze the competition effect.  Please follow the steps below and answer the questions:
+
+1.	Add competitor's log price and feature variables into the model in Q1 (the model for feature display effect).  For example, you need to regress log(oz_X) on log(pX), feat_X, log(pY), and feat_Y for brand X.
+
+```{r}
+#X
+reg_X3 = lm(log(oz_X) ~ log(pX) + feat_X + log(pY) + feat_Y, Data)
+summary(reg_X3)
+```
+
+
+```{r}
+#Y
+reg_Y3 = lm(log(oz_Y) ~ log(pY) + feat_Y + log(pX) + feat_X, Data)
+summary(reg_Y3)
+```
+
+2.	Answer the following questions for each brand:
+
+* Is there a competitor price effect on sales?  Is there a competitor feature display effect on sales?  Provide empirical evidence for your answer.
+
+Yes, for both brands.
+
+For Brand x, the log(pY) coefficient is positive at .001, meaning brand x sales go up as brand y price goes up. Oppositely, the coefficient for feat_y in the brand x model is negative at -.0297, meaning brand x sales go down when brand y has a feature display.
+
+For Brand y, the log(px) coefficient is positive at .6424, meaning brand y sales go up as brand x price goes up. This is stronger than we saw for brand x. The coefficient for feat_x in the brand y model is also positive at .011, meaning brand y sales go up when brand x has a feature display. This is different than what we saw for brand x.
+
+* What is the size of the competitor price effect (the competitor price coefficient)?  Interpret the value of the coefficient.  (hint: think about the cross-price elasticity.)
+
+In the brand x model, the coefficient for log(pY) is 0.001089
+In the brand y model, the coefficient for log(pX) is 0.64244
+
+Whereas the coefficients for price of the brand is it’s own elasticity of demand, these coefficients are the cross-price elasticity of demand. Meaning, they are the % change in the brands sales if the price of the other brand increases by 1%
+
+Brand x sales increase by .001% if brand y price increases by 1%. Brand y sales increase by .64% if brand x increases their price by 1%
+
+* Compare the log price coefficient of your regression to that of the model for feature display effect in Q1.  Does inclusion of the competitor's variables affect the own-price promotion effect?  Provide empirical evidence for your answer.
+
+In the original Q1 model for feature display, the coefficients were:
+brand x log price: -5.8874
+brand y log price: -3.7390
+
+the coefficients when including competitor’s variables:
+brand x log price: -5.896607
+brand y log price: -3.76910
+
+For both brands, the coefficients slightly decreased when adding competitor variables but this change does not seem significant.
+
+
+
+
+
+
+
+
+
 
 
 
