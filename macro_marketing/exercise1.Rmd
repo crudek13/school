@@ -1,0 +1,94 @@
+---
+title: "Exercise 1"
+author: "Carter Rudek"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+# Lab material 1 – Log-log demand models and price elasticities
+
+* This exercise is based on K. Wertenbroch (2006) “Measuring Price Promotion Effects: An Econometric Exercise in Measuring the Impact of Marketing Decision Making.”
+* If you’ve not yet installed R, RStudio, and tidyverse package, install them by following directions in Application installation guide for BUSML7247.pdf file.
+* In this material, what you have to type in R is highlighted in yellow.
+
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+Data = read_csv("PricePromotionEffectsData.csv")
+```
+
+3. Basic model
+  3.1. For each brand (X and Y), generate a contingency table for groups by class (lite and regular) and deal_X/deal_Y (whether the UPC was price-promoted or not). Summarize the number of observations (using n function in summarise function; see Chapter 3 of “R for Data Science” book (Chapter 5 in the web version) for the details of the functions), the average sales amount (oz_X/oz_Y), and the average price (pX/pY).
+
+
+```{r}
+Data %>% group_by(class, deal_X) %>%
+  summarise(n = n(), avg_demand = mean(oz_X), avg_price = mean(pX))
+```
+
+```{r}
+Data %>% group_by(class, deal_Y) %>%
+  summarise(n = n(), avg_demand = mean(oz_Y), avg_price = mean(pY))
+```
+
+
+* For brand X,
+  * The average price w/ the price promotion (0.0225 for lite, 0.0228 for regular) is lower than the average price w/o the price promotion (0.0298 for lite, 0.0297 for regular). This is obvious and there seems no difference between the classes (0.0225 vs. 0.0228 and 0.0298 vs. 0.0297).
+  * The average sales w/ the price promotion (25455 for lite, 24125 for regular) is much greater than (about 9-10 times as great as) the average sales w/o the price promotion (2686 for lite, 2588 for regular). There seems no significant difference between the classes (25455 vs. 24125 and 2686 vs. 2588).
+  * In sum, the table shows clear evidence of the price promotion effect for brand X.
+* Brand Y shows evidence similar to Brand X.
+
+
+
+3.2. Regress the log sales amount (log(oz_X)/log(oz_Y)) on the log price (log(pX)/log(pY)) as follows (the regression result is stored and will be used to
+draw the demand curves):
+
+```{r}
+reg_X = lm(log(oz_X) ~ log(pX), Data)
+reg_Y = lm(log(oz_Y) ~ log(pY), Data)
+summary(reg_X)
+```
+
+```{r}
+summary(reg_Y)
+```
+
+* The above regression results confirm the evidence above: the coefficient of the log price is -6.81 (brand X) and -6.48 (brand Y), implying that both brands are price elastic.
+
+3.3. Generate demand curves as follows:
+
+```{r}
+alphaX = reg_X$coefficients[1]
+betaX = reg_X$coefficients[2]
+priceX = seq(min(Data$pX), max(Data$pX), 0.001)
+demandX = exp(alphaX + betaX * log(priceX))
+alphaY = reg_Y$coefficients[1]
+betaY = reg_Y$coefficients[2]
+priceY = seq(min(Data$pY), max(Data$pY), 0.001)
+demandY = exp(alphaY + betaY * log(priceY))
+plot(priceX, demandX, type = "l", col = "blue", xlab = "price", ylab = "demand", main = "Demand curve: basic model")
+points(priceY, demandY, type = "l", col = "red")
+legend("topright", legend = c("X", "Y"), col = c("blue", "red"), lty = 1)
+```
+
+
+* For brand X,
+  * alphaX and betaX store the regression coefficient estimates of intercept and log price, respectively.
+  * priceX stores a series of numbers from the observed minimum price of the brand (min(Data$pX)) to the observed maximum price of the brand (max(Data$pY)) at intervals of .001. seq function is used to generate a series like this. Refer to R help (type ? seq to see the help) for the details of the function.
+ * Demand prediction at each price in priceX is calculated (exp(alphaX + betaX*log(priceX))) and stored in demandX variable.
+
+* For brand Y, priceY and demandY are generated in the same manner.
+* plot, points, and legend functions draw the demand curve above. Refer to R help for the details of the functions.
+* Because the regression coefficient estimates of both brands are similar to each other (-16.05 vs. -14.82 for intercept; -6.81 vs. -6.48 for log price), the demand curves of both brands are similar to each other.
+
+
+
+
+
+
+
+
+
