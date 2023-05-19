@@ -1,0 +1,506 @@
+---
+title: "TS Forecasting Final Project - Group 12"
+author: "Carter Rudek, Brandon Slover & Chris Garcia"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE} 
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+
+# Packages
+library(pacman)
+pacman::p_load(keyring, openxlsx, DBI, odbc, readr, dbplyr, slider, GGally, seasonal, fpp3, gridExtra, htmltools, devtools, feasts, tidyverse, lubridate)
+```
+
+```{r Read Data}
+df <- read.csv("forecasting_data.csv")
+cpi <- read.csv("cpi_2015_Mar2023.csv")
+```
+
+
+-------------------------------------------------------------------------------------------------------------------------------
+
+# 1. Data Preparation
+
+### Sales (Dependent Variable)
+
+```{r Sales Preparation}
+# add month column
+df <- df %>%
+  mutate(date = mdy(TRX_DATE))
+
+df <- df %>%
+  mutate(month = yearmonth(lubridate::floor_date(df$date, "month")))
+
+# create ts, filter data from 2016 through March 2023
+df_ts <- df %>%
+  filter(between(date, as.Date("2016-01-01"), as.Date("2023-03-31"))) %>% #change this once we get April data
+  select(month, NET_SALES) %>%
+  group_by(month) %>%
+  summarise(net_sales = sum(NET_SALES)) %>%
+  as_tsibble(index = month)
+```
+
+
+### Regression data (Independent Variables)
+
+##### Consumer Price Index (CPI)
+
+```{r CPI}
+# clean CPI and create ts
+cpi_ts <- cpi %>%
+  filter(year>=2016) %>%
+  select(year, periodName, value) %>%
+  unite(my, c("periodName", toString("year"))) %>%
+  mutate(my = str_replace(my,"_"," ")) %>%
+  mutate(date = my(my)) %>%
+  mutate(month = yearmonth(date, "month")) %>%
+  select(month, value) %>%
+  rename(cpi = 'value') %>%
+  as_tsibble(index = month)
+
+# join sales and cpi data
+sales_cpi_ts <- df_ts %>%
+  full_join(cpi_ts, by = "month")
+```
+
+##### Covid
+
+```{r}
+# add covid dummy variable to data for regression
+sales_cpi_covid_ts <- sales_cpi_ts %>%
+  mutate(covid = ifelse(
+    time_in(month, "2020 Jan" ~ "Dec 2021"),
+    1, 0
+  ))
+```
+
+
+-------------------------------------------------------------------------------------------------------------------------------
+
+# 2. Firm Information
+
+
+
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------
+
+# 3.Technique Application
+
+
+
+### i. Descriptive Visualization
+
+```{r}
+# 1. continuous line chart 
+options(scipen = 999)
+df_ts %>%
+  ggplot(aes(label = month, x = month, y = net_sales, color = "red")) +
+  geom_line() +
+  geom_smooth(method = "lm") +
+  geom_point() +
+  geom_vline(xintercept = as.Date("2020-03-01"), color = "grey", linetype="dotted") + # covid start?
+  geom_vline(xintercept = as.Date("2021-12-01"), color = "grey", linetype="dotted") + # covid end?
+  geom_point(data = df_ts[which.min(df_ts$net_sales), ], color="blue", 
+             size=3) +
+  geom_point(data = df_ts[which.max(df_ts$net_sales), ], color="green", 
+             size=3) +
+  geom_text(data = bind_rows(df_ts[which.min(df$net_sales), ], 
+                             df_ts[which.max(df$net_sales), ]), 
+            aes(label = month)) +
+  scale_y_continuous(labels = scales::comma) +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.background = element_rect(fill = 'black'),
+    plot.background = element_rect(fill = 'black'),
+    text=element_text(color="white"),axis.text=element_text(color="white")) + 
+  labs(title='Monthly Sales') +
+  xlab("Time") +
+  ylab("Net Sales") +
+  theme(legend.position="none")
+```
+
+```{r}
+# 2. seasonal plot by year
+options(scipen = 999)
+df_ts %>% 
+  gg_season(net_sales, labels = "both") +
+  scale_y_continuous(labels = scales::comma) +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.background = element_rect(fill = 'black'),
+    plot.background = element_rect(fill = 'black'),
+    text=element_text(color="white"),axis.text=element_text(color="white"))+ 
+  labs(title='YoY by Month') +
+  xlab("Time") +
+  ylab("Net Sales")
+```
+
+```{r}
+# 3. seasonal plot by month
+options(scipen = 999)
+df_ts %>% 
+  gg_subseries(net_sales, color = "red") +
+  scale_y_continuous(labels = scales::comma) +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.background = element_rect(fill = 'black')) +
+  ggtitle("Seasonal Plot by Month") +
+  xlab("Years") +
+  ylab("Net Sales")
+```
+
+```{r}
+# 4. ACF
+df_ts %>%
+  ACF(net_sales, lag_max = 48) %>%
+  autoplot() +
+  labs(title = "Net Sales")
+```
+
+```{r}
+# 5. Decomposition?
+
+Placeholder
+Placeholder
+Placeholder
+
+```
+
+
+```{r CPI and Sales}
+# 6. Visualization/Exploration for dependent and independent variable
+## all
+sales_cpi_ts %>%
+  pivot_longer(!month, names_to = "metric", values_to = "number") %>%
+  ggplot(aes(x = month, y = number, group = metric)) +
+  geom_line() +
+  geom_smooth(method = "lm") +
+  facet_grid(vars(metric), scales = "free_y") +
+  ggtitle('Full Date Range')
+
+## investigate prior to covid
+sales_cpi_ts %>%
+  filter_index(.~ "2019 Dec") %>%
+  pivot_longer(!month, names_to = "metric", values_to = "number") %>%
+  ggplot(aes(x = month, y = number, group = metric)) +
+  geom_line() +
+  geom_smooth(method = "lm") +
+  facet_grid(vars(metric), scales = "free_y") +
+  ggtitle('Prior to Covid')
+
+## investigate covid to present
+sales_cpi_ts %>%
+  filter_index("2020 Jan" ~.) %>%
+  pivot_longer(!month, names_to = "metric", values_to = "number") %>%
+  ggplot(aes(x = month, y = number, group = metric)) +
+  geom_line() +
+  geom_smooth(method = "lm") +
+  facet_grid(vars(metric), scales = "free_y") +
+  ggtitle('Covid-Present')
+
+```
+
+### ii. ARIMA / Dynamic Regression
+
+
+
+# Statistical Modeling
+
+
+```{r}
+# basically no correlation
+cor(sales_cpi_covid_ts$net_sales, sales_cpi_covid_ts$cpi)
+
+# scatter matrix
+sales_cpi_covid_ts %>% 
+  ggpairs(col=c(2:3))
+
+```
+
+
+### Regression
+
+
+```{r linear model}
+# Model with all potential variables
+# fit TSLM
+lm <- sales_cpi_covid_ts %>% 
+  model(tslm = TSLM(net_sales ~ cpi + as.factor(covid) + lag(net_sales,1) + lag(net_sales,2) + lag(net_sales,12) + trend() + season()))
+
+#report lm output
+report(lm)
+print("---------------------------------------------------------------------")
+
+# fit metrics
+lm  %>% glance %>%
+select(adj_r_squared, AIC, AICc, BIC, CV) 
+```
+
+```{r}
+# check residuals
+lm %>% gg_tsresiduals()
+
+# ljung box test for autocorrealtion
+augment(lm) %>%
+  features(.resid, ljung_box, lag = 10, dof = 8)
+```
+
+```{r}
+# Compare multiple models
+
+#fit several models with different lags and see which is best (note use of differenced variables)
+fit1 <- sales_cpi_covid_ts %>% model(
+model1 = TSLM(net_sales ~ cpi),
+model2 = TSLM(net_sales ~ as.factor(covid)),
+model3 = TSLM(net_sales ~ cpi + as.factor(covid)),
+model4 = TSLM(net_sales ~ cpi + as.factor(covid) + lag(net_sales,1)),
+model5 = TSLM(net_sales ~ cpi + as.factor(covid) + lag(net_sales,1) + lag(net_sales,2)),
+model6 = TSLM(net_sales ~ cpi + as.factor(covid) + lag(net_sales,1) + lag(net_sales,2) + lag(net_sales,12)),
+model7 = TSLM(net_sales ~ cpi + as.factor(covid) + lag(net_sales,1) + lag(net_sales,2) + lag(net_sales,12) + trend()),
+model8 = TSLM(net_sales ~ cpi + as.factor(covid) + lag(net_sales,1) + lag(net_sales,2) + lag(net_sales,12) + trend() + season()),
+model9 = TSLM(net_sales ~ cpi + as.factor(covid) + trend() + season())
+)
+fit1 %>% glance %>% select(adj_r_squared, AIC, AICc, BIC, CV) 
+
+```
+
+```{r}
+# example forecasting with just cpi
+cpi_model <- sales_cpi_covid_ts %>% 
+  model(tslm = TSLM(net_sales ~ cpi))
+
+#set number of periods to forecast
+h=12
+
+#create newdata for first scenario
+scen_data <- scenarios(
+  "avg_cpi" = new_data(sales_cpi_covid_ts, h) %>% 
+    mutate(
+      cpi = rep(mean(sales_cpi_covid_ts$cpi),h), # average p
+    names_to = "Scenario"))
+
+
+cpi_mod_avg <- forecast(cpi_model, new_data = scen_data)
+
+#create plot
+sales_cpi_covid_ts %>%
+  autoplot(net_sales) +
+  autolayer(cpi_mod_avg) +
+  ylab('Log Units Sold') +
+  xlab('Time (in Weeks)') +
+  ggtitle('Forecast for Log Units Sold of Tropicana Pure Premium 64oz using Avergage Price and Coupon/D')
+```
+
+### ARIMA
+
+```{r}
+# check for stationarity
+sales_cpi_covid_ts %>% 
+  features(net_sales, c(unitroot_kpss, unitroot_ndiffs, unitroot_nsdiffs))
+```
+
+It doesn't seem like anything other than a seasonal diff needs done, let's go through some of the transformations
+
+```{r}
+#original plot
+plot1 <- sales_cpi_covid_ts %>% 
+  select(month, net_sales) %>%
+  autoplot()+ #create plot of time series
+  xlab("Time")+ylab("Value")+ #change labels
+  ggtitle("Time Series Plot 1")
+
+plot1
+```
+
+BOX-COX for unstable variance (fluctuations)
+
+```{r}
+# There doesnt seem to be any problem with unstable variance
+
+# look at what box cox does to the data
+optlambda <- sales_cpi_covid_ts %>% 
+  select(month, net_sales) %>%
+  features(net_sales, features=guerrero) %>% #get optimal lambda and pull value
+  pull(lambda_guerrero)
+
+bc_trans <- sales_cpi_covid_ts %>% 
+  select(month, net_sales) %>%
+  mutate(net_sales = box_cox(net_sales, optlambda)) #create transformed time series
+
+plot2 <- bc_trans %>% autoplot() + #create plot of transformed series
+  xlab("Time")+ylab("BoxCox Times Series")+ #change axis labels
+  ggtitle("Box Cox Transformed Values")
+
+grid.arrange(plot1, plot2, ncol=1) #combine plots of time series
+```
+
+First Difference to handle trends
+
+
+```{r}
+# there isnt much trend, this doesnt do much either
+
+# look what first differencing does
+fd_trans <- sales_cpi_covid_ts %>% 
+  select(month, net_sales) %>% 
+  mutate(net_sales = difference(net_sales,1)) #create differenced series
+
+plot3 <- fd_trans %>% autoplot() + #create plot of diff’d transformed series
+  xlab("Time")+ylab("Diff'd Box Cox Values")+ #change axis labels
+  ggtitle("First Differenced Box Cox Transformed Values")
+grid.arrange(plot1, plot3, ncol=1) #combine plots of time series
+```
+
+Seasonal Difference
+
+```{r}
+sd_trans <- sales_cpi_covid_ts %>% 
+  select(month, net_sales) %>%  
+  mutate(net_sales = difference(net_sales,12)) #create seasonally differenced series
+
+
+plot4 <- sd_trans %>% autoplot() + #create plot of diff’d series
+  xlab("Time")+ylab("Seasonally Diff'd Values")+ #change axis labels
+  ggtitle("Seasonally Differenced Series")
+grid.arrange(plot1, plot4, ncol=1) #combine plots of time series
+```
+
+
+```{r}
+# check for stationarity for series with seasonal difference
+sd_trans %>% 
+  features(net_sales, c(unitroot_kpss, unitroot_ndiffs, unitroot_nsdiffs))
+```
+
+Everything looks good now!
+
+```{r}
+#plot ACF and PACF plots with series
+sd_trans %>% 
+  gg_tsdisplay(net_sales, 'partial')
+```
+
+An AR(1) model:
+
+* Has an ACF plot that decays gradually over many lags
+* Has a PACF plot that decays immediately after a single lag
+
+We took a seasonal difference 
+
+Seasonal MA(1)
+* exponential decay in the seasonal lags of the ACF;
+* a single significant spike at lag 12 in the PACF.
+
+```{r}
+# the arima model i am trying based on acf and pacf plots
+my_arima_fit <- sales_cpi_covid_ts %>% 
+  select(month, net_sales) %>%
+  model(
+    ARIMA(net_sales ~ pdq(1,0,0) + PDQ(0,1,1))
+    )
+
+report(my_arima_fit)
+```
+
+
+
+
+
+
+
+
+
+
+##### Automatically have R generate
+
+```{r}
+# ORIGINAL
+# ask R to identify the best fitting ARIMA model
+arima_fit <- sales_cpi_covid_ts %>% 
+  select(month, net_sales) %>%
+  model(
+    ARIMA(net_sales)
+    )
+
+report(arima_fit)
+```
+
+```{r}
+# New Seasonally Differenced data
+# ask R to identify the best fitting ARIMA model
+arima_sd_fit <- sd_trans %>% model(
+  ARIMA(net_sales))
+
+report(arima_sd_fit)
+```
+
+```{r}
+sales_cpi_covid_ts %>% model(ARIMA(net_sales ~ pdq(1,0,0) + PDQ(0,1,1))) %>%
+  forecast(h=12) %>%
+  autoplot(sales_cpi_covid_ts)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Dynamic Regression
+
+
+
+
+
+
+
+
+
+### iii. Forecast
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
