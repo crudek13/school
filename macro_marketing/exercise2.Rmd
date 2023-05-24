@@ -1,0 +1,151 @@
+---
+title: "Exercise 1"
+author: "Carter Rudek"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+# Lab material 2 – market share models
+
+* This exercise is based on the fake data used in Nevo’s (2000) Practitioner’s guide article – Aviv Nevo (2000) “A Practitioner’s Guide to Estimation of Random-Coefficients Logit Models of Demand,” Journal of Economics & Management Strategy 9(4), pp. 513-548.
+* If you’ve not yet installed R, RStudio, and tidyverse package, install them by following directions in Application installation guide for BUSML7247.pdf file.
+* In this material, what you have to type in R is highlighted in yellow.
+
+1. Run RStudio and load tidyverse package as follows.
+
+```{r}
+library(tidyverse)
+```
+
+
+2. Data preparation
+2.1. Read data (CerealShareData.csv, available in Carmen) by using read_csv function as follows.
+
+```{r}
+sharedata = read_csv("CerealShareData.csv")
+```
+
+* If you cannot read the data, check if the working directory is the same as the folder where you’ve saved the data file by using getwd function and correct the working directory by using setwd function.
+
+2.2. Take a look at the data frame by typing the name of the data frame (sharedata) as follows. This dataset has 6 variables as below.
+
+```{r}
+sharedata
+```
+
+* id an identifier for each observation
+* firmbr the firm-brand identifier; 24 firm-brand pairs in total
+* city the market (city) identifier; 47 cities in total
+* quarter the quarter identifier; data collected (generated) for 2 quarters
+* share the market share for each brand-market-time
+* price the average price for each brand-market-time
+
+
+2.3. Compute the total share of the brands for each market-time.
+
+```{r}
+totalshare = sharedata %>% group_by(city, quarter) %>%
+  summarize(totalshare = sum(share))
+```
+
+```{r}
+totalshare
+```
+
+2.4. Regarding all of the other brands not recorded in this dataset as a composite outside option, we can compute the market share of the outside option by subtracting totalshare from 1.
+
+```{r}
+totalshare = totalshare %>% 
+  mutate(share0 = 1 - totalshare)
+
+totalshare
+```
+
+2.5. Combine both data frames by using left_join function.
+
+```{r}
+sharedata = left_join(sharedata, totalshare) #Joining, by = c("city", "quarter")
+
+sharedata
+```
+
+2.6. For convenience, make a new variable (dlogshare) of the difference between log(share) and log(share0), which is used as the dependent variable in the market share model.
+
+```{r}
+sharedata = sharedata %>% mutate(dlogshare = log(share) - log(share0))
+
+sharedata
+```
+
+3. Basic model
+3.1. Regress dlogshare on the log price (log(price)).
+
+```{r}
+summary(lm(dlogshare ~ log(price), sharedata))
+```
+
+* The coefficient estimate of the log price is -0.9455. This implies, for a brand that takes 5% of the market, the own-price elasticity of the market share is -0.9455 x (1 – 5%) = 0.8982 and the cross-price elasticity of the market share is 0.9455 x 5% = 0.0473.
+* 0.8982 of the own-price elasticity means, if the brand cuts its price by 10%, its market share increases by 8.982%.
+* 0.0473 of the cross-price elasticity means, the market share decreases by 0.473% when a competing brand cuts its price by 10%.
+
+```{r}
+-0.9455 * (1 - .05)
+```
+
+
+
+# Exercise 2 Problems
+
+Q1. Add the brand-specific variables (firmbr) as regressors into the regression of the market share model, by using as.factor function, i.e., add as.factor(firmbr) as another regressor into the regression.
+
+```{r}
+summary(lm(dlogshare ~ log(price) + as.factor(firmbr) , sharedata))
+```
+
+
+2.	Compute the own-price elasticity and the cross-price elasticity with the new estimate of the log price coefficient, assuming a brand with a 5% market share. And, interpret the elasticities
+
+```{r}
+own = -3.2975 * (1 - .05) 
+cross = 3.2975 * .05
+
+abs(own)
+cross
+```
+
+
+3.	The estimate of the log price coefficient may change a lot from the estimate from the regression without the brand-specific variables, which you ran in the lab material. What do you think make the big change in the log price coefficient?
+
+
+
+
+
+
+
+
+
+Q2. Add the market-specific variables (city) as another regressor into the regression, and report the estimate of the log price coefficient and compute the own-price elasticity and the cross-price elasticity for a brand with a 5% market share. Does the estimate change significantly with consideration of the market-specific variables? Provide empirical evidence for your answer. 
+
+```{r}
+summary(lm(dlogshare ~ log(price) + as.factor(firmbr) + as.factor(city) , sharedata))
+```
+
+
+```{r}
+own2 = -3.196939 * (1 - .05) 
+cross2 = 3.196939 * .05
+
+abs(own2)
+cross2
+```
+
+
+
+
+
+
+
+
+
+
+
