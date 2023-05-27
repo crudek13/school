@@ -1,0 +1,95 @@
+---
+title: "week3_in_class - 1"
+author: "Carter Rudek"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+
+1. In assignment 1, we analyzed price elasticities of demand for two brands: brand X and brand Y. Considering the feature promotions and competitor’s price changes, you may fit the data to the following model:
+
+For brand X, log(DX) = αX + βown,X log(PX) + δown,X featX + βcross,X log(PY) + δcross,X featY + εX
+For brand Y, log(DY) = αY + βown,Y log(PY) + δown,Y featY + βcross,Y log(PX) + δcross,Y featX + εY
+
+1.1. (referring to assignment 1 lab material and your answers to the exercise questions) Run the models above again (If you cannot read the data, check if the working directory is the same as the folder where you’ve saved the data file by using getwd function and correct the working directory by using setwd function):
+
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+Data = read_csv("PricePromotionEffectsData.csv")
+```
+
+```{r}
+reg_X = lm(log(oz_X) ~ log(pX) + feat_X + log(pY) + feat_Y, Data)
+reg_Y = lm(log(oz_Y) ~ log(pY) + feat_Y + log(pX) + feat_X, Data)
+summary(reg_X)
+```
+```{r}
+ summary(reg_Y)
+```
+
+1.2. Answer question 1 (in the question file) based on the estimation results.
+
+1.3. You may see that …
+* Brand X’s demand is not affected by brand Y’s price and promotion, whereas brand Y’s demand is affected by brand X’s price.
+* That is, pricing for brand X may not be affected by brand Y’s price, whereas pricing for brand Y may be affected by brand X’s price.
+* Such a brand like brand X is called a price-maker and such a brand like brand Y is called a price-taker:
+  * Brand X’s optimal price (maximizing its profit) is independent of brand Y’s price.
+  * Brand Y’s optimal price (maximizing its profit) is conditional on brand X’s price.
+
+2. For simplicity, assume that (i) the marginal cost per unit is $0.015 for both brands, i.e., CX = 0.015 and CY = 0.015, and (ii) there is no feature promotion for both brands, i.e., featX = 0 and featY = 0.
+
+2.1. For brand X’s demand, brand Y’s price term can be dropped because the coefficient estimate is small and insignificant. Also, both feature-promotion terms can be dropped because of the assumption above.
+
+2.2. Then,
+* brand X’s demand reduces to log(DX) = αX + βown,X log(PX) = -12.9 + (-5.9) log(PX).
+* brand X’s profit is given by ProfitX = e-12.9 x PX -5.9 x (PX – CX).
+
+2.3. The current average price per unit of brand X is $0.028:
+* With the average price, ProfitX = e-12.9 x (0.028)-5.9 x (0.028 – 0.015) = $47.13.
+* With PX = 0.02, ProfitX = e-12.9 x (0.02) -5.9 x (0.02 – 0.015) = $131.98.
+* With the optimal price, PX = β/(1+β) x CX = 0.018, ProfitX = e-12.9 x (0.018) -5.9 x (0.018 – 0.015) = $147.44.
+
+2.4. For your better understanding, let’s draw the profit curve for the price range (0.015, 0.025). You may see an inverted-U shape curve:
+
+
+
+
+```{r}
+alpha_X = -12.9
+beta_own_X = -5.9
+cost_X = 0.015
+price_X = seq(0.015, 0.025, 0.0001)
+profit_X = exp(alpha_X) * price_X^beta_own_X * (price_X - cost_X)
+plot(price_X, profit_X, type = "l")
+```
+
+
+2.5. Compute and draw the optimal price and profit. You may see that the profit is maximized at the optimal price:
+
+```{r}
+price_X_star = beta_own_X / (1 + beta_own_X) * cost_X
+profit_X_star = exp(alpha_X) * price_X_star^beta_own_X * (price_X_star - cost_X)
+
+
+plot(price_X, profit_X, type = "l") +
+  abline(v = price_X_star, col = "gray") +
+  abline(h = profit_X_star, col = "gray")
+```
+
+3. What if the marginal cost is $0.018? Answer question 2.
+
+4. Again, assume that (i) the marginal cost per unit is $0.015 for both brands, i.e., CX = 0.015 and CY = 0.015, and (ii) there is no feature promotion for both brands, i.e., featX = 0 and featY = 0.
+
+4.1. Then, brand Y’s demand reduces to log(DY) = αY + βown,Y log(PY) + βcross,Y log(PX) = -3.3 + (-3.77) log(PY) + 0.64 log(PX).
+
+4.2. What is brand Y’s profit function? Answer question 3.
+
+4.3. Suppose that brand X sets its price to $0.028 (the current average price) and analyze brand Y’s profit. Answer question 4.
+
+4.4. Answer questions 5 and 6.
+
+

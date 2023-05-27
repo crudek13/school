@@ -1,0 +1,81 @@
+---
+title: "week3_in_class - 2"
+author: "Carter Rudek"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+
+```{r}
+library(tidyverse)
+```
+
+
+2. Data preparation
+
+2.1. Read data (WeeklySales.csv, available in Carmen) by using read_csv function as follows.
+
+```{r}
+Sales = read_csv("WeeklySales.csv")
+```
+
+
+* If you cannot read the data, check if the working directory is the same as the folder where you’ve saved the data file by using getwd function and correct the working directory by using setwd function.
+
+2.2. Take a look at the data frame by typing the name of the data frame (Sales) as follows. There are four variables:
+
+* MondayOfWeek is the week identifier. For example, 2005-06-06 means the observation is the sales data in the week of June 6, 2005.
+* Brand, Qty, and Price are the brand, sales quantity, and average price, respectively.
+
+```{r}
+Sales
+```
+
+3. Mr. Mistake’s analysis
+
+3.1. Regress Qty on Price. You may find a positive coefficient estimate for Price variable as follows:
+
+
+```{r}
+summary(lm(Qty ~ Price, Sales))
+```
+
+3.2. We now draw a crosstab for high/low prices. We use a median split to distinguish between high-price cases and low-price cases. We need to generate a true/false indicator that shows if the price is in the upper 50% or not. Then, we divide the observations into the high-price group and the low-price group and take the average of the sales quantities for each group, as follows.
+
+```{r}
+summary1 = Sales %>%
+  mutate(HighPrice = (Price > median(Price))) %>%
+  group_by(HighPrice) %>%
+  summarise(Qty = mean(Qty))
+
+summary1
+```
+
+* mutate function generates the true/false indicator. (Price > median(Price)) returns the true/false value and it is saved in HighPrice variable.
+* summarise (or summarize) function generates summary of Qty for each group defined in group_by function. We use the average (mean function) for summary. See Chapter 3 of “R for Data Science” book (Chapter 5 in the web version) for the details of the function.
+* Consistent with the regression result, high-price group (HighPrice = TRUE) shows higher sales quantity than low-price group (HighPrice = FALSE).
+
+3.3. But, Ms. Perfect shows Mr. Mistake’s analysis is wrong by displaying the number of observations of each brand. This is straightforward: we just need to group the observations by the price-level (high/low) and brand and count the cases. For better understanding, we reshape the table by using spread function, as follows.
+
+
+```{r}
+summary2 = Sales %>%
+  mutate(HighPrice = (Price > median(Price))) %>%
+  group_by(HighPrice, Brand) %>%
+  count()
+
+summary2 = spread(summary2, key = Brand, value = n)
+summary2
+```
+
+3.4. The remaining job is to combine the tables. left_join function allows one to do so:
+
+```{r}
+summary_mistake = left_join(summary1, summary2) #Joining, by = "HighPrice"
+summary_mistake
+```
+
+
+* left_join requires two data.frame variables as inputs (only one input if it is used with a pipe operator). Variables in the second data.frame (summary2, above) are added into the first data.frame (summary1). Two data.frames must share at least one variable (HighPrice). The shared variables are called “keys.” For each observation in the first data.frame (summary1), values of the new variables (A, B, and C) are coming from the second data.frame’s (summary2) observation with the same keys (HighPrice). For example, values of the new variables with HighPrice = FALSE in summary1 are coming from the observation with the same key value in summary2, i.e., 45, 7, and 104. See Chapter 10 of “R for Data Science” book (Chapter 13 in the web version) for the details of the function.
+
+
