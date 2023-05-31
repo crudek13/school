@@ -1,0 +1,166 @@
+---
+title: "Exercise 3"
+author: "Carter Rudek"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+1. Run Rstudio and install AER package as follows. This package provides various functions for advanced models including IV regressions.
+
+```{r}
+#install.packages("AER")
+library(AER)
+library(tidyverse)
+```
+
+3. Data preparation
+3.1. Read data (Cigarettes1995dadsDataFull.csv, available in Carmen) by using read_csv function as follows.
+
+```{r}
+CigData = read_csv("Cigarettes1995data.csv")
+```
+
+* If you cannot read the data, check if the working directory is the same as the folder where you’ve saved the data file by using getwd function and correct the working directory by using setwd function.
+
+3.2. Take a look at the data frame by typing the name of the data frame (CigData) as follows. This dataset includes the following 9 variables of 48 U.S. states in 1995:
+* state U.S. state abbreviations
+* year 1995 for all states
+* cpi 1.52 for all states, consumer price index in 1995
+* population Population size of each state in 1995
+* packs the number of packs sold in 1995
+* income nominal aggregate income in 1995
+* price the average price of cigarettes sold in 1995
+* salestax sales tax per pack in 1995
+* cigtax extra taxes that apply only to tobacco products in 1995
+
+```{r}
+CigData
+```
+
+3.3. Convert the nominal variables to real variables:
+* rprice = price / cpi
+* rincome = income / population / cpi (i.e., real per capita income)
+* rsalestax = salestax / cpi
+* rcigtax = cigtax / cpi
+
+```{r}
+CigData = CigData %>% mutate(rprice = price/cpi,
+  rincome = income/population/cpi,
+  rsalestax = salestax/cpi,
+  rcigtax = cigtax/cpi)
+
+```
+
+
+4. Analysis
+
+4.1. [OLS regression] The purpose of this analysis is to investigate the demand curve for cigarettes in 1995. First, regress the log sales on the log real price and the log real per capita income.
+
+```{r}
+ols = lm(log(packs) ~ log(rprice) + log(rincome), CigData)
+summary(ols)
+```
+
+* The estimate of the log price coefficient is -1.4065, i.e., the cigarette demand is price elastic.
+* The log real per capita income is added in order to control for the income difference across the states.
+4.2. [1st-stage regression] The price is potentially endogenous. In this exercise, sales taxes are used as instruments. Sales taxes take a large portion of the price especially for tobacco products, implying that sales taxes are highly likely correlated to the price (i.e., the relevance condition holds). But, the taxes may be determined independently of demand (i.e., the exclusion restriction holds). To validate, compute the correlation coefficient between the log real price and the sales tax (using cor.test function) and regress the log real price on the sales tax.
+
+```{r}
+cor.test(log(CigData$rprice), CigData$rsalestax)
+```
+
+```{r}
+ls1st = lm(log(rprice) ~ rsalestax, CigData)
+summary(ls1st)
+```
+
+
+* The correlation coefficient is about 0.69 (=0.6862915), indicating a strong positive correlation. Its 95% confidence interval (0.4995733, 0.8120727) does not include 0 and p-value is very small (7.271e-08). We thus conclude that there is a statistically
+significant strong correlation between the log real price and the sales tax.
+* In the regression, the log real price is regressed on the sales tax (and an intercept). This regression is the first stage regression. The estimate of the sales tax coefficient is 0.030729, which is positive and statistically significant in accordance with the correlation coefficient.
+* Another important statistic is F-statistic, which is reported in the last line of the summary. Its value is 40.96 and its p-value is 7.271e-08.
+
+4.3. [2nd-stage regression] Regress the log sales on the fitted (or predicted) value of the log real price in the 1st-stage regression and the log real per capita income. The fitted value can be obtained by using fitted(regression object) function.
+
+```{r}
+ls2nd = lm(log(packs) ~ fitted(ls1st) + log(rincome), CigData)
+summary(ls2nd)
+```
+
+* The estimate of the coefficient associated with the fitted value is -1.0193, which is the 2SLS estimate of the log price coefficient. The 2SLS estimate is smaller than the OLS estimate (-1.4065), implying that the price sensitivity is overestimated when the endogeneity of the price is not controlled. The 2SLS estimate is close to -1, meaning that the cigarette demand is almost unit-elastic after the endogeneity correction.
+
+4.4. [ivreg function in AER package] A 2SLS has been manually conducted in steps 4.2 through 4.3. This “manual” version works well, but it is statistically inefficient. AER package provides a useful function for IV regressions, ivreg, a collection of standard methods for IV regressions. ivreg is basically very similar to lm function: formula and data arguments. Only one difference is the instrument specification in formula: ivreg(formula | instrument, data = dataset object)
+* formula specifies the main equation. Its format is: dependent variable ~ endogenous variable + exogenous control variables. For example, the main equation of this analysis is the regression of the log sales (log(packs)) on the log real price (log(rprice)) and the log real per capita income (log(rincome)). Thus, formula becomes log(packs) ~ log(rprice) + log(rincome).
+* instrument specifies the instruments for the endogenous variable and exogenous control variables, i.e., its format is: exogenous control variables + instrumental variables. For example, the real sales tax (rsalestax) is used as an instrument for the log real price. Thus, instrument becomes log(rincome) + rsalestax.
+* Unlike lm function, “data =” should be always included in ivreg function.
+* To get the summary table with the 1st-stage F-statistic, “diagnostics = TRUE” must be specified in summary function.
+
+
+
+```{r}
+iv = ivreg(log(packs) ~ log(rprice) + log(rincome) | log(rincome) + rsalestax, data = CigData)
+
+summary(iv, diagnostics = TRUE)
+```
+
+* The estimates (9.4307, -1.1434, and 0.2145) differ from the estimates of the “manual” version (10.0308, -1.0193, and -0.2306). The ivreg result is statistically
+more reliable.
+* Especially for the estimate of the log price coefficient, the ivreg estimate (-1.1434) is NOT very close to -1, but closer than the OLS estimate (-1.4065).
+* The F-statistic of the 1st-stage regression is reported below the coefficient table (in red above). The statistic value in Weak instruments row is the F-statistic (45.158), followed by its p-value (2.65e-08). This is close to the statistic of the
+“manual” version (40.96).
+
+4.5. [Multiple instrumental variables] More than one variable can be used as instruments for an endogenous variable. We also have a tobacco-specific tax variable – rcigtax. To validate, compute the correlation coefficient between the log real price and the tobacco-specific tax and add the new instrumental variable into the IV regression.
+
+```{r}
+cor.test(log(CigData$rprice), CigData$rcigtax)
+```
+
+* The correlation is very high (0.9459527), implying that the relevance condition holds.
+* With the additional instrument, the price elasticity is lifted up (from -1.1434 to - 1.2774).
+* The F-statistic is 244.734, which is (much) greater than before (45.158). So, we can conclude that the result with two instruments is statistically more reliable (But, 45.158 is big enough to be reliable).
+
+
+# Exercise Problems
+
+```{r}
+fish = read_csv("FultonFishMarketData.csv")
+```
+
+```{r}
+str(fish)
+```
+
+
+```{r}
+fish_ols = lm(q ~ p + Mon + Tue + Wed + Thu + Rainy + Cold, fish)
+
+summary(fish_ols)
+```
+
+```{r}
+# check relevance condition is stormy correlated with price
+cor.test(fish$p, fish$Stormy)
+```
+
+```{r}
+fish_iv = ivreg(q ~ p + Mon + Tue + Wed + Thu + Rainy + Cold | Mon + Tue + Wed + Thu + Rainy + Cold + Stormy, data = fish)
+
+summary(fish_iv, diagnostics = TRUE)
+```
+
+```{r}
+cor.test(fish$p, fish$Stormy)
+cor.test(fish$p, fish$Mixed)
+cor.test(fish$p, fish$Wind)
+```
+
+
+```{r}
+fish_iv_2 = ivreg(q ~ p + Mon + Tue + Wed + Thu + Rainy + Cold | Mon + Tue + Wed + Thu + Rainy + Cold + Wind, data = fish)
+
+summary(fish_iv_2, diagnostics = TRUE)
+```
+
+
+
+
