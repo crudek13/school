@@ -1,0 +1,530 @@
+---
+title: "Exercise 3"
+author: "Carter Rudek"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+
+1. Run RStudio and load tidyverse and lubridate package as follows. (lubridate package is automatically installed when tidyverse is installed, but it must be separately loaded for use.)
+
+```{r}
+library(tidyverse)
+library(lubridate)
+```
+
+# Part 1. Data aggregation
+
+2. Data preparation for data aggregation
+
+2.1. Read data (WeeklySales.csv, available in Carmen) by using read_csv function as follows.
+
+
+```{r}
+Sales = read_csv("WeeklySales3.csv")
+```
+
+* If you cannot read the data, check if the working directory is the same as the folder where you’ve saved the data file by using getwd function and correct the working directory by using setwd function.
+
+3. Weekly sales analysis
+
+3.1. Regress Qty on Price and Brand. Brand variable is categorical, it should be designated as a factor-type variable by using as.factor function.
+
+```{r}
+summary(lm(Qty ~ Price + as.factor(Brand), Sales))
+```
+
+* The regression equation with the coefficient estimates is as follows: Qty = 83.7324 – 2.0075 x Price – 0.9550 x I(Brand = B) – 54.9328 x I(Brand = C)
+
+* I(Brand = xx) equals 1, if Brand is xx, and 0, otherwise.
+
+* Interpretation of the equation is that …
+… demand quantity (Qty) decreases by 2.0075 when price increases by $1,
+… Brand B, on average, was sold 0.9550 units per week less than Brand A, and
+… Brand C, on average, was sold 54.9328 units per week less than Brand A.
+
+* The p-value of the coefficients (in the 4th column in Coefficients table) implies that the price effect is significant.
+
+4. Monthly sales analysis
+
+4.1. Generate monthly data are as follows:
+
+```{r}
+monthlySales = Sales %>%
+  mutate(Year = year(MondayOfWeek), Month = month(MondayOfWeek, label = TRUE, abbr = FALSE)) %>%
+  group_by(Year, Month, Brand) %>%
+  summarise(Qty = sum(Qty), Price = mean(Price))
+
+monthlySales
+```
+
+* mutate function extracts year and month from the date variable. year function and month function extract year and month from a date-type variable. See Chapter 13 of “R for Data Science” book (Chapter 16 in the web version) for the details of the functions.
+
+* group_by function groups the data by year, month, and brand to summarize the data monthly for each brand.
+
+* summarise function generates monthly summary of Qty and Price. We use the sum and average (mean function) for summary of Qty and Price, respectively. 
+
+4.2. Regress Qty on Price and Brand.
+
+```{r}
+summary(lm(Qty ~ Price + as.factor(Brand), monthlySales))
+```
+
+# Part 2. Seasonality
+
+5. Data preparation for seasonality
+
+5.1. Read data (BeerSalesData.csv, available in Carmen) by using read_csv function as follows.
+
+
+```{r}
+BeerSales = read_csv("BeerSalesData.csv")
+```
+
+* If you cannot read the data, check if the working directory is the same as the folder where you’ve saved the data file by using getwd function and correct the working directory by using setwd function.
+
+5.2. Take a look at the data frame by typing the name of the data frame (Sales) as follows. This dataset has four variables as below:
+* store: indicating the store where the observation was collected
+* date_of_week: a week identifier
+* sales: weekly sales level of beer (# of bottles)
+* price: weekly average price of beer
+
+
+```{r}
+BeerSales
+```
+
+* Please check whether the type of date_of_week is <date>. If it is <chr> instead of <date>, you need to change the type of the variable as follows:
+
+
+```{r}
+BeerSales = BeerSales %>% mutate(date_of_week = ymd(date_of_week))
+
+BeerSales
+```
+
+5.3. Generate week number and month number variables as follows. Those variables will be used in assignments.
+
+```{r}
+BeerSales = BeerSales %>% mutate(week_of_year = week(date_of_week), month_of_year = month(date_of_week))
+
+BeerSales
+```
+
+* week function extracts the week number from a date value and month function extracts the month number from a date value. See Chapter 13 of “R for Data Science” book (Chapter 16 in the web version) for the details of the functions.
+
+6. Basic model
+
+6.1. Regress log(sales) on log(price):
+
+```{r}
+reg0 = lm(log(sales) ~ log(price), BeerSales)
+
+summary(reg0)
+```
+
+6.2. Regress log(sales) on log(price) and store:
+
+```{r}
+reg1 = lm(log(sales) ~ log(price) + as.factor(store), BeerSales)
+
+summary(reg1)
+```
+
+# Part 3. Carry-over effects
+7. (Re-)Run Rstudio and install lfe package as follows. This package provides a faster version of linear regression model estimation with fixed effects.
+
+```{r}
+install.packages("lfe")
+library(lfe)
+```
+
+
+8. Load lfe, tidyverse, and lubridate packages as follows (You must load lfe first and then load tidyverse because of the conflicts of the functions).
+
+9. Data preparation for carry-over effects
+
+9.1. Read data (AdsDataFull.csv, available in Carmen) by using read_csv function as follows.
+
+```{r}
+AdsData = read_csv("AdsDataFull.csv")
+```
+
+* If you cannot read the data, check if the working directory is the same as the folder where you’ve saved the data file by using getwd function and correct the working directory by using setwd function.
+
+9.2. Take a look at the data frame by typing the name of the data frame (Data) as follows. (This dataset is the full version (including 575 brands) of the dataset used in assignment questions for Part 1.):
+
+* Brand: there are 10 different brands: A1 through A6 and B1 through B4.
+* time_period: week identifier indicating the Monday of each week
+* qua: proportion of quality survey respondents who indicate positive impression of brand quality
+* nat: national ad spend for the brand ($)
+* compnat: competitors' national ad spend ($)
+
+```{r}
+AdsData
+```
+
+* Please check whether the type of time_period is <date>. If it is <chr> instead of <date>, you need to change the type of the variable as follows:
+
+```{r}
+AdsData = AdsData %>% mutate(time_period = ymd(time_period))
+```
+
+9.3. Generate week number as follows.
+
+```{r}
+AdsData = AdsData %>% mutate(week_of_year = week(time_period))
+
+AdsData
+```
+
+9.4. Generate lagged variables for advertising as follows.
+
+```{r}
+AdsData = AdsData %>% group_by(Brand) %>% 
+  mutate(lag1nat = lag(nat, n = 1),
+         lag2nat = lag(nat, n = 2),
+         lag3nat = lag(nat, n = 3),
+         lag4nat = lag(nat, n = 4),
+         lag5nat = lag(nat, n = 5),
+         lag1compnat = lag(compnat, n = 1),
+         lag2compnat = lag(compnat, n = 2),
+         lag3compnat = lag(compnat, n = 3),
+         lag4compnat = lag(compnat, n = 4),
+         lag5compnat = lag(compnat, n = 5))
+```
+
+* This generates 5 lags for each of own brand’s and competitors’ ad spending variables for each brand (group_by(Brand)). lag function is used to generate a lagged variable. We already learned this function, but here we have another option, n = xx, giving the number of positions to lag by (xx). For example, lag(nat, n = 2) returns the value at two time points before the current observation. See Chapter 3 of “R for Data Science” book (Chapter 5 in the web version) and R help (type ? dplyr::lag to see the help) for the details of the function.
+
+9.5. Generate lagged variables for advertising as follows.
+
+```{r}
+AdsData = AdsData %>% group_by(Brand) %>%
+  mutate(lag1qua = lag(qua, n = 1),
+         lag2qua = lag(qua, n = 2),
+         lag3qua = lag(qua, n = 3),
+         lag4qua = lag(qua, n = 4),
+         lag5qua = lag(qua, n = 5),
+         lag6qua = lag(qua, n = 6),
+         lag7qua = lag(qua, n = 7),
+         lag8qua = lag(qua, n = 8),
+         lag9qua = lag(qua, n = 9),
+         lag10qua = lag(qua, n = 10),
+         lag11qua = lag(qua, n = 11),
+         lag12qua = lag(qua, n = 12),
+         lag13qua = lag(qua, n = 13))
+```
+
+* This generates 13 lags for quality perception variable for each brand (group_by(Brand)). We look at longer lags because the quality “perception” of customers may not easily change over time, i.e., it may be carried over a long time period.
+
+10. Analysis
+
+10.1. Regress qua on log(nat + 1) and log(compnat + 1):
+
+```{r}
+reg0 = lm(qua ~ log(nat + 1) + log(compnat + 1), AdsData)
+
+summary(reg0)
+```
+
+10.2. Add Brand fixed effect into the regression. This may take a couple of minutes because there are so many (575) brands in the data (that’s why the variable name is reg1slow). Please memorize the coefficient estimates of log(nat + 1) and log(compnat + 1) and the adjusted R-squared value.
+
+
+```{r}
+reg1slow = lm(qua ~ log(nat + 1) + log(compnat + 1) + as.factor(Brand), AdsData)
+
+summary(reg1slow)
+```
+
+
+10.3. Run the same regression through felm function as follows:
+
+```{r}
+reg1 = felm(qua ~ log(nat + 1) + log(compnat + 1) | as.factor(Brand), AdsData)
+
+summary(reg1)
+```
+
+
+* This returns the exactly same result (coefficient estimates and adjusted R-squared) as the previous one with lm function. felm function is a specialized method for a large number of fixed effects. It runs the same regression as lm function but much faster than lm function.
+
+* One difference is that, in felm function, all fixed effects should be listed after a partition (|) operator.
+
+10.4. Add week_of_year fixed effect into the regression.
+
+```{r}
+reg2 = felm(qua ~ log(nat + 1) + log(compnat + 1) | as.factor(Brand) + as.factor(week_of_year), AdsData)
+
+summary(reg2)
+```
+
+# HW Quaestions
+
+Q2
+```{r}
+summary(lm(log(Qty) ~ log(Price) + as.factor(Brand), Sales))
+```
+```{r}
+summary(lm(log(Qty) ~ log(Price) + as.factor(Brand), monthlySales))
+```
+
+
+
+```{r}
+AdsData2 = read_csv("AdsData.csv")
+```
+
+```{r}
+AdsData2
+```
+
+
+```{r}
+AdsData2_a1 <- AdsData2 %>% filter(Brand == 'A1')
+
+regq3_a1 = lm(qua ~ log(nat + 1) + log(compnat + 1), AdsData2_a1)
+summary(regq3_a1)
+```
+
+```{r}
+AdsData2_a2 <- AdsData2 %>% filter(Brand == 'A2')
+
+regq3_a2 = lm(qua ~ log(nat + 1) + log(compnat + 1), AdsData2_a2)
+summary(regq3_a2)
+```
+
+```{r}
+AdsData2_a3 <- AdsData2 %>% filter(Brand == 'A3')
+
+regq3_a3 = lm(qua ~ log(nat + 1) + log(compnat + 1), AdsData2_a3)
+summary(regq3_a3)
+```
+
+```{r}
+AdsData2_a4 <- AdsData2 %>% filter(Brand == 'A4')
+
+regq3_a4 = lm(qua ~ log(nat + 1) + log(compnat + 1), AdsData2_a4)
+summary(regq3_a4)
+```
+
+```{r}
+AdsData2_a5 <- AdsData2 %>% filter(Brand == 'A5')
+
+regq3_a5 = lm(qua ~ log(nat + 1) + log(compnat + 1), AdsData2_a5)
+summary(regq3_a5)
+```
+
+```{r}
+AdsData2_a6 <- AdsData2 %>% filter(Brand == 'A6')
+
+regq3_a6 = lm(qua ~ log(nat + 1) + log(compnat + 1), AdsData2_a6)
+summary(regq3_a6)
+```
+
+```{r}
+AdsData2_b1 <- AdsData2 %>% filter(Brand == 'B1')
+
+regq3_b1 = lm(qua ~ log(nat + 1) + log(compnat + 1), AdsData2_b1)
+summary(regq3_b1)
+```
+
+```{r}
+AdsData2_b2 <- AdsData2 %>% filter(Brand == 'B2')
+
+regq3_b2 = lm(qua ~ log(nat + 1) + log(compnat + 1), AdsData2_b2)
+summary(regq3_b2)
+```
+
+
+```{r}
+AdsData2_b3 <- AdsData2 %>% filter(Brand == 'B3')
+
+regq3_b3 = lm(qua ~ log(nat + 1) + log(compnat + 1), AdsData2_b3)
+summary(regq3_b3)
+```
+
+```{r}
+AdsData2_b4 <- AdsData2 %>% filter(Brand == 'B4')
+
+regq3_b4 = lm(qua ~ log(nat + 1) + log(compnat + 1), AdsData2_b4)
+summary(regq3_b4)
+```
+
+
+```{r}
+monthlyqua = AdsData2 %>%
+  mutate(Year = year(time_period), Month = month(time_period, label = TRUE, abbr = FALSE)) %>%
+  group_by(Year, Month, Brand) %>%
+  summarise(qua = mean(qua), nat = sum(nat), compnat = sum(compnat))
+
+monthlyqua
+```
+
+
+
+
+```{r}
+monthlyqua_a1 <- monthlyqua %>% filter(Brand == 'A1')
+
+regq4_a1 = lm(qua ~ log(nat + 1) + log(compnat + 1), monthlyqua_a1)
+summary(regq4_a1)
+```
+
+```{r}
+monthlyqua_a2 <- monthlyqua %>% filter(Brand == 'A2')
+
+regq4_a2 = lm(qua ~ log(nat + 1) + log(compnat + 1), monthlyqua_a2)
+summary(regq4_a2)
+```
+
+```{r}
+monthlyqua_a3 <- monthlyqua %>% filter(Brand == 'A3')
+
+regq4_a3 = lm(qua ~ log(nat + 1) + log(compnat + 1), monthlyqua_a3)
+summary(regq4_a3)
+```
+
+```{r}
+monthlyqua_a4 <- monthlyqua %>% filter(Brand == 'A4')
+
+regq4_a4 = lm(qua ~ log(nat + 1) + log(compnat + 1), monthlyqua_a4)
+summary(regq4_a4)
+```
+
+```{r}
+monthlyqua_a5 <- monthlyqua %>% filter(Brand == 'A5')
+
+regq4_a5 = lm(qua ~ log(nat + 1) + log(compnat + 1), monthlyqua_a5)
+summary(regq4_a5)
+```
+
+```{r}
+monthlyqua_a6 <- monthlyqua %>% filter(Brand == 'A6')
+
+regq4_a6 = lm(qua ~ log(nat + 1) + log(compnat + 1), monthlyqua_a6)
+summary(regq4_a6)
+```
+
+```{r}
+monthlyqua_b1 <- monthlyqua %>% filter(Brand == 'B1')
+
+regq4_b1 = lm(qua ~ log(nat + 1) + log(compnat + 1), monthlyqua_b1)
+summary(regq4_b1)
+```
+
+```{r}
+monthlyqua_b2 <- monthlyqua %>% filter(Brand == 'B2')
+
+regq4_b2 = lm(qua ~ log(nat + 1) + log(compnat + 1), monthlyqua_b2)
+summary(regq4_b2)
+```
+
+
+```{r}
+monthlyqua_b3 <- monthlyqua %>% filter(Brand == 'B3')
+
+regq4_b3 = lm(qua ~ log(nat + 1) + log(compnat + 1), monthlyqua_b3)
+summary(regq4_b3)
+```
+
+```{r}
+monthlyqua_b4 <- monthlyqua %>% filter(Brand == 'B4')
+
+regq4_b4 = lm(qua ~ log(nat + 1) + log(compnat + 1), monthlyqua_b4)
+summary(regq4_b4)
+```
+
+
+
+
+
+```{r}
+BeerSales %>%
+  group_by(store) %>%
+  summarise(avg_sales = mean(sales), avg_price = mean(price))
+
+BeerSales %>%
+  group_by(store) %>%
+  summarise(avg_sales = mean(sales), avg_price = mean(price)) %>%
+  ggplot(aes(x = avg_sales, y = avg_price, label = store)) + geom_point() + geom_text()
+```
+
+
+
+```{r}
+BeerSales
+```
+
+
+```{r}
+beer_reg = lm(log(sales) ~ log(price) + as.factor(store) + as.factor(week_of_year), BeerSales)
+summary(beer_reg)
+```
+
+```{r}
+BeerSales2 <- BeerSales %>%
+  group_by(store) %>%
+  mutate(store_mean = mean(price)) %>%
+  mutate(mean_dev = price-store_mean) %>%
+  mutate(summer = case_when(
+    month_of_year %in% c("6","7","8") ~ 1, TRUE ~ 0)
+  )
+
+cor.test(BeerSales2$mean_dev, BeerSales2$summer)
+```
+
+```{r}
+beer_reg2 = lm(log(sales) ~ log(price) + as.factor(store) + as.factor(month_of_year), BeerSales)
+summary(beer_reg2)
+```
+
+```{r}
+reg_p3 = felm(qua ~ log(nat + 1) + log(compnat + 1) + log(lag1nat + 1) + log(lag2nat + 1) + log(lag3nat + 1) + log(lag4nat + 1) + log(lag5nat + 1) + log(lag1compnat + 1) + log(lag2compnat + 1) + log(lag3compnat + 1) + log(lag4compnat + 1) + log(lag5compnat + 1) | as.factor(Brand), AdsData)
+
+summary(reg_p3)
+```
+
+
+```{r}
+cor.test(AdsData$nat, AdsData$lag1nat)
+cor.test(AdsData$nat, AdsData$lag2nat)
+cor.test(AdsData$nat, AdsData$lag3nat)
+cor.test(AdsData$nat, AdsData$lag4nat)
+cor.test(AdsData$nat, AdsData$lag5nat)
+```
+
+```{r}
+cor.test(AdsData$compnat, AdsData$lag1compnat)
+cor.test(AdsData$compnat, AdsData$lag2compnat)
+cor.test(AdsData$compnat, AdsData$lag3compnat)
+cor.test(AdsData$compnat, AdsData$lag4compnat)
+cor.test(AdsData$compnat, AdsData$lag5compnat)
+```
+
+```{r}
+reg_p3_2 = felm(qua ~ log(nat + 1) + log(compnat + 1) + log(lag1nat + 1) + log(lag2nat + 1) + log(lag3nat + 1) + log(lag4nat + 1) + log(lag5nat + 1) + log(lag1compnat + 1) + log(lag2compnat + 1) + log(lag3compnat + 1) + log(lag4compnat + 1) + log(lag5compnat + 1) + log(lag1qua + 1) + log(lag2qua + 1) + log(lag3qua + 1) + log(lag4qua + 1) + log(lag5qua + 1) + log(lag6qua + 1) + log(lag7qua + 1) + log(lag8qua + 1) + log(lag9qua + 1) + log(lag10qua + 1) + log(lag11qua + 1) + log(lag12qua + 1) + log(lag13qua + 1) | as.factor(Brand), AdsData)
+
+summary(reg_p3_2)
+```
+
+
+```{r}
+cor.test(AdsData$qua, AdsData$lag1qua)
+cor.test(AdsData$qua, AdsData$lag2qua)
+cor.test(AdsData$qua, AdsData$lag3qua)
+cor.test(AdsData$qua, AdsData$lag4qua)
+cor.test(AdsData$qua, AdsData$lag5qua)
+cor.test(AdsData$qua, AdsData$lag6qua)
+cor.test(AdsData$qua, AdsData$lag7qua)
+cor.test(AdsData$qua, AdsData$lag8qua)
+cor.test(AdsData$qua, AdsData$lag9qua)
+cor.test(AdsData$qua, AdsData$lag10qua)
+cor.test(AdsData$qua, AdsData$lag11qua)
+cor.test(AdsData$qua, AdsData$lag12qua)
+cor.test(AdsData$qua, AdsData$lag13qua)
+```
+
+
+
+
+
