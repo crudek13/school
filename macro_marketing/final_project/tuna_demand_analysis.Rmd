@@ -1,0 +1,184 @@
+---
+title: "Tuna Demand Analysis"
+author: "Group 5"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r Packages, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+
+library(tidyverse)
+library(lubridate)
+library(tsibble)
+```
+
+
+```{r Read Data, message=FALSE}
+demand <- read_csv("Tuna_demand.csv")
+price <- read_csv("Tuna_price.csv")
+cpi <- read_csv("PCE_CPI.csv")
+```
+
+
+```{r Data Prep}
+
+# date cleansing
+demand <- demand %>%
+  mutate(date = as.Date(as.character(demand$WeekEndingDay), format = "%Y%m%d")) %>%
+  select(-c(WeekEndingDay)) %>%
+  relocate(date) %>%
+  pivot_longer(!date, names_to = "brand", values_to = "demand")
+
+price <- price %>%
+  mutate(date = as.Date(as.character(price$WeekEndingDay), format = "%Y%m%d")) %>%
+  select(-c(WeekEndingDay)) %>%
+  relocate(date) %>%
+  pivot_longer(!date, names_to = "brand", values_to = "price")
+
+```
+
+
+```{r Prep 2}
+# join
+tuna <- demand %>%
+  inner_join(price)
+
+# covid
+tuna <- tuna %>% 
+  mutate(Covid = ifelse(date >= '2020-01-01', 1, 0))
+tuna$Covid <- as.factor(tuna$Covid)
+```
+
+
+
+
+# ANALYSIS
+
+1. Regress demand on price and brand. Since brand variable is categorical, it should be a factor
+
+```{r}
+summary(lm(demand ~ price + as.factor(brand), tuna))
+```
+
+Regression equation: demand = 4,010,270 - 1,513,394 * price + 296,010 * I(brand=Others) + 664,070 * I(brand=StarKist)
+
+* I(Brand = xx) equals 1, if Brand is xx, and 0, otherwise.
+  * when the brand is StarKist, I(brand=StarKist) = 1 and I(brand=Others) = 0
+  
+* Interpretation of the equation is that …
+  * demand decreases by 1,513,394 when price increases by $1,
+  * Other brands, on average, sold 296,010 units per week MORE than BumbleBee, and
+  * StarKist, on average, sold 664,070 units per week MORE than Brand BumbleBee
+
+* The p-value of the coefficients (in the 4th column in Coefficients table) implies that the price effect is significant.
+
+
+
+1.a Regression with covid 
+
+```{r}
+summary(lm(demand ~ price + as.factor(brand) + as.factor(Covid), tuna))
+```
+
+Covid seems to be significant - demand goes up 583,346 during covid. People can't eat out, grocery shopping and dining in more? Tuna for lunch while working from home?
+
+
+2. Month Sales Analysis
+
+```{r Monthly data prep}
+monthlyTuna = tuna %>%
+  mutate(year = year(date), month = month(date, label = TRUE, abbr = FALSE)) %>%
+  group_by(year, month, brand) %>%
+  summarise(demand = sum(demand), price = mean(price))
+
+monthlyTuna
+```
+
+```{r}
+cpi <- cpi %>%
+  mutate(date = as.Date(with(cpi, paste(Year, Month, '01',sep="-")))) %>%
+  mutate(year = year(date), month = month(date, label = TRUE, abbr = FALSE)) %>%
+  group_by(year, month) %>%
+  select(-c(Year, Month, date)) %>%
+  relocate(month, year)
+```
+
+```{r Monthly data prep}
+# join
+tuna_cpi_monthly <- monthlyTuna %>%
+  inner_join(cpi)
+
+# covid
+tuna_cpi_monthly <- tuna_cpi_monthly %>% 
+  mutate(Covid = ifelse(year >= 2020, 1, 0))
+tuna_cpi_monthly$Covid <- as.factor(tuna_cpi_monthly$Covid)
+
+```
+
+Monthly regression
+
+```{r}
+summary(lm(demand ~ price + as.factor(brand), tuna_cpi_monthly))
+
+summary(lm(demand ~ price + as.factor(brand) + as.factor(Covid), tuna_cpi_monthly))
+
+summary(lm(demand ~ price + as.factor(brand) + CPI_U_food, tuna_cpi_monthly))
+
+summary(lm(demand ~ price + as.factor(brand) + as.factor(Covid) + CPI_U_food, tuna_cpi_monthly))
+```
+
+Best adjusted R^squared 
+
+lm(formula = demand ~ price + as.factor(brand) + as.factor(Covid), 
+    data = tuna_cpi_monthly)
+
+
+
+# Seasonality
+
+```{r}
+tuna_seas <- tuna %>% 
+  mutate(week_of_year = week(date), month_of_year = month(date))
+```
+
+
+
+
+Basic Model w/ brand
+
+```{r}
+summary(lm(log(demand) ~ log(price) + as.factor(brand), tuna_seas))
+```
+
+
+```{r}
+summary(lm(log(demand) ~ log(price) + as.factor(brand) + as.factor(month_of_year), tuna_seas))
+```
+
+
+Cold months seem to be significant - tuna demand goes down
+
+
+```{r}
+summary(lm(log(demand) ~ log(price) + as.factor(brand) + as.factor(month_of_year) + as.factor(Covid) + CPI_, tuna_seas))
+```
+
+
+
+
+# Log model
+
+```{r}
+summary(lm(log(demand) ~ log(price) + as.factor(brand), tuna))
+```
+
+The estimate of the log price coefficient is -1.346, i.e., the tuna demand is price elastic.
+
+
+
+
+
+
+
+
