@@ -1,0 +1,173 @@
+---
+title: "Macro Marketing Project"
+author: "Brandon Slover, Derek Nguyen, Carter Rudek, Neil Shipley"
+date: "2023-06-08"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(tidyverse)
+library(lubridate)
+library(tsibble)
+```
+
+### Load in the Provided Datasets First:
+```{r}
+tuna_demand <- read.csv("/Users/Sloverbaffone/SMBA/Macro_Marketing/Group_Project/Tuna_demand.csv")
+tuna_price <- read.csv("/Users/Sloverbaffone/SMBA/Macro_Marketing/Group_Project/Tuna_price.csv")
+PCE_CPI <- read.csv("/Users/Sloverbaffone/SMBA/Macro_Marketing/Group_Project/PCE_CPI.csv")
+```
+
+### Data Preparation:
+```{r}
+#First change variable names so we can make one dataset
+tuna_demand1 <- tuna_demand %>% 
+  rename("StarKist_Demand" = "StarKist",
+         "BumbleBee_Demand" = "BumbleBee",
+         "Others_Demand" = "Others")
+
+tuna_price1 <- tuna_price %>% 
+  rename("StarKist_Price" = "StarKist",
+         "BumbleBee_Price" = "BumbleBee",
+         "Others_Price" = "Others")
+
+#Merge dataset so we have supply and demand together
+tuna_all <- merge(tuna_demand1, tuna_price1, by = "WeekEndingDay")
+
+#Change date column to date format
+tuna_all$WeekEndingDay <- as.character(tuna_all$WeekEndingDay)
+tuna_all$WeekEndingDay <- as.Date(tuna_all$WeekEndingDay, format = "%Y%m%d")
+
+#We can then extract year, week of year and month of year then add them as an additional column
+tuna_all <- tuna_all %>% 
+  mutate(Year = year(WeekEndingDay),
+         Month = month(WeekEndingDay, label = TRUE, abbr = FALSE),
+         Week = week(WeekEndingDay))
+
+#Reorder columns for readability:
+tuna_all <- tuna_all[, c("WeekEndingDay", "Week", "Month", "Year", "StarKist_Price", "StarKist_Demand", "BumbleBee_Price", "BumbleBee_Demand", "Others_Price", "Others_Demand")]
+
+#Add a before/after COVID variable (First case of covid was November 2019, but the pandemic was officially declared in January 2020) and make it a factor:
+tuna_all <- tuna_all %>% 
+  mutate(Covid = ifelse(Year >= 2020, 1, 0))
+tuna_all$Covid <- as.factor(tuna_all$Covid)
+```
+
+### Adjust data for inflation
+```{r}
+#We need a pivot table with brand
+pivot_demand <- tuna_demand %>% 
+  mutate(date = as.Date(as.character(tuna_demand$WeekEndingDay), format = "%Y%m%d")) %>%
+  select(-c(WeekEndingDay)) %>%
+  relocate(date) %>%
+  pivot_longer(!date, names_to = "brand", values_to = "demand")
+
+tuna_price <- tuna_price %>%
+  mutate(date = as.Date(as.character(tuna_price$WeekEndingDay), format = "%Y%m%d")) %>%
+  select(-c(WeekEndingDay)) %>%
+  relocate(date) %>%
+  pivot_longer(!date, names_to = "brand", values_to = "price")
+
+#Join pivot tables together:
+pivot_tuna <- pivot_demand %>% 
+  inner_join(tuna_price)
+
+#Add week, month, year column:
+pivot_tuna <- pivot_tuna %>% 
+  mutate(Year = year(date),
+         Month = month(date, label = TRUE, abbr = FALSE),
+         Week = week(date),
+         Covid = ifelse(Year >= 2020, 1, 0))
+
+#Now we need to aggregate the data to the month level
+monthly_tuna <- pivot_tuna %>% 
+  group_by(Year, Month, brand) %>% 
+  summarise(demand = sum(demand),
+            price = mean(price)) %>% 
+  mutate(Covid = ifelse(Year >= 2020, 1, 0))
+monthly_tuna$Month <- as.numeric(monthly_tuna$Month)
+
+#Now we can join in the CPI data in order to calculate the 
+CPI <- PCE_CPI %>% 
+  select(-RealPCE)
+CPI$Month <- as.numeric(CPI$Month)
+
+tuna_CPI_joined <- left_join(monthly_tuna, CPI, by = c("Year", "Month"))
+
+#Finally, we can calculate the inflation adjusted values:
+inf_adj_tuna <- tuna_CPI_joined %>% 
+  mutate(inf_adj_demand = demand / CPI_U_food * 100,
+         inf_adj_price = price / CPI_U_food * 100)
+```
+
+
+### Run some models:
+```{r}
+#Regression with adjusted price and demand with brand factor
+summary(lm(inf_adj_demand ~ inf_adj_price + as.factor(brand), inf_adj_tuna))
+
+#Regression with adjusted price and demand with brand factor, covid factor
+summary(lm(inf_adj_demand ~ inf_adj_price + as.factor(brand) + as.factor(Covid), inf_adj_tuna))
+
+#Regression with log adjusted price and demand with brand factor
+summary(lm(log(inf_adj_demand) ~ log(inf_adj_price) + as.factor(brand), inf_adj_tuna))
+
+#Regression with log adjusted price and demand with brand factor, covid factor
+summary(lm(log(inf_adj_demand) ~ log(inf_adj_price) + as.factor(brand) + as.factor(Covid), inf_adj_tuna))
+
+#Regression with log adjusted price and demand with brand factor, month factor
+summary(lm(log(inf_adj_demand) ~ log(inf_adj_price) + as.factor(brand) + as.factor(Month), inf_adj_tuna))
+
+#Regression with log adjusted price and demand with brand factor, covid factor, month factor, covid factor
+summary(lm(log(inf_adj_demand) ~ log(inf_adj_price) + as.factor(brand) + as.factor(Month) + as.factor(Covid), inf_adj_tuna))
+```
+
+### Price vs. Demand Graph:
+```{r}
+#Create basic demand plot
+pivot_tuna %>% 
+  ggplot(aes(x = price, y = demand, color = brand, fill = brand)) + 
+  geom_smooth(se = FALSE) + 
+  labs(x = "Demand",
+       y = "Price",
+       title = "Demand Curve for Various Tuna Brands",
+       subtitle = "2013 - 2020")
+
+#Plot demand over time for each brand
+pivot_tuna %>% 
+  ggplot(aes(x = date, y = demand, fill = brand, color= brand)) +
+  geom_smooth(se = FALSE) + 
+  labs(x = "Date",
+       y = "Demand",
+       title = "Demand Over Time for Various Tuna Brands",
+       subtitle = "2013 - 2020") + 
+  geom_vline(xintercept = as.Date("2020-01-04"), linetype = "dotted", linewidth = 0.75) +
+  annotate("text", x=as.Date("2019-10-04"), y=1600000, label="Covid 19", angle=90)
+
+
+#Plot price over time for each brand
+pivot_tuna %>% 
+  ggplot(aes(x = date, y = price, fill = brand, color= brand)) +
+  geom_smooth(se = FALSE) + 
+  labs(x = "Date",
+       y = "Price",
+       title = "Price Over Time for Various Tuna Brands",
+       subtitle = "2013 - 2020") +
+  geom_vline(xintercept = as.Date("2020-01-04"), linetype = "dotted", linewidth = 0.75) +
+  annotate("text", x=as.Date("2019-10-04"), y=1.7, label="Covid 19", angle=90)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
