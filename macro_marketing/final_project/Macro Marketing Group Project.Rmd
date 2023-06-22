@@ -219,7 +219,7 @@ unpiv_combine$Starkist_demand
 # Bumblebee
 #summary(lm(BumbleBee_demand ~ BumbleBee_inf_adj_price + Starkist_inf_adj_price + Others_inf_adj_price, unpiv_combine))
 #summary(lm(BumbleBee_demand ~ BumbleBee_inf_adj_price + Starkist_inf_adj_price + Others_inf_adj_price + Covid, unpiv_combine))
-summary(lm(BumbleBee_demand ~ Covid*BumbleBee_inf_adj_price + Covid*Starkist_inf_adj_price + Covid*Others_inf_adj_price, unpiv_combine))
+summary(lm(log(BumbleBee_demand) ~ Covid*log(BumbleBee_inf_adj_price) + Covid*log(Starkist_inf_adj_price) + Covid*log(Others_inf_adj_price), unpiv_combine))
 ```
 
 
@@ -227,14 +227,14 @@ summary(lm(BumbleBee_demand ~ Covid*BumbleBee_inf_adj_price + Covid*Starkist_inf
 # StarKist
 #summary(lm(Starkist_demand ~ BumbleBee_inf_adj_price + Starkist_inf_adj_price + Others_inf_adj_price, unpiv_combine))
 #summary(lm(Starkist_demand ~ BumbleBee_inf_adj_price + Starkist_inf_adj_price + Others_inf_adj_price + Covid, unpiv_combine))
-summary(lm(Starkist_demand ~ Covid*BumbleBee_inf_adj_price + Covid*Starkist_inf_adj_price + Covid*Others_inf_adj_price, unpiv_combine))
+summary(lm(log(Starkist_demand) ~ Covid*log(BumbleBee_inf_adj_price) + Covid*log(Starkist_inf_adj_price) + Covid*log(Others_inf_adj_price), unpiv_combine))
 ```
 
 ```{r}
 # Others
 #summary(lm(Others_demand ~ BumbleBee_inf_adj_price + Starkist_inf_adj_price + Others_inf_adj_price, unpiv_combine))
 #summary(lm(Others_demand ~ BumbleBee_inf_adj_price + Starkist_inf_adj_price + Others_inf_adj_price + Covid, unpiv_combine))
-summary(lm(Others_demand ~ Covid*BumbleBee_inf_adj_price + Covid*Starkist_inf_adj_price + Covid*Others_inf_adj_price, unpiv_combine))
+summary(lm(log(Others_demand) ~ Covid*log(BumbleBee_inf_adj_price) + Covid*log(Starkist_inf_adj_price) + Covid*log(Others_inf_adj_price), unpiv_combine))
 ```
 
 
