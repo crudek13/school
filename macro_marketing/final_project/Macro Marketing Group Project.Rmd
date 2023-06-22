@@ -15,9 +15,9 @@ library(tsibble)
 
 ### Load in the Provided Datasets First:
 ```{r}
-tuna_demand <- read.csv("/Users/Sloverbaffone/SMBA/Macro_Marketing/Group_Project/Tuna_demand.csv")
-tuna_price <- read.csv("/Users/Sloverbaffone/SMBA/Macro_Marketing/Group_Project/Tuna_price.csv")
-PCE_CPI <- read.csv("/Users/Sloverbaffone/SMBA/Macro_Marketing/Group_Project/PCE_CPI.csv")
+tuna_demand <- read.csv("Tuna_demand.csv")
+tuna_price <- read.csv("Tuna_price.csv")
+PCE_CPI <- read.csv("PCE_CPI.csv")
 ```
 
 ### Data Preparation:
@@ -161,10 +161,81 @@ pivot_tuna %>%
 ```
 
 
+#-#########################################
+### ADDITIONS BASED ON PROFESSORS NOTES ###
+#-#########################################
+
+
+# Data Summary
+
+```{r}
+print('---------Star----------')
+mean(tuna_demand$StarKist)
+median(tuna_demand$StarKist)
+sd(tuna_demand$StarKist)
+print('---------Bumble----------')
+mean(tuna_demand$BumbleBee)
+median(tuna_demand$BumbleBee)
+sd(tuna_demand$BumbleBee)
+print('---------Others----------')
+mean(tuna_demand$Others)
+median(tuna_demand$Others)
+sd(tuna_demand$Others)
+```
+
+```{r}
+tuna_price %>%
+  group_by(brand) %>%
+  summarise(sd = sd(price), mean = mean(price), med = median(price))
+  
+```
 
 
 
+# Regressions with competitors prices
 
+
+```{r}
+# Data prep
+unpiv_price <- inf_adj_tuna %>%
+  select(brand, inf_adj_price, Covid) %>%
+  pivot_wider(names_from = brand, values_from = inf_adj_price) %>%
+  rename('BumbleBee_inf_adj_price' = 'BumbleBee','Others_inf_adj_price' = 'Others','Starkist_inf_adj_price' = 'StarKist')
+
+unpiv_demand <- inf_adj_tuna %>%
+  select(brand, demand) %>%
+  pivot_wider(names_from = brand, values_from = demand) %>%
+  rename('BumbleBee_demand' = 'BumbleBee','Others_demand' = 'Others','Starkist_demand' = 'StarKist')
+
+unpiv_combine <- unpiv_price %>% inner_join(unpiv_demand, by = c("Year", "Month"))
+```
+
+```{r}
+# Regression with other brands prices
+unpiv_combine$Starkist_demand
+
+```
+```{r}
+# Bumblebee
+#summary(lm(BumbleBee_demand ~ BumbleBee_inf_adj_price + Starkist_inf_adj_price + Others_inf_adj_price, unpiv_combine))
+#summary(lm(BumbleBee_demand ~ BumbleBee_inf_adj_price + Starkist_inf_adj_price + Others_inf_adj_price + Covid, unpiv_combine))
+summary(lm(BumbleBee_demand ~ Covid*BumbleBee_inf_adj_price + Covid*Starkist_inf_adj_price + Covid*Others_inf_adj_price, unpiv_combine))
+```
+
+
+```{r}
+# StarKist
+#summary(lm(Starkist_demand ~ BumbleBee_inf_adj_price + Starkist_inf_adj_price + Others_inf_adj_price, unpiv_combine))
+#summary(lm(Starkist_demand ~ BumbleBee_inf_adj_price + Starkist_inf_adj_price + Others_inf_adj_price + Covid, unpiv_combine))
+summary(lm(Starkist_demand ~ Covid*BumbleBee_inf_adj_price + Covid*Starkist_inf_adj_price + Covid*Others_inf_adj_price, unpiv_combine))
+```
+
+```{r}
+# Others
+#summary(lm(Others_demand ~ BumbleBee_inf_adj_price + Starkist_inf_adj_price + Others_inf_adj_price, unpiv_combine))
+#summary(lm(Others_demand ~ BumbleBee_inf_adj_price + Starkist_inf_adj_price + Others_inf_adj_price + Covid, unpiv_combine))
+summary(lm(Others_demand ~ Covid*BumbleBee_inf_adj_price + Covid*Starkist_inf_adj_price + Covid*Others_inf_adj_price, unpiv_combine))
+```
 
 
 
