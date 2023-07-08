@@ -1,0 +1,242 @@
+---
+title: "Sports Analytics Group Project"
+author: "Brandon Slover, Carter Rudek, Derek Nguyen, Nick Faupel"
+date: "2023-07-03"
+output: html_document
+---
+
+```{r packages}
+library(tidyverse)
+library(lubridate)
+library(psych)
+```
+
+
+```{r data preparation}
+data <- read.csv("NCAA_Tournaments14_23_V2.csv")
+
+data <- na.omit(data)
+
+data <- data %>%
+  filter(ref_crew != "")
+
+
+# separate refs
+refs <- data.frame(do.call('rbind', strsplit(as.character(data$ref_crew),'/',fixed=TRUE)))
+
+colnames(refs) =  c('ref1', 'ref2', 'ref3')
+
+
+# add fields
+data_1 <- cbind(data, refs) %>% 
+  mutate(date = mdy(date)) %>%
+  mutate(abs_score_delta = abs(team_score - opp_score),
+         weekday = weekdays(date),
+         year = format(as.Date(date, format="%d/%m/%Y"),"%Y"),
+         round = as.character(round),
+         round_int = as.integer(round),
+         year_int = as.integer(year)) %>%
+  mutate(tot_score_range = case_when(
+    tot_score < 100 ~ "<100",
+    tot_score >= 100 & tot_score < 114 ~ "100-114",
+    tot_score >= 115 & tot_score < 129 ~ "115-129",
+    tot_score >= 130 & tot_score < 144 ~ "130-144",
+    tot_score >= 145 & tot_score < 169 ~ "145-159",
+    tot_score >= 170 & tot_score < 184 ~ "160-174",
+    tot_score >= 185 & tot_score < 199 ~ "175-189",
+    .default = ">189"
+  ),
+  abs_score_delta_range = case_when(
+    abs_score_delta < 5 ~ "<5",
+    abs_score_delta >= 5 & abs_score_delta < 9 ~ "5-9",
+    abs_score_delta >= 10 & abs_score_delta < 14 ~ "10-14",
+    abs_score_delta >= 15 & abs_score_delta < 19 ~ "15-19",
+    abs_score_delta >= 20 & abs_score_delta < 24 ~ "20-24",
+    abs_score_delta >= 25 & abs_score_delta < 29 ~ "25-29",
+    .default = ">29"
+  ))
+
+# just numeric values
+num_vars <- data_1 %>%
+  select(gei, threes, fouls, round, tot_score, abs_score_delta)
+```
+
+# Exploratory Visualizations
+
+abs_score_diff and gei strong negative correlation (-.69) meaning as the score diff gets bigger (more of a blowout), gei decreases
+
+```{r correlation}
+# correlation matrix
+pairs.panels
+
+# scatterplot
+ggplot(data_1, aes(x=gei, y=abs_score_delta)) + 
+  geom_point() +
+  geom_smooth(method = "lm") +
+  labs(
+    title = "Score Difference vs GEI",
+    y = "GEI", 
+    x = "Score Difference"
+  )
+```
+
+```{r line charts}
+
+# round
+data_1 %>%
+  group_by(round, round_int, year, year_int) %>%
+  summarise(avg_gei = mean(gei)) %>%
+  ggplot(aes(x=round_int, y=avg_gei, color=year)) +
+    geom_line() +
+    geom_point() +
+    labs(
+      title = "Average GEI Over Time for Each Year by Round",
+      y = "GEI", 
+      x = "Round"
+    )
+    
+# year
+data_1 %>%
+  group_by(round, round_int, year, year_int) %>%
+  summarise(avg_gei = mean(gei)) %>%
+  ggplot(aes(x=year_int, y=avg_gei, color=round)) +
+  geom_line() +
+  geom_point() +
+  labs(
+    title = "Average GEI Over Time for Each Round by Year",
+    y = "GEI", 
+    x = "Year"
+  )
+
+# day of week
+data_1 %>%
+  group_by(weekday, year, year_int) %>%
+  summarise(avg_gei = mean(gei)) %>%
+  ggplot(aes(x=year_int, y=avg_gei, color=weekday)) +
+  geom_line() +
+  geom_point() +
+  labs(
+    title = "Average GEI Over Time for Each Day of Week by Year",
+    y = "GEI", 
+    x = "Year"
+  )
+```
+
+```{r data tables}
+data_1 %>%
+  group_by(year, weekday) %>%
+  summarise(avg_gei = mean(gei)) %>%
+  arrange(desc(avg_gei))
+
+data_1 %>%
+  group_by(year, round) %>%
+  summarise(avg_gei = mean(gei)) %>%
+  arrange(desc(avg_gei))
+
+data_1 %>%
+  group_by(year, arena) %>%
+  summarise(avg_gei = mean(gei)) %>%
+  arrange(desc(avg_gei))
+
+data_1 %>%
+  group_by(round) %>%
+  summarise(avg_gei = mean(gei)) %>%
+  arrange(desc(avg_gei))
+
+data_1 %>%
+  group_by(year) %>%
+  summarise(avg_gei = mean(gei)) %>%
+  arrange(desc(avg_gei))
+
+data_1 %>%
+  group_by(weekday) %>%
+  summarise(avg_gei = mean(gei)) %>%
+  arrange(desc(avg_gei))
+
+data_1 %>%
+  group_by(arena) %>%
+  summarise(avg_gei = mean(gei)) %>%
+  arrange(desc(avg_gei))
+```
+
+Games that are close are more exciting!
+
+Games with more points are more exciting!
+
+```{r bar charts}
+# score diff
+data_1 %>%
+  group_by(abs_score_delta_range) %>%
+  summarise(avg_gei = mean(gei)) %>%
+  ggplot(aes(x=factor(abs_score_delta_range, levels=c('<5', '5-9', '10-14', '15-19', '20-24', '25-29', '>29')), 
+                      y=avg_gei)) + geom_bar(stat = "identity") +
+    labs(
+    title = "Average GEI by Score Difference",
+    y = "GEI", 
+    x = "Score Difference"
+  )
+  
+# total score
+data_1 %>%
+  group_by(tot_score_range) %>%
+  summarise(avg_gei = mean(gei)) %>%
+  ggplot(aes(x=factor(tot_score_range, levels=c('<100', '100-114', '115-129', '130-144', '145-159', '160-174', '175-189', '>189')), y=avg_gei)) + geom_bar(stat = "identity") +
+    labs(
+    title = "Average GEI by Total Score",
+    y = "GEI", 
+    x = "Score Difference"
+  )
+
+```
+
+
+# Regression
+
+```{r}
+# all variables
+fit_all <- lm(gei ~ threes + fouls + abs_score_delta + tot_score + as.factor(round) + 
+                as.factor(weekday) + as.factor(year), data_1)
+summary(fit_all)
+```
+
+```{r}
+# just numeric variables
+fit_num <- lm(gei ~ ., num_vars)
+
+summary(fit_num)
+```
+
+Run models for each year
+
+```{r model for each year}
+year_fitted_models <- data_1 %>%
+  group_by(year) %>%
+  do(model = lm(gei ~ threes + fouls + abs_score_delta + tot_score + as.factor(round), data = .))
+```
+
+```{r coefficients}
+# function to get coefficients
+extract_coefficients <- function(year_fitted_models) {
+  coefficients <- sapply(year_fitted_models, `[`, 1)  # Modify this line to extract the desired coefficient(s)
+  return(coefficients)
+}
+```
+
+```{r clean}
+coefficients_by_year <- tapply(year_fitted_models$model, year_fitted_models$year, extract_coefficients)
+
+coefficents_df <- data.frame(t(data.frame(coefficients_by_year)))
+
+coefficents_df <- tibble::rownames_to_column(coefficents_df, "year")
+
+coefficents_df <- coefficents_df %>% 
+  mutate(across(c('year'), substr, 2, nchar(year)))
+```
+
+
+
+
+
+
+
+

@@ -1,0 +1,396 @@
+---
+title: "Sports Analytics Group Project"
+author: "Brandon Slover, Carter Rudek, Derek Nguyen, Nick Faupel"
+date: "2023-07-03"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load in the libraries:
+```{r}
+library(ncaahoopR)
+library(dplyr)
+library(tidyverse)
+library(readxl)
+library(lubridate)
+
+#Load in ESPN IDs for comparison
+ids <- ncaahoopR::ids
+```
+
+### 2013-14 Data Pull
+```{r}
+#Read in excel sheet with this years tournament participants
+IDs_2013_14 <- read_excel("~/SMBA/Sports_Analytics/Group_Project/NCAA_Tournament_Participants.xlsx", sheet = "2013-14")
+
+#2013-2014 Season Data Pull
+i <- 1
+for(team in IDs_2013_14$team) {
+  print(paste("Getting Team:", i, " of ", 68))
+  schedule2013_14 <- get_schedule(team, season = "2013-14") %>%
+    filter(date < Sys.Date()) %>%
+    mutate("team" = team) 
+  if(i == 1) {
+    master2013_14 <- schedule2013_14
+  }else{
+    master2013_14 <- rbind(master2013_14, schedule2013_14)
+  }
+  i <- i + 1
+}
+
+#Filter out all non-tournament games
+master2013_14 <- master2013_14 %>% 
+  filter(date >= "2014-03-18")
+
+#Get Unique Games IDs:
+game_ids_2014 <- master2013_14 %>%
+  filter(!duplicated(game_id)) %>% 
+  mutate(round1 = ifelse(between(date, as.Date("2014-03-18"), as.Date("2014-03-19")), 1, 0),
+         round2 = ifelse(between(date, as.Date("2014-03-20"), as.Date("2014-03-21")), 1, 0),
+         round3 = ifelse(between(date, as.Date("2014-03-22"), as.Date("2014-03-23")), 1, 0),
+         round4 = ifelse(between(date, as.Date("2014-03-27"), as.Date("2014-03-28")), 1, 0),
+         round5 = ifelse(between(date, as.Date("2014-03-29"), as.Date("2014-03-30")), 1, 0),
+         round6 = ifelse(between(date, as.Date("2014-04-5"), as.Date("2014-04-5")), 1, 0),
+         round7 = ifelse(between(date, as.Date("2014-04-7"), as.Date("2014-04-7")), 1, 0),
+         )
+```
+
+### 2014-15 Data Pull
+```{r}
+#Read in excel sheet with this years tournament participants
+IDs_2014_15 <- read_excel("~/SMBA/Sports_Analytics/Group_Project/NCAA_Tournament_Participants.xlsx", sheet = "2014-15")
+
+#2014-2015 Season Data Pull
+i <- 1
+for(team in IDs_2014_15$team) {
+  print(paste("Getting Team:", i, " of ", 68))
+  schedule2014_15 <- get_schedule(team, season = "2014-15") %>%
+    filter(date < Sys.Date()) %>%
+    mutate("team" = team) 
+  if(i == 1) {
+    master2014_15 <- schedule2014_15
+  }else{
+    master2014_15 <- rbind(master2014_15, schedule2014_15)
+  }
+  i <- i + 1
+}
+
+#Filter out all non-tournament games
+master2014_15 <- master2014_15 %>% 
+  filter(date >= "2015-03-17")
+
+#Get Unique Games IDs:
+game_ids_2015 <- master2014_15 %>%
+  filter(!duplicated(game_id)) %>%  
+  mutate(round1 = ifelse(between(date, as.Date("2015-03-17"), as.Date("2015-03-18")), 1, 0),
+         round2 = ifelse(between(date, as.Date("2015-03-19"), as.Date("2015-03-20")), 1, 0),
+         round3 = ifelse(between(date, as.Date("2015-03-21"), as.Date("2015-03-22")), 1, 0),
+         round4 = ifelse(between(date, as.Date("2015-03-26"), as.Date("2015-03-27")), 1, 0),
+         round5 = ifelse(between(date, as.Date("2015-03-28"), as.Date("2015-03-29")), 1, 0),
+         round6 = ifelse(between(date, as.Date("2015-04-4"), as.Date("2015-04-4")), 1, 0),
+         round7 = ifelse(between(date, as.Date("2015-04-6"), as.Date("2015-04-6")), 1, 0),
+         ) 
+```
+
+### 2015-16 Data Pull
+```{r}
+#Read in excel sheet with this years tournament participants
+IDs_2015_16 <- read_excel("~/SMBA/Sports_Analytics/Group_Project/NCAA_Tournament_Participants.xlsx", sheet = "2015-16")
+
+#2015-2016 Season Data Pull
+i <- 1
+for(team in IDs_2015_16$team) {
+  print(paste("Getting Team:", i, " of ", 68))
+  schedule2015_16 <- get_schedule(team, season = "2015-16") %>%
+    filter(date < Sys.Date()) %>%
+    mutate("team" = team) 
+  if(i == 1) {
+    master2015_16 <- schedule2015_16
+  }else{
+    master2015_16 <- rbind(master2015_16, schedule2015_16)
+  }
+  i <- i + 1
+}
+
+#Filter out all non-tournament games
+master2015_16 <- master2015_16 %>% 
+  filter(date >= "2016-03-15")
+
+#Get Unique Games IDs:
+game_ids_2016 <- master2015_16 %>%
+  filter(!duplicated(game_id)) %>%   
+  mutate(round1 = ifelse(between(date, as.Date("2016-03-15"), as.Date("2016-03-16")), 1, 0),
+         round2 = ifelse(between(date, as.Date("2016-03-17"), as.Date("2016-03-18")), 1, 0),
+         round3 = ifelse(between(date, as.Date("2016-03-19"), as.Date("2016-03-20")), 1, 0),
+         round4 = ifelse(between(date, as.Date("2016-03-24"), as.Date("2016-03-25")), 1, 0),
+         round5 = ifelse(between(date, as.Date("2016-03-26"), as.Date("2016-03-27")), 1, 0),
+         round6 = ifelse(between(date, as.Date("2016-04-2"), as.Date("2016-04-2")), 1, 0),
+         round7 = ifelse(between(date, as.Date("2016-04-4"), as.Date("2016-04-4")), 1, 0),
+         )
+```
+
+### 2016-17 Data Pull
+```{r}
+#Read in excel sheet with this years tournament participants
+IDs_2016_17 <- read_excel("~/SMBA/Sports_Analytics/Group_Project/NCAA_Tournament_Participants.xlsx", sheet = "2016-17")
+
+#2016-2017 Season Data Pull
+i <- 1
+for(team in IDs_2016_17$team) {
+  print(paste("Getting Team:", i, " of ", 68))
+  schedule2016_17 <- get_schedule(team, season = "2016-17") %>%
+    filter(date < Sys.Date()) %>%
+    mutate("team" = team) 
+  if(i == 1) {
+    master2016_17 <- schedule2016_17
+  }else{
+    master2016_17 <- rbind(master2016_17, schedule2016_17)
+  }
+  i <- i + 1
+}
+
+#Filter out all non-tournament games
+master2016_17 <- master2016_17 %>% 
+  filter(date >= "2017-03-14")
+
+#Get Unique Games IDs:
+game_ids_2017 <- master2016_17 %>%
+  filter(!duplicated(game_id)) %>%   
+  mutate(round1 = ifelse(between(date, as.Date("2017-03-14"), as.Date("2017-03-15")), 1, 0),
+         round2 = ifelse(between(date, as.Date("2017-03-16"), as.Date("2017-03-17")), 1, 0),
+         round3 = ifelse(between(date, as.Date("2017-03-18"), as.Date("2017-03-19")), 1, 0),
+         round4 = ifelse(between(date, as.Date("2017-03-23"), as.Date("2017-03-24")), 1, 0),
+         round5 = ifelse(between(date, as.Date("2017-03-25"), as.Date("2017-03-26")), 1, 0),
+         round6 = ifelse(between(date, as.Date("2017-04-1"), as.Date("2017-04-1")), 1, 0),
+         round7 = ifelse(between(date, as.Date("2017-04-3"), as.Date("2017-04-3")), 1, 0),
+         )
+```
+
+### 2017-18 Data Pull
+```{r}
+#Read in excel sheet with this years tournament participants
+IDs_2017_18 <- read_excel("~/SMBA/Sports_Analytics/Group_Project/NCAA_Tournament_Participants.xlsx", sheet = "2017-18")
+
+#2017-2018 Season Data Pull
+i <- 1
+for(team in IDs_2017_18$team) {
+  print(paste("Getting Team:", i, " of ", 68))
+  schedule2017_18 <- get_schedule(team, season = "2017-18") %>%
+    filter(date < Sys.Date()) %>%
+    mutate("team" = team) 
+  if(i == 1) {
+    master2017_18 <- schedule2017_18
+  }else{
+    master2017_18 <- rbind(master2017_18, schedule2017_18)
+  }
+  i <- i + 1
+}
+
+#Filter out all non-tournament games
+master2017_18 <- master2017_18 %>% 
+  filter(date >= "2018-03-13")
+
+#Get Unique Games IDs:
+game_ids_2018 <- master2017_18 %>%
+  filter(!duplicated(game_id)) %>%   
+  mutate(round1 = ifelse(between(date, as.Date("2018-03-13"), as.Date("2018-03-14")), 1, 0),
+         round2 = ifelse(between(date, as.Date("2018-03-15"), as.Date("2018-03-16")), 1, 0),
+         round3 = ifelse(between(date, as.Date("2018-03-17"), as.Date("2018-03-18")), 1, 0),
+         round4 = ifelse(between(date, as.Date("2018-03-22"), as.Date("2018-03-23")), 1, 0),
+         round5 = ifelse(between(date, as.Date("2018-03-24"), as.Date("2018-03-25")), 1, 0),
+         round6 = ifelse(between(date, as.Date("2018-03-31"), as.Date("2018-03-31")), 1, 0),
+         round7 = ifelse(between(date, as.Date("2018-04-2"), as.Date("2018-04-2")), 1, 0),
+         )
+```
+
+### 2018-19 Data Pull
+```{r}
+#Read in excel sheet with this years tournament participants
+IDs_2018_19 <- read_excel("~/SMBA/Sports_Analytics/Group_Project/NCAA_Tournament_Participants.xlsx", sheet = "2018-19")
+
+#2018-2019 Season Data Pull
+i <- 1
+for(team in IDs_2018_19$team) {
+  print(paste("Getting Team:", i, " of ", 68))
+  schedule2018_19 <- get_schedule(team, season = "2018-19") %>%
+    filter(date < Sys.Date()) %>%
+    mutate("team" = team) 
+  if(i == 1) {
+    master2018_19 <- schedule2018_19
+  }else{
+    master2018_19 <- rbind(master2018_19, schedule2018_19)
+  }
+  i <- i + 1
+}
+
+#Filter out all non-tournament games
+master2018_19 <- master2018_19 %>% 
+  filter(date >= "2019-03-19")
+
+#Get Unique Games IDs:
+game_ids_2019 <- master2018_19 %>%
+  filter(!duplicated(game_id)) %>%   
+  mutate(round1 = ifelse(between(date, as.Date("2019-03-19"), as.Date("2019-03-20")), 1, 0),
+         round2 = ifelse(between(date, as.Date("2019-03-21"), as.Date("2019-03-22")), 1, 0),
+         round3 = ifelse(between(date, as.Date("2019-03-23"), as.Date("2019-03-24")), 1, 0),
+         round4 = ifelse(between(date, as.Date("2019-03-28"), as.Date("2019-03-29")), 1, 0),
+         round5 = ifelse(between(date, as.Date("2019-03-30"), as.Date("2019-03-31")), 1, 0),
+         round6 = ifelse(between(date, as.Date("2019-04-6"), as.Date("2019-04-6")), 1, 0),
+         round7 = ifelse(between(date, as.Date("2019-04-8"), as.Date("2019-04-8")), 1, 0),
+         )
+```
+
+### 2020-21 Data Pull
+```{r}
+#Read in excel sheet with this years tournament participants
+IDs_2020_21 <- read_excel("~/SMBA/Sports_Analytics/Group_Project/NCAA_Tournament_Participants.xlsx", sheet = "2020-21")
+
+#2020-2021 Season Data Pull
+i <- 1
+for(team in IDs_2020_21$team) {
+  print(paste("Getting Team:", i, " of ", 68))
+  schedule2020_21 <- get_schedule(team, season = "2020-21") %>%
+    filter(date < Sys.Date()) %>%
+    mutate("team" = team) 
+  if(i == 1) {
+    master2020_21 <- schedule2020_21
+  }else{
+    master2020_21 <- rbind(master2020_21, schedule2020_21)
+  }
+  i <- i + 1
+}
+
+#Filter out all non-tournament games
+master2020_21 <- master2020_21 %>% 
+  filter(date >= "2021-03-18")
+
+#Get Unique Games IDs:
+game_ids_2021 <- master2020_21 %>%
+  filter(!duplicated(game_id)) %>%   
+  mutate(round1 = ifelse(between(date, as.Date("2021-03-18"), as.Date("2021-03-18")), 1, 0),
+         round2 = ifelse(between(date, as.Date("2021-03-19"), as.Date("2021-03-20")), 1, 0),
+         round3 = ifelse(between(date, as.Date("2021-03-21"), as.Date("2021-03-22")), 1, 0),
+         round4 = ifelse(between(date, as.Date("2021-03-27"), as.Date("2021-03-28")), 1, 0),
+         round5 = ifelse(between(date, as.Date("2021-03-29"), as.Date("2021-03-30")), 1, 0),
+         round6 = ifelse(between(date, as.Date("2021-04-3"), as.Date("2021-04-3")), 1, 0),
+         round7 = ifelse(between(date, as.Date("2021-04-5"), as.Date("2021-04-5")), 1, 0),
+         )
+```
+
+### 2021-22 Data Pull
+```{r}
+#Read in excel sheet with this years tournament participants
+IDs_2021_22 <- read_excel("~/SMBA/Sports_Analytics/Group_Project/NCAA_Tournament_Participants.xlsx", sheet = "2021-22")
+
+#2021-2022 Season Data Pull
+i <- 1
+for(team in IDs_2021_22$team) {
+  print(paste("Getting Team:", i, " of ", 68))
+  schedule2021_22 <- get_schedule(team, season = "2021-22") %>%
+    filter(date < Sys.Date()) %>%
+    mutate("team" = team) 
+  if(i == 1) {
+    master2021_22 <- schedule2021_22
+  }else{
+    master2021_22 <- rbind(master2021_22, schedule2021_22)
+  }
+  i <- i + 1
+}
+
+#Filter out all non-tournament games
+master2021_22 <- master2021_22 %>% 
+  filter(date >= "2022-03-15")
+
+#Get Unique Games IDs:
+game_ids_2022 <- master2021_22 %>%
+  filter(!duplicated(game_id)) %>%   
+  mutate(round1 = ifelse(between(date, as.Date("2022-03-15"), as.Date("2022-03-16")), 1, 0),
+         round2 = ifelse(between(date, as.Date("2022-03-17"), as.Date("2022-03-18")), 1, 0),
+         round3 = ifelse(between(date, as.Date("2022-03-19"), as.Date("2022-03-20")), 1, 0),
+         round4 = ifelse(between(date, as.Date("2022-03-24"), as.Date("2022-03-25")), 1, 0),
+         round5 = ifelse(between(date, as.Date("2022-03-26"), as.Date("2022-03-27")), 1, 0),
+         round6 = ifelse(between(date, as.Date("2022-04-2"), as.Date("2022-04-2")), 1, 0),
+         round7 = ifelse(between(date, as.Date("2022-04-4"), as.Date("2022-04-4")), 1, 0),
+         )
+```
+
+### 2022-23 Data Pull
+```{r}
+#Read in excel sheet with this years tournament participants
+IDs_2022_23 <- read_excel("~/SMBA/Sports_Analytics/Group_Project/NCAA_Tournament_Participants.xlsx", sheet = "2022-23")
+
+#2022-2023 Season Data Pull
+i <- 1
+for(team in IDs_2022_23$team) {
+  print(paste("Getting Team:", i, " of ", 68))
+  schedule2022_23 <- get_schedule(team, season = "2022-23") %>%
+    filter(date < Sys.Date()) %>%
+    mutate("team" = team) 
+  if(i == 1) {
+    master2022_23 <- schedule2022_23
+  }else{
+    master2022_23 <- rbind(master2022_23, schedule2022_23)
+  }
+  i <- i + 1
+}
+
+#Filter out all non-tournament games
+master2022_23 <- master2022_23 %>% 
+  filter(date >= "2023-03-14")
+
+#Get Unique Games IDs:
+game_ids_2023 <- master2022_23 %>%
+  filter(!duplicated(game_id)) %>%   
+  mutate(round1 = ifelse(between(date, as.Date("2023-03-14"), as.Date("2023-03-15")), 1, 0),
+         round2 = ifelse(between(date, as.Date("2023-03-16"), as.Date("2023-03-17")), 1, 0),
+         round3 = ifelse(between(date, as.Date("2023-03-18"), as.Date("2023-03-19")), 1, 0),
+         round4 = ifelse(between(date, as.Date("2023-03-23"), as.Date("2023-03-24")), 1, 0),
+         round5 = ifelse(between(date, as.Date("2023-03-25"), as.Date("2023-03-26")), 1, 0),
+         round6 = ifelse(between(date, as.Date("2023-04-1"), as.Date("2023-04-1")), 1, 0),
+         round7 = ifelse(between(date, as.Date("2023-04-3"), as.Date("2023-04-3")), 1, 0),
+         )
+```
+
+### Bind all the tournament data together:
+```{r}
+#Bind to create master dataset:
+master <- rbind(game_ids_2014, game_ids_2015, game_ids_2016, game_ids_2017, game_ids_2018, game_ids_2019, game_ids_2021, game_ids_2022, game_ids_2023) %>% 
+  arrange(date)
+
+#Compute GEI score for each game:
+#Pull the game ids
+game_ids <- master %>% 
+  pull(game_id)
+
+#Get the length of game ids
+n <- length(game_ids)
+
+#Create a dataframe to store GEIs:
+df <- data.frame("game_id" = game_ids,
+                 "gei" = NA)
+
+#Create a loop that calculatees GEI and populates dataframe:
+for(i in 1:nrow(df)) {
+  print(paste("GEI:", i, "of", n))
+  try(df$gei[i] <- game_excitement_index(game_ids[i])) 
+}
+
+#Add GEI to master dataframe
+master <- left_join(master, df, by = "game_id")
+
+#Write the master DF to a csv:
+write.csv(master, file = "/Users/Sloverbaffone/SMBA/Sports_Analytics/Group_Project/NCAA_Tournaments14_23.csv")
+```
+
+
+
+
+
+
+
+
+
+

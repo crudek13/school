@@ -1,0 +1,604 @@
+,game_id,threes,ref_crew,arena,fouls,score_dif,play_length,date,opponent,team_score,opp_score,record,team,round1,round2,round3,round4,round5,round6,round7,gei,round,tot_score
+1,400546938,46,Terry Wymer/Lamar Simpson/John Heatly,UD Arena,29,-4.267148014,8.664259928,3/18/2014,Mount St. Mary's,71,64,19-14 (9-7),Albany,1,0,0,0,0,0,0,5.142483426,1,135
+2,400546939,28,Gene Steratore/Joe DeRosa/Doug Sirmons,UD Arena,31,-6.797945205,8.219178082,3/18/2014,Xavier,74,59,22-13 (9-9),NC State,1,0,0,0,0,0,0,3.551787367,1,133
+3,400546941,37,Verne Harris/Michael Reed/Sean Casady,UD Arena,42,-2.925806452,8.709677419,3/19/2014,Tennessee,65,78,20-13 (9-9),Iowa,1,0,0,0,0,0,0,6.656610729,1,143
+4,400546940,28,Dwayne Gladden/Mark Whitehead/Evon Burroughs,UD Arena,43,-8.023255814,7.973421927,3/19/2014,Texas Southern,81,69,14-19 (6-10),Cal Poly,1,0,0,0,0,0,0,3.105204345,1,150
+5,400546943,25,Shawn Lehigh/Mike Scyphers/Earl Walton,Amway Center,29,4.737588652,8.510638298,3/20/2014,Albany,67,55,33-2 (18-0),Florida,0,1,0,0,0,0,0,3.332817251,2,122
+6,400546920,35,Bert Smith/Tony Henderson/Jamie Luckie,KeyBank Center,37,16.69453376,7.717041801,3/20/2014,Western Michigan,77,53,28-5 (14-4),Syracuse,0,1,0,0,0,0,0,1.356711977,2,130
+7,400546900,25,Mark Schnur/Kipp Kissinger/David Hall,KeyBank Center,30,-1.395189003,8.24742268,3/20/2014,Dayton,59,60,25-10 (10-8),Ohio State,0,1,0,0,0,0,0,6.80509625,2,119
+8,400546916,30,Rick Crawford/Brian  O'Connell/Joe DeRosa,Amway Center,25,-23.80434783,8.695652174,3/20/2014,Pittsburgh,48,77,23-12 (10-8),Colorado,0,1,0,0,0,0,0,0.864844287,2,125
+9,400546935,47,Mike Kitts/Tom Eades/Larry Scirotto,KeyBank Center,31,4.872781065,7.100591716,3/20/2014,Milwaukee,73,53,29-4 (16-2),Villanova,0,1,0,0,0,0,0,3.136888746,2,126
+10,400546908,39,Keith Kimble/Bret Smith/Ray Natili,Spokane Arena,46,9.985549133,6.936416185,3/20/2014,Delaware,93,78,27-8 (12-6),Michigan State,0,1,0,0,0,0,0,2.861480663,2,171
+11,400546934,29,Michael Irving/Randy  McCall/Darron George,Spokane Arena,35,-3.978056426,7.523510972,3/20/2014,Harvard,57,61,27-7 (15-3),Cincinnati,0,1,0,0,0,0,0,4.363247554,2,118
+12,400546936,45,Antinio Petty/Jeffrey Anderson/Gary Maxwell,KeyBank Center,43,-1.918128655,7.894736842,3/20/2014,Saint Joseph's,89,81,27-8 (12-6),UConn,0,1,0,0,0,0,0,7.202561606,2,170
+13,400546924,38,Larry Spaulding/Jeb Hartness/Les Jones,BMO Harris Bradley Center,31,16.01893939,9.090909091,3/20/2014,American University,75,35,27-7 (12-6),Wisconsin,0,1,0,0,0,0,0,1.78483996,2,110
+14,400546901,33,Doug Shows/Lee Cassell/James Breeding,Spokane Arena,39,5.493261456,7.277628032,3/20/2014,New Mexico State,73,69,30-4 (16-2),San Diego State,0,1,0,0,0,0,0,5.475426071,2,142
+15,400546923,44,Dick Cartmell/Gregory Nixon/Pat Adams,Spokane Arena,36,-2.048991354,7.780979827,3/20/2014,North Dakota State,75,80,23-10 (12-6),Oklahoma,0,1,0,0,0,0,0,7.696347642,2,155
+16,400546925,32,Terry Wymer/Tom Nunez/Rodrick Dixon,BMO Harris Bradley Center,47,10.11731844,6.703910615,3/20/2014,BYU,87,68,24-9 (10-8),Oregon,0,1,0,0,0,0,0,3.272105986,2,155
+17,400546929,36,James Baker/Roger Ayers/Bob Staffen,BMO Harris Bradley Center,22,9.763265306,9.795918367,3/20/2014,Wofford,57,40,26-8 (15-3),Michigan,0,1,0,0,0,0,0,1.844928844,2,97
+18,400546903,18,Kelly Self/Tony Padilla/Frank Harvey,Amway Center,45,3.17260274,6.575342466,3/20/2014,Manhattan,71,64,30-5 (15-3),Louisville,0,1,0,0,0,0,0,5.591020038,2,135
+19,400546949,27,Pat Driscoll/Bill Ek/Doug Sirmons,Amway Center,46,-5.220551378,6.766917293,3/20/2014,NC State,83,80,27-6 (13-3),Saint Louis,0,1,0,0,0,0,0,5.777159265,2,163
+20,400546930,27,Ed Corbett/D.J. Carstensen/Joe Lindsay,BMO Harris Bradley Center,42,4.944767442,6.976744186,3/20/2014,Arizona State,87,85,24-10 (11-7),Texas,0,1,0,0,0,0,0,7.842583121,2,172
+21,400546918,38,Lamont Simpson/Robert Riley/Donnie Eppley,Enterprise Center,35,-0.394230769,7.692307692,3/21/2014,Eastern Kentucky,80,69,25-9 (14-4),Kansas,0,1,0,0,0,0,0,5.075610771,2,149
+22,400546899,35,Brent Hampton/Raymie Styons/Michael Stephens,Viejas Arena,31,7.155279503,7.453416149,3/21/2014,Tulsa,76,59,27-8 (12-6),UCLA,0,1,0,0,0,0,0,3.198902696,2,135
+23,400546917,38,Chris Beaver/Terry Oglesby/Ted Valentine,Viejas Arena,37,0.670658683,8.083832335,3/21/2014,Stephen F. Austin,75,77,26-9 (12-4),VCU,0,1,0,0,0,0,0,6.556974352,2,152
+24,400546919,36,Mike Stuart/John Gaffney/Mike Sanzere,Enterprise Center,38,-6.422077922,7.792207792,3/21/2014,Stanford,53,58,27-7 (15-3),New Mexico,0,1,0,0,0,0,0,3.566473785,2,111
+25,400546932,36,Dwayne Gladden/Verne Harris/Jose Carrion-Diaz,PNC Arena,35,1.56133829,8.921933086,3/21/2014,Coastal Carolina,70,59,29-6 (16-2),UVA,0,1,0,0,0,0,0,3.89408276,2,129
+26,400546937,33,Gary Prager/Mike Nance/Tim Comer,AT&T Center,27,7.862676056,8.450704225,3/21/2014,North Carolina Central,93,75,27-7 (11-7),Iowa State,0,1,0,0,0,0,0,3.327702889,2,168
+27,400546909,31,Kevin Brill/Chris Rastatter/Bo Boroski,AT&T Center,33,2.560747664,7.476635514,3/21/2014,Providence,79,77,24-9 (13-5),UNC,0,1,0,0,0,0,0,6.93469447,2,156
+28,400546933,34,John Higgins/Eric Curry/Brett Nansel,PNC Arena,36,5.742424242,7.272727273,3/21/2014,George Washington,71,66,24-9 (12-6),Memphis,0,1,0,0,0,0,0,4.817588573,2,137
+29,400546921,32,Anthony Jordan/Ron Groover/Mark Whitehead,Viejas Arena,37,9.140127389,7.643312102,3/21/2014,Weber State,68,59,31-4 (15-3),Arizona,0,1,0,0,0,0,0,1.955449587,2,127
+30,400546926,39,Jerry Heater/Tony Greene/Byron Jarrett,AT&T Center,35,3.348242812,7.667731629,3/21/2014,Louisiana,76,66,27-7 (14-4),Creighton,0,1,0,0,0,0,0,4.739852861,2,142
+31,400546902,34,Tim Clougherty/Brian Dorsey/Karl Hess,AT&T Center,47,11.11331445,6.798866856,3/21/2014,Nebraska,74,60,25-11 (9-9),Baylor,0,1,0,0,0,0,0,1.749005484,2,134
+32,400546922,33,Tim Nestor/Wally Rutecki/Mike Eades,Viejas Arena,61,7.331719128,5.811138015,3/21/2014,Oklahoma State,85,77,29-6 (15-3),Gonzaga,0,1,0,0,0,0,0,3.632132661,2,162
+33,400546948,47,Bryan Kersey/Sean Hull/William Covington,Enterprise Center,34,18.03669725,7.339449541,3/21/2014,Cal Poly,64,37,35-0 (18-0),Wichita State,0,1,0,0,0,0,0,0.964513262,2,101
+34,400546931,50,Gerry Pollard/Don Daily/Tom O'Neill,PNC Arena,37,0.508361204,8.026755853,3/21/2014,Mercer,71,78,26-9 (13-5),Duke,0,1,0,0,0,0,0,5.682916101,2,149
+35,400546950,25,Lamar Simpson/Duke Edsall/Mike Roberts,PNC Arena,34,-14.05934718,7.121661721,3/21/2014,Tennessee,67,86,24-9 (10-6),UMass,0,1,0,0,0,0,0,1.777688533,2,153
+36,400546928,36,Deron White/Michael Greenstein/Mike Reed,Enterprise Center,31,5.936305732,7.643312102,3/21/2014,Kansas State,56,49,25-10 (12-6),Kentucky,0,1,0,0,0,0,0,2.672417679,2,105
+37,400548469,37,Pat Driscoll/Tony Padilla/Doug Sirmons,Amway Center,19,5.585454545,8.727272727,3/22/2014,Pittsburgh,61,45,34-2 (18-0),Florida,0,0,1,0,0,0,0,2.431785633,3,106
+38,400548467,26,Tom Eades/Jeffrey Anderson/David Hall,KeyBank Center,32,-2.343137255,7.843137255,3/22/2014,Dayton,53,55,28-6 (14-4),Syracuse,0,0,1,0,0,0,0,5.42767977,3,108
+39,400548494,51,Kipp Kissinger/Antinio Petty/Jamie Luckie,KeyBank Center,41,-1.654867257,7.079646018,3/22/2014,UConn,65,77,29-5 (16-2),Villanova,0,0,1,0,0,0,0,3.726168196,3,142
+40,400548471,38,Doug Shows/Randy  McCall/Keith Kimble,Spokane Arena,37,7.842424242,7.272727273,3/22/2014,Harvard,80,73,28-8 (12-6),Michigan State,0,0,1,0,0,0,0,4.286901159,3,153
+41,400548468,46,Terry Wymer/Ed Corbett/Tommy Nunez Jr.,BMO Harris Bradley Center,40,-2.179487179,7.692307692,3/22/2014,Oregon,85,77,28-7 (12-6),Wisconsin,0,0,1,0,0,0,0,6.201412055,3,162
+42,400548509,27,James Breeding/Pat Adams/Ray Natili,Spokane Arena,33,5.199261993,8.856088561,3/22/2014,North Dakota State,63,44,31-4 (16-2),San Diego State,0,0,1,0,0,0,0,2.818651741,3,107
+43,400548473,39,D.J. Carstensen/Roger Ayers/Les Jones,BMO Harris Bradley Center,28,11.23432343,7.920792079,3/22/2014,Texas,79,65,27-8 (15-3),Michigan,0,0,1,0,0,0,0,2.37665385,3,144
+44,400548508,32,Mike Scyphers/Brian  O'Connell/Joe DeRosa,Amway Center,37,6.658753709,7.121661721,3/22/2014,Saint Louis,66,51,31-5 (15-3),Louisville,0,0,1,0,0,0,0,3.060280227,3,117
+45,400548683,25,Bryan Kersey/Lamont Simpson/Michael Greenstein,Enterprise Center,37,-2.777777778,7.01754386,3/23/2014,Stanford,57,60,25-10 (14-4),Kansas,0,0,1,0,0,0,0,4.711714939,3,117
+46,400548713,41,Ron Groover/Mark Whitehead/Mike Eades,Viejas Arena,40,9.590604027,8.053691275,3/23/2014,Stephen F. Austin,77,60,28-8 (12-6),UCLA,0,0,1,0,0,0,0,2.604831788,3,137
+47,400548704,24,Mike Roberts/Lamar Simpson/Don Daily,PNC Arena,30,12.58881579,7.894736842,3/23/2014,Memphis,78,60,30-6 (16-2),UVA,0,0,1,0,0,0,0,1.87629028,3,138
+48,400548705,46,Chris Rastatter/Tony Greene/Bo Boroski,AT&T Center,38,0.416666667,6.666666667,3/23/2014,North Carolina,85,83,28-7 (11-7),Iowa State,0,0,1,0,0,0,0,8.075409055,3,168
+49,400548688,34,Terry Oglesby/Ted Valentine/Michael Stephens,Viejas Arena,32,15.26666667,7.272727273,3/23/2014,Gonzaga,84,61,32-4 (15-3),Arizona,0,0,1,0,0,0,0,1.859324795,3,145
+50,400548679,42,Brian Dorsey/Mike Nance/Karl Hess,AT&T Center,30,-18.79230769,9.230769231,3/23/2014,Baylor,55,85,27-8 (14-4),Creighton,0,0,1,0,0,0,0,1.285269718,3,140
+51,400548706,39,Mike Stuart/Mike Reed/John Gaffney,Enterprise Center,36,1.475862069,8.275862069,3/23/2014,Kentucky,76,78,35-1 (18-0),Wichita State,0,0,1,0,0,0,0,7.343294985,3,154
+52,400548678,44,Dwayne Gladden/Verne Harris/John Higgins,PNC Arena,35,11.22064057,8.540925267,3/23/2014,Mercer,83,63,24-12 (11-7),Tennessee,0,0,1,0,0,0,0,2.274797572,3,146
+53,400548873,39,Terry Wymer/Lamont Simpson/Les Jones,FedExForum,34,4.607361963,7.36196319,3/27/2014,UCLA,79,68,35-2 (18-0),Florida,0,0,0,1,0,0,0,4.152106482,4,147
+54,400548862,44,Ron Groover/Pat Adams/Karl Hess,FedExForum,49,-7.367292225,6.434316354,3/27/2014,Dayton,72,82,23-13 (10-8),Stanford,0,0,0,1,0,0,0,3.469646032,4,154
+55,400548900,26,D.J. Carstensen/Jamie Luckie/Michael Stephens,Honda Center,36,-0.931372549,7.843137255,3/27/2014,San Diego State,70,64,33-4 (15-3),Arizona,0,0,0,1,0,0,0,4.684939253,4,134
+56,400548897,31,Roger Ayers/Antinio Petty/Jeffrey Anderson,Honda Center,32,13.80398671,7.973421927,3/27/2014,Baylor,69,52,29-7 (12-6),Wisconsin,0,0,0,1,0,0,0,1.453976482,4,121
+57,400548899,32,Brian  O'Connell/James Breeding/Doug Sirmons,Madison Square Garden,32,-2.493288591,8.053691275,3/28/2014,Michigan State,59,61,30-7 (16-2),UVA,0,0,0,1,0,0,0,5.364749845,4,120
+58,400548879,35,Verne Harris/Michael Reed/Tony Padilla,Madison Square Garden,32,-7.968253968,7.619047619,3/28/2014,UConn,76,81,28-8 (11-7),Iowa State,0,0,0,1,0,0,0,2.990165853,4,157
+59,400548885,31,Michael Irving/David Hall/Mark Whitehead,Lucas Oil Stadium,26,7.126811594,8.695652174,3/28/2014,Tennessee,73,71,28-8 (15-3),Michigan,0,0,0,1,0,0,0,3.813850449,4,144
+60,400548877,29,Chris Rastatter/Joe DeRosa/Ray Natili,Lucas Oil Stadium,43,4.48048048,7.207207207,3/28/2014,Kentucky,69,74,31-6 (15-3),Louisville,0,0,0,1,0,0,0,6.349680088,4,143
+61,400549674,33,Mike Stuart/Pat Driscoll/Doug Shows,FedExForum,29,7.080985915,8.450704225,3/29/2014,Dayton,62,52,36-2 (18-0),Florida,0,0,0,0,1,0,0,2.4988431,5,114
+62,400549675,29,Bryan Kersey/Tony Greene/Mike Eades,Honda Center,32,2.144694534,8.681672026,3/29/2014,Wisconsin,63,64,33-5 (15-3),Arizona,0,0,0,0,1,0,0,7.187595824,5,127
+63,400549858,51,Tom Eades/John Higgins/Mike Roberts,Madison Square Garden,28,-2.862815884,8.664259928,3/30/2014,UConn,54,60,29-9 (12-6),Michigan State,0,0,0,0,1,0,0,4.235547711,5,114
+64,400549857,29,Ed Corbett/Don Daily/Randy  McCall,Lucas Oil Stadium,28,1.277777778,8.333333333,3/30/2014,Kentucky,72,75,28-9 (15-3),Michigan,0,0,0,0,1,0,0,6.665584883,5,147
+65,400549976,22,John Higgins/Doug Sirmons/Michael Stephens,AT&T Stadium,30,-1.937037037,8.888888889,4/5/2014,UConn,53,63,36-3 (18-0),Florida,0,0,0,0,0,1,0,3.301348862,6,116
+66,400549978,25,Mike Stuart/Terry Wymer/Pat Adams,AT&T Stadium,35,2.030612245,8.163265306,4/5/2014,Kentucky,73,74,30-8 (12-6),Wisconsin,0,0,0,0,0,1,0,6.993368839,6,147
+67,400551234,35,Doug Shows/Verne Harris/Joe DeRosa,AT&T Stadium,27,5.260135135,8.108108108,4/7/2014,Kentucky,60,54,32-8 (12-6),UConn,0,0,0,0,0,0,1,3.807084632,7,114
+68,400785453,32,Doug Shows/Pat Adams/Marques Pettigrew,UD Arena,44,-6.087765957,6.382978723,3/17/2015,Hampton,64,74,19-14 (13-7),Manhattan,1,0,0,0,0,0,0,3.990280129,1,138
+69,400785451,52,Brian  O'Connell/Paul Faia/Ray Natili,UD Arena,44,-5.422976501,6.266318538,3/17/2015,BYU,94,90,21-12 (11-7),Ole Miss,1,0,0,0,0,0,0,6.720866291,1,184
+70,400785474,41,John Higgins/Tim Kelly/Tony Padilla,UD Arena,32,2.723880597,8.955223881,3/18/2015,Dayton,55,56,25-9 (14-4),Boise State,1,0,0,0,0,0,0,5.17823547,1,111
+71,400785452,38,Alfred Smith/Michael Stephens/Mike Eades,UD Arena,44,1.002785515,6.685236769,3/18/2015,Robert Morris,77,81,23-12 (12-2),North Florida,1,0,0,0,0,0,0,5.490350037,1,158
+72,400785343,26,Michael Greenstein/Paul Szelc/Tim Comer,KFC Yum! Center,40,17.40934066,6.593406593,3/19/2015,Hampton,79,56,35-0 (18-0),Kentucky,0,1,0,0,0,0,0,1.377333321,2,135
+73,400785438,17,Michael Irving/Ed Corbett/Bret Smith,PPG Paints Arena,25,4.520295203,8.856088561,3/19/2015,Northeastern,69,65,30-5 (14-4),Notre Dame,0,1,0,0,0,0,0,4.02431452,2,134
+74,400785346,32,Rick Crawford/Chris Rastatter/Brian  O'Connell,PPG Paints Arena,35,3.361290323,7.741935484,3/19/2015,Texas,56,48,23-10 (12-6),Butler,0,1,0,0,0,0,0,3.525519108,2,104
+75,400785435,36,Mike Stuart/Gerry Pollard/Earl Walton,KFC Yum! Center,34,-0.991803279,7.37704918,3/19/2015,Purdue,66,65,23-10 (13-5),Cincinnati,0,1,0,0,0,0,0,7.388085941,2,131
+76,400785457,23,Terry Moore/Lamar Simpson/Rodrick Dixon,Moda Center,42,17.55417957,7.430340557,3/19/2015,Texas Southern,93,72,32-3 (16-2),Arizona,0,1,0,0,0,0,0,1.526794257,2,165
+77,400785450,35,A.J. Desai/Gary Prager/Jamie Luckie,Veterans Memorial Arena,26,4.210714286,8.571428571,3/19/2015,Georgia State,56,57,24-10 (11-7),Baylor,0,1,0,0,0,0,0,4.454387601,2,113
+78,400785456,20,Don Daily/Lee Cassell/Mike Sanzere,Veterans Memorial Arena,34,7.937931034,8.275862069,3/19/2015,Harvard,67,65,25-11 (11-7),UNC,0,1,0,0,0,0,0,4.731618901,2,132
+79,400785448,32,Mike Roberts/Chris Beaver/Jose Carrion,Veterans Memorial Arena,31,-0.349152542,8.13559322,3/19/2015,Wofford,56,53,27-8 (13-5),Arkansas,0,1,0,0,0,0,0,5.332389775,2,109
+80,400785458,50,Bill Ek/Bert Smith/David Hall,Veterans Memorial Arena,35,11.44940476,7.142857143,3/19/2015,Ole Miss,76,57,22-13 (9-9),Xavier,0,1,0,0,0,0,0,2.087959834,2,133
+81,400785449,41,Kevin Brill/Mike Reed/Tony Henderson,Moda Center,34,2.527696793,7.871720117,3/19/2015,Ohio State,72,75,26-10 (12-6),VCU,0,1,0,0,0,0,0,6.993226331,2,147
+82,400785347,40,Anthony Jordan/Byron Jarrett/Pat Adams,PPG Paints Arena,21,25.48540146,8.759124088,3/19/2015,Lafayette,93,52,33-2 (16-2),Villanova,0,1,0,0,0,0,0,1.371591333,2,145
+83,400785439,39,Dwayne Gladden/Darron George/Joe DeRosa,PPG Paints Arena,25,-5.518867925,7.547169811,3/19/2015,NC State,65,66,22-11 (11-7),LSU,0,1,0,0,0,0,0,4.385421933,2,131
+84,400785446,41,John Gaffney/Brett Nansel/Ray Natili,KFC Yum! Center,25,1.078488372,6.976744186,3/19/2015,UAB,59,60,25-9 (12-6),Iowa State,0,1,0,0,0,0,0,6.790010969,2,119
+85,400785352,51,Verne Harris/D.J. Carstensen/Eric Curry,Moda Center,39,8.432515337,7.36196319,3/19/2015,Eastern Washington,84,74,22-10 (12-6),Georgetown,0,1,0,0,0,0,0,2.58149009,2,158
+86,400785444,39,Mark Schnur/Jerry Heater/Roger Ayers,Moda Center,30,5.600694444,8.333333333,3/19/2015,Stephen F. Austin,57,50,25-8 (13-5),Utah,0,1,0,0,0,0,0,3.542527437,2,107
+87,400785454,36,Sean Hull/Larry Spaulding/Antinio Petty,KFC Yum! Center,31,-2.28525641,7.692307692,3/19/2015,UCLA,59,60,27-7 (15-3),SMU,0,1,0,0,0,0,0,4.943489287,2,119
+88,400785345,28,Deron White/Tony Padilla/Gregory Nixon,CHI Health Center Omaha,32,12.68646865,7.920792079,3/20/2015,New Mexico State,75,56,27-8 (13-5),Kansas,0,1,0,0,0,0,0,1.909335038,2,131
+89,400785344,48,Tom Nunez/Brian Dorsey/Vladimir Voyard-Tadal,Nationwide Arena,38,2.849673203,7.843137255,3/20/2015,Valparaiso,65,62,28-6 (14-4),Maryland,0,1,0,0,0,0,0,5.626512622,2,127
+90,400785436,32,,Nationwide Arena,49,7.386503067,7.36196319,3/20/2015,Buffalo,68,62,24-9 (11-7),West Virginia,0,1,0,0,0,0,0,4.309529387,2,130
+91,400785437,35,Doug Shows/Jeb Hartness/Kipp Kissinger,CHI Health Center Omaha,43,-0.461111111,6.666666667,3/20/2015,Indiana,81,76,29-4 (17-1),Wichita State,0,1,0,0,0,0,0,6.347812031,2,157
+92,400785455,39,William Covington/Clarence Armstrong/John Higgins,CHI Health Center Omaha,25,11.85869565,8.695652174,3/20/2015,Coastal Carolina,86,72,32-3 (16-2),Wisconsin,0,1,0,0,0,0,0,2.386945209,2,158
+93,400785447,48,Tim Nestor/Pat Driscoll/Bill McCarthy,CHI Health Center Omaha,29,1.239344262,7.868852459,3/20/2015,Oklahoma State,79,73,26-9 (13-5),Oregon,0,1,0,0,0,0,0,5.38077136,2,152
+94,400785349,42,Gene Steratore/Keith Kimble/Mark Whitehead,Spectrum Center,32,5.824324324,8.108108108,3/20/2015,Belmont,79,67,30-3 (16-2),UVA,0,1,0,0,0,0,0,4.02771846,2,146
+95,400785442,49,Jeff Clark/Terry Wymer/Tony Chiazza,Nationwide Arena,30,6.546052632,7.894736842,3/20/2015,Albany,69,60,23-10 (12-6),Oklahoma,0,1,0,0,0,0,0,3.350727844,2,129
+96,400785348,29,Randy  McCall/Dick Cartmell/Robert Riley,KeyArena,21,0.430278884,9.561752988,3/20/2015,UC Irvine,57,55,25-8 (12-6),Louisville,0,1,0,0,0,0,0,5.611730877,2,112
+97,400785440,40,Tim Gattis/Brent Hampton/Mike Eades,KeyArena,31,11.55018587,8.921933086,3/20/2015,Wyoming,71,54,31-3 (16-2),Northern Iowa,0,1,0,0,0,0,0,2.109206456,2,125
+98,400785350,49,Tom Eades/Terry Oglesby/Mike Nance,Nationwide Arena,35,-4.496875,7.5,3/20/2015,Dayton,53,66,22-12 (11-7),Providence,0,1,0,0,0,0,0,3.300220552,2,119
+99,400785441,32,Joe Lindsay/Donnie Eppley/Michael Stephens,Spectrum Center,41,4.657894737,7.01754386,3/20/2015,Georgia,70,63,24-11 (12-6),Michigan State,0,1,0,0,0,0,0,3.215977313,2,133
+100,400785351,40,Larry Scirotto/James Breeding/Steve Olson,Spectrum Center,25,15.63793103,8.275862069,3/20/2015,Robert Morris,85,56,30-4 (15-3),Duke,0,1,0,0,0,0,0,1.65418677,2,141
+101,400785353,43,Tim Clougherty/Olandis Poole/Jeff Anderson,KeyArena,35,8.716612378,7.817589577,3/20/2015,North Dakota State,86,76,33-2 (17-1),Gonzaga,0,1,0,0,0,0,0,3.043156184,2,162
+102,400785445,44,Bob Staffen/Mike Scyphers/Doug Sirmons,KeyArena,26,10.82450331,7.947019868,3/20/2015,Davidson,83,52,22-11 (12-6),Iowa,0,1,0,0,0,0,0,2.464957948,2,135
+103,400785443,39,Bryan Kersey/Lamont Simpson/Tom O'Neill,Spectrum Center,33,6.916666667,7.407407407,3/20/2015,St. John's,76,64,27-8 (14-4),San Diego State,0,1,0,0,0,0,0,3.140064026,2,140
+104,400786203,29,Antonio Petty/Michael Greenstein/Ray Natilli,KFC Yum! Center,37,5.855113636,6.818181818,3/21/2015,Cincinnati,64,51,36-0 (18-0),Kentucky,0,0,1,0,0,0,0,2.891054604,3,115
+105,400786182,33,Brian  O'Connell/Pat Adams/Joe DeRosa,PPG Paints Arena,31,1.908284024,7.98816568,3/21/2015,Butler,67,64,31-5 (14-4),Notre Dame,0,0,1,0,0,0,0,6.105588241,3,131
+106,400786186,36,D.J. Carstensen/Mike Reed/Roger Ayers,Moda Center,30,4.75,7.407407407,3/21/2015,Ohio State,73,58,33-3 (16-2),Arizona,0,0,1,0,0,0,0,3.125812182,3,131
+107,400786202,35,Mike Roberts/Bert Smith/David Hall,Veterans Memorial Arena,48,2.57804878,5.853658537,3/21/2015,Arkansas,87,78,26-11 (11-7),UNC,0,0,1,0,0,0,0,5.116660938,3,165
+108,400786184,27,Lee Cassell/Don Daily/Jamie Luckie,Veterans Memorial Arena,39,5.441767068,9.638554217,3/21/2015,Georgia State,75,67,23-13 (9-9),Xavier,0,0,1,0,0,0,0,3.863619009,3,142
+109,400786221,39,Michael Irving/Ed Corbett/Chris Rastatter,PPG Paints Arena,43,-4.044247788,7.079646018,3/21/2015,NC State,68,71,33-3 (16-2),Villanova,0,0,1,0,0,0,0,4.878553525,3,139
+110,400786206,39,Lamar Simpson/Verne Harris/Jerry Heater,Moda Center,38,-0.960714286,8.571428571,3/21/2015,Utah,64,75,22-11 (12-6),Georgetown,0,0,1,0,0,0,0,4.608571114,3,139
+111,400786183,35,Mike Stuart/Gerry Pollard/John Gaffney,KFC Yum! Center,37,6.935185185,7.407407407,3/21/2015,UAB,92,75,22-13 (11-7),UCLA,0,0,1,0,0,0,0,3.810705467,3,167
+112,400786304,41,John Higgins/Kipp Kissinger/Gregory Nixon,CHI Health Center Omaha,43,-4.353982301,7.079646018,3/22/2015,Wichita State,65,78,27-9 (13-5),Kansas,0,0,1,0,0,0,0,3.148205492,3,143
+113,400786307,38,Terry Wymer/Tom Eades/Terry Oglesby,Nationwide Arena,39,-2.498442368,7.476635514,3/22/2015,West Virginia,59,69,28-7 (14-4),Maryland,0,0,1,0,0,0,0,3.957387936,3,128
+114,400786326,42,Pat Driscoll/Doug Shows/Tony Padilla,CHI Health Center Omaha,33,5.506756757,8.108108108,3/22/2015,Oregon,72,65,33-3 (16-2),Wisconsin,0,0,1,0,0,0,0,4.252165302,3,137
+115,400786305,29,Bryan Kersey/Joe Lindsay/Mark Whitehead,NA,37,-6.574534161,7.453416149,3/22/2015,Michigan State,54,60,30-4 (16-2),UVA,0,0,1,0,0,0,0,3.23024404,3,114
+116,400786333,39,Jeff Clark/Ron Groover/Brian Dorsey,Nationwide Arena,35,2.824104235,7.817589577,3/22/2015,Dayton,72,66,24-10 (12-6),Oklahoma,0,0,1,0,0,0,0,4.281775808,3,138
+117,400786306,30,Mike Scyphers/Doug Sirmons/Jeff Anderson,KeyArena,36,6.51119403,8.955223881,3/22/2015,Northern Iowa,66,53,26-8 (12-6),Louisville,0,0,1,0,0,0,0,2.928677295,3,119
+118,400786330,27,James Breeding/Keith Kimble/Michael Stephens,Spectrum Center,20,12.4,8.727272727,3/22/2015,San Diego State,68,49,31-4 (15-3),Duke,0,0,1,0,0,0,0,1.843156515,3,117
+119,400786332,31,Randy  McCall/Tim Clougherty/Mike Eades,KeyArena,28,12.34027778,8.333333333,3/22/2015,Iowa,87,68,34-2 (17-1),Gonzaga,0,0,1,0,0,0,0,2.212817504,3,155
+120,400786514,30,Bryan Kersey/Jeff Clark/John Gaffney,Rocket Mortgage FieldHouse,50,24.77363897,6.876790831,3/26/2015,West Virginia,78,39,37-0 (18-0),Kentucky,0,0,0,1,0,0,0,0.906074505,4,117
+121,400786505,37,Terry Wymer/Michael Irving/Michael Greenstein,Rocket Mortgage FieldHouse,30,8.594771242,7.843137255,3/26/2015,Wichita State,81,70,32-5 (14-4),Notre Dame,0,0,0,1,0,0,0,3.596748681,4,151
+122,400786512,34,Brian  O'Connell/Randy  McCall/Lamar Simpson,crypto.com Arena,38,-0.451178451,8.080808081,3/26/2015,North Carolina,79,72,34-3 (16-2),Wisconsin,0,0,0,1,0,0,0,6.389015709,4,151
+123,400786370,39,Ron Groover/Keith Kimble/Roger Ayers,crypto.com Arena,30,1.358108108,8.108108108,3/26/2015,Xavier,68,60,34-3 (16-2),Arizona,0,0,0,1,0,0,0,5.157261998,4,128
+124,400786506,44,Ed Corbett/Antinio Petty/Jamie Luckie,JMA Wireless Dome,32,2.816949153,8.13559322,3/27/2015,Michigan State,58,62,24-11 (12-6),Oklahoma,0,0,0,1,0,0,0,4.877408978,4,120
+125,400786516,32,John Higgins/Tony Padilla/Mike Reed,JMA Wireless Dome,32,2.312903226,7.741935484,3/27/2015,NC State,75,65,27-8 (12-6),Louisville,0,0,0,1,0,0,0,4.840437888,4,140
+126,400786476,26,D.J. Carstensen/Don Daily/Mark Whitehead,NRG Stadium,37,5.833333333,7.142857143,3/27/2015,Utah,63,57,32-4 (15-3),Duke,0,0,0,1,0,0,0,2.81742538,4,120
+127,400786510,32,Bert Smith/James Breeding/Ray Natili,NRG Stadium,40,8.143661972,6.76056338,3/27/2015,UCLA,74,62,35-2 (17-1),Gonzaga,0,0,0,1,0,0,0,2.470585044,4,136
+128,400787576,22,Chris Rastatter/Joe DeRosa/David Hall,Rocket Mortgage FieldHouse,26,-0.879003559,8.540925267,3/28/2015,Notre Dame,68,66,38-0 (18-0),Kentucky,0,0,0,0,1,0,0,6.429499998,5,134
+129,400787578,24,Pat Adams/Michael Stephens/Mike Eades,crypto.com Arena,43,4.788395904,8.19112628,3/28/2015,Arizona,85,78,35-3 (16-2),Wisconsin,0,0,0,0,1,0,0,4.573511272,5,163
+130,400787680,34,Pat Driscoll/Doug Shows/Verne Harris,JMA Wireless Dome,38,0.423180593,7.277628032,3/29/2015,Michigan State,70,76,27-9 (12-6),Louisville,0,0,0,0,1,0,0,6.868404731,5,146
+131,400787701,29,Mike Stuart/Doug Sirmons/Jeffrey Anderson,NRG Stadium,27,4.598566308,8.602150538,3/29/2015,Gonzaga,66,52,33-4 (15-3),Duke,0,0,0,0,1,0,0,3.890515142,5,118
+132,400787769,22,Verne Harris/John Higgins/Doug Sirmons,Lucas Oil Stadium,34,-2.189090909,8.727272727,4/4/2015,Wisconsin,64,71,38-1 (18-0),Kentucky,0,0,0,0,0,1,0,5.575323233,6,135
+133,400787887,30,Bryan Kersey/Pat Adams/Mike Eades,Lucas Oil Stadium,46,9.913946588,7.121661721,4/4/2015,Duke,61,81,27-12 (12-6),Michigan State,0,0,0,0,0,1,0,2.132533148,6,142
+134,400788981,32,Pat Driscoll/Joe DeRosa/Michael Stephens,Lucas Oil Stadium,28,-0.056338028,8.450704225,4/6/2015,Duke,63,68,36-4 (16-2),Wisconsin,0,0,0,0,0,0,1,4.996266411,7,131
+135,400871274,38,Patrick Evans/James Breeding/Paul Szelc,UD Arena,45,-3.716332378,6.876790831,3/15/2016,Wichita State,50,70,19-14 (11-7),Vanderbilt,1,0,0,0,0,0,0,3.534200867,1,120
+136,400871279,46,Lee Cassell/Ron Groover/Brandon Cruz,UD Arena,44,18.64095745,6.382978723,3/15/2016,Fairleigh Dickinson,96,65,21-13 (8-6),FGCU,1,0,0,0,0,0,0,1.337321089,1,161
+137,400871254,45,Chris Rastatter/Keith Kimble/Ray Acosta,UD Arena,33,-3.619926199,8.856088561,3/16/2016,Southern,59,55,15-19 (5-13),Holy Cross,1,0,0,0,0,0,0,5.613798614,1,114
+138,400871283,40,Kipp Kissinger/Kelly Pfeifer/Anthony Jordan,UD Arena,29,0.909385113,7.766990291,3/16/2016,Tulsa,67,62,23-12 (10-8),Michigan,1,0,0,0,0,0,0,6.21762827,1,129
+139,400871129,31,D.J. Carstensen/A.J. Desai/Jeffrey Anderson,Wells Fargo Arena (IA),50,17.2715736,6.091370558,3/17/2016,Austin Peay,105,79,31-4 (15-3),Kansas,0,1,0,0,0,0,0,1.636143464,2,184
+140,400871272,41,Tim Gattis/Lamont Simpson/Antinio Petty,Amica Mutual Pavilion,44,2.025641026,6.837606838,3/17/2016,Buffalo,79,72,26-7 (13-5),Miami,0,1,0,0,0,0,0,4.138856104,2,151
+141,400871273,38,Dwayne Gladden/Terry Wymer/Ray Natili,Amica Mutual Pavilion,43,-10.28134557,7.339449541,3/17/2016,Wichita State,55,65,25-9 (12-6),Arizona,0,1,0,0,0,0,0,1.801649159,2,120
+142,400871250,27,Sean Hull/James Breeding/Karl Hess,Wells Fargo Arena (IA),48,1.625714286,6.857142857,3/17/2016,UConn,67,74,22-12 (10-8),Colorado,0,1,0,0,0,0,0,4.200814688,2,141
+143,400871255,41,Ed Corbett/Lamont Simpson/David Hall,Amica Mutual Pavilion,51,3.201072386,6.434316354,3/17/2016,UNC Wilmington,93,85,24-10 (11-7),Duke,0,1,0,0,0,0,0,4.999192015,2,178
+144,400871276,32,Michael Irving/Roger Ayers/Tim Comer,Amica Mutual Pavilion,41,-3.746268657,7.164179104,3/17/2016,Yale,75,79,22-12 (10-8),Baylor,0,1,0,0,0,0,0,5.306366519,2,154
+145,400871258,33,Michael Greenstein/Donnie Eppley/Jeff Vlark,PNC Arena,38,9.450134771,6.469002695,3/17/2016,Florida Gulf Coast,83,67,29-6 (14-4),UNC,0,1,0,0,0,0,0,2.952532903,2,150
+146,400871260,26,Pat Driscoll/Tom Nunez/Bert Smith,Wells Fargo Arena (IA),31,15.40860215,6.451612903,3/17/2016,Stony Brook,85,57,27-8 (13-5),Kentucky,0,1,0,0,0,0,0,1.505314211,2,142
+147,400871259,35,Larry Spaulding/Tim Clougherty/Pat Adams,Wells Fargo Arena (IA),35,11.28253968,7.619047619,3/17/2016,Chattanooga,99,74,26-7 (15-3),Indiana,0,1,0,0,0,0,0,2.951048973,2,173
+148,400871280,37,Gene Steratore/Joe DeRosa/Olandis Poole,PNC Arena,29,-0.101010101,8.080808081,3/17/2016,Providence,69,70,21-13 (9-9),USC,0,1,0,0,0,0,0,6.530102983,2,139
+149,400871284,44,Earl Walton/Eric Curry/Bill McCarthy,PNC Arena,25,15.65037594,9.022556391,3/17/2016,Hampton,81,45,27-7 (13-5),UVA,0,1,0,0,0,0,0,1.633668518,2,126
+150,400871266,36,Tom Eades/Bret Smith/Vladimir Voyard-Tadal,Ball Arena,34,8.869281046,7.843137255,3/17/2016,Fresno State,80,69,27-8 (13-5),Utah,0,1,0,0,0,0,0,3.20485004,2,149
+151,400871285,46,Mike Roberts/Tim Kelly/Gregory Nixon,Ball Arena,37,11.15517241,6.896551724,3/17/2016,Iona,94,81,22-11 (10-8),Iowa State,0,1,0,0,0,0,0,3.100108592,2,175
+152,400871264,55,Gerry Pollard/Brian  O'Connell/Deldre Carr,Ball Arena,45,3.023980815,7.194244604,3/17/2016,Little Rock,83,85,26-9 (12-6),Purdue,0,1,0,0,0,0,0,7.854835409,2,168
+153,400871287,38,Don Daily/Byron Jarrett/Mike Reed,Ball Arena,40,-7.620879121,6.593406593,3/17/2016,Gonzaga,52,68,25-9 (12-6),Seton Hall,0,1,0,0,0,0,0,2.629153627,2,120
+154,400871263,35,John Gaffney/Doug Sirmons/Matt Potter,PNC Arena,30,-1,8.219178082,3/17/2016,Butler,61,71,19-13 (9-9),Texas Tech,0,1,0,0,0,0,0,4.714841273,2,132
+155,400871251,46,Anthony Jordan/Paul Faia/Mark Whitehead,Barclays Center,22,14.05841924,8.24742268,3/18/2016,UNC Asheville,86,56,30-5 (16-2),Villanova,0,1,0,0,0,0,0,2.175416614,2,142
+156,400871271,33,Darron George/Terry Oglesby/Rodrick Dixon,Spokane Arena,49,-4.877245509,7.185628743,3/18/2016,Hawai'i,66,77,23-11 (12-6),Cal,0,1,0,0,0,0,0,4.12025863,2,143
+157,400871270,51,Lamar Simpson/Jeb Hartness/Tony Padilla,Spokane Arena,36,7.518272425,7.973421927,3/18/2016,South Dakota State,79,74,26-8 (12-6),Maryland,0,1,0,0,0,0,0,3.379620773,2,153
+158,400871252,46,Tim Nestor/Chris Beaver/Michael Stephens,Barclays Center,36,4.299120235,7.917888563,3/18/2016,Temple,72,70,22-10 (12-6),Iowa,0,1,0,0,0,0,0,6.544013395,2,142
+159,400871253,44,Dick Cartmell/Joe Lindsay/Mike Nance,Spokane Arena,32,22.09354839,7.741935484,3/18/2016,Holy Cross,91,52,29-6 (14-4),Oregon,0,1,0,0,0,0,0,1.379074679,2,143
+160,400871256,38,Brian Dorsey/Paul Szelc/Les Jones,Paycom Center,36,4.116564417,7.36196319,3/18/2016,Cal State Bakersfield,82,68,26-7 (12-6),Oklahoma,0,1,0,0,0,0,0,4.402783462,2,150
+161,400871278,46,Verne Harris/Mike Scyphers/Bill Ek,Paycom Center,42,9.544235925,6.434316354,3/18/2016,Green Bay,92,65,27-8 (13-5),Texas A&M,0,1,0,0,0,0,0,2.625744035,2,157
+162,400871257,43,Chris Rastatter/Bo Boroski/Marques Pettigrew,Paycom Center,42,-2.727868852,7.868852459,3/18/2016,Northern Iowa,72,75,20-13 (11-7),Texas,0,1,0,0,0,0,0,6.615983075,2,147
+163,400871277,37,Keith Kimble/Tony Henderson/Jamie Luckie,Paycom Center,37,-4.576433121,7.643312102,3/18/2016,VCU,67,75,19-13 (9-9),Oregon State,0,1,0,0,0,0,0,4.340236919,2,142
+164,400871275,49,Mike Stuart/Kelly Self/Randy  McCall,Spokane Arena,33,2.611683849,8.24742268,3/18/2016,Cincinnati,78,76,28-7 (13-5),Saint Joe's,0,1,0,0,0,0,0,7.130588801,2,154
+165,400871281,35,Jerry Heater/Tony Greene/Steve Olson,Enterprise Center,30,9.966101695,8.13559322,3/18/2016,Weber State,71,53,28-5 (14-4),Xavier,0,1,0,0,0,0,0,2.543619866,2,124
+166,400871261,39,Larry Scirotto/Ron Groover/Brent Hampton,Barclays Center,52,-3.159493671,6.075949367,3/18/2016,Stephen F. Austin,56,70,26-9 (13-5),West Virginia,0,1,0,0,0,0,0,3.491240763,2,126
+167,400871262,42,Kipp Kissinger/Robert Riley/Bill Covington,Barclays Center,23,-3.863970588,8.823529412,3/18/2016,Michigan,70,63,22-11 (11-7),Notre Dame,0,1,0,0,0,0,0,4.975416633,2,133
+168,400871282,30,Kevin Brill/Lee Cassell/John Higgins,Enterprise Center,30,-4.123188406,8.695652174,3/18/2016,Pittsburgh,47,43,21-12 (12-6),Wisconsin,0,1,0,0,0,0,0,4.258599521,2,90
+169,400871286,43,Bryan Kersey/Clarence Armstrong/Brett Nansel,Enterprise Center,35,-5.993548387,7.741935484,3/18/2016,Middle Tennessee,81,90,29-6 (13-5),Michigan State,0,1,0,0,0,0,0,5.663708709,2,171
+170,400871265,44,Raymie Styons/Ted Valentine/Mike Eades,Enterprise Center,33,-7.107033639,7.339449541,3/18/2016,Syracuse,51,70,25-8 (14-4),Dayton,0,1,0,0,0,0,0,2.392197565,2,121
+171,400872131,39,Tim Clougherty/Bert Smith/Pat Adams,Wells Fargo Arena (IA),32,11.84193548,7.741935484,3/19/2016,UConn,73,61,32-4 (15-3),Kansas,0,0,1,0,0,0,0,1.846869473,3,134
+172,400872163,34,Lamont Simpson/Roger Ayers/Ray Natili,Amica Mutual Pavilion,33,8.851132686,7.766990291,3/19/2016,Wichita State,65,57,27-7 (13-5),Miami,0,0,1,0,0,0,0,3.378051288,3,122
+173,400872082,46,Terry Wymer/Michael Irving/Ed Corbett,Amica Mutual Pavilion,34,11.47603834,7.667731629,3/19/2016,Yale,71,64,25-10 (11-7),Duke,0,0,1,0,0,0,0,2.456406892,3,135
+174,400872165,37,John Gaffney/Doug Sirmons/Eric Curry,PNC Arena,39,6.539393939,7.272727273,3/19/2016,Providence,85,66,30-6 (14-4),UNC,0,0,1,0,0,0,0,3.554141114,3,151
+175,400872166,37,Pat Driscoll/D.J. Carstensen/Jeff Anderson,Wells Fargo Arena (IA),46,-0.304216867,7.228915663,3/19/2016,Indiana,67,73,27-9 (13-5),Kentucky,0,0,1,0,0,0,0,4.631899867,3,140
+176,400872129,26,Jeff Clark/Gene Steratore/Joe DeRosa,PNC Arena,30,1.464285714,8.571428571,3/19/2016,Butler,77,69,28-7 (13-5),UVA,0,0,1,0,0,0,0,5.419871211,3,146
+177,400872167,34,Gerry Pollard/Mike Roberts/Tom Eades,Ball Arena,27,-13.89138577,8.988764045,3/19/2016,Gonzaga,59,82,27-9 (13-5),Utah,0,0,1,0,0,0,0,1.969988244,3,141
+178,400872132,46,Brian  O'Connell/Gregory Nixon/Mike Reed,Ball Arena,24,11.30181818,8.727272727,3/19/2016,Little Rock,78,61,23-11 (10-8),Iowa State,0,0,1,0,0,0,0,2.249989019,3,139
+179,400872214,43,Kipp Kissinger/Bill Covington/Michael Stephens,Barclays Center,35,17.05825243,7.766990291,3/20/2016,Iowa,87,68,31-5 (16-2),Villanova,0,0,1,0,0,0,0,1.705117478,3,155
+180,400872218,37,Terry Oglesby/Randy  McCall/Lamar Simpson,Spokane Arena,40,2.801186944,7.121661721,3/20/2016,Hawai'i,73,60,27-8 (12-6),Maryland,0,0,1,0,0,0,0,3.55160727,3,133
+181,400872255,39,Mike Stuart/Darron George/Tony Padilla,Spokane Arena,39,3.652307692,7.384615385,3/20/2016,Saint Joseph's,69,64,30-6 (14-4),Oregon,0,0,1,0,0,0,0,6.151281854,3,133
+182,400872224,57,Verne Harris/Chris Rastatter/Bo Boroski,Paycom Center,41,6.754285714,6.857142857,3/20/2016,VCU,85,81,27-7 (12-6),Oklahoma,0,0,1,0,0,0,0,5.355327476,3,166
+183,400872229,66,Keith Kimble/Brian Dorsey/Jamie Luckie,Paycom Center,50,-3.781472684,7.125890736,3/20/2016,Northern Iowa,92,88,28-8 (13-5),Texas A&M,0,0,1,0,0,0,0,7.566603903,3,180
+184,400872259,43,Bryan Kersey/Tony Greene/Mike Eades,Enterprise Center,38,-0.175,7.5,3/20/2016,Wisconsin,63,66,28-6 (14-4),Xavier,0,0,1,0,0,0,0,5.936301963,3,129
+185,400872251,44,Larry Scirotto/Ron Groover/Mark Whitehead,Barclays Center,27,0.781362007,8.602150538,3/20/2016,Stephen F. Austin,76,75,23-11 (11-7),Notre Dame,0,0,1,0,0,0,0,7.025261106,3,151
+186,400872223,44,Lee Cassell/John Higgins/Ted Valentine,Enterprise Center,24,8.516339869,7.843137255,3/20/2016,Middle Tennessee,75,50,21-13 (9-9),Syracuse,0,0,1,0,0,0,0,2.948746863,3,125
+187,400872333,34,Verne Harris/Ron Groover/Don Daily,KFC Yum! Center,43,4.092537313,7.164179104,3/24/2016,Maryland,79,63,33-4 (15-3),Kansas,0,0,0,1,0,0,0,3.777666741,4,142
+188,400872358,32,Lamar Simpson/Darron George/Mark Whitehead,KFC Yum! Center,35,11.01145038,9.160305344,3/24/2016,Miami,92,69,32-5 (16-2),Villanova,0,0,0,1,0,0,0,2.948919575,4,161
+189,400872397,45,Bryan Kersey/Bert Smith/Gregory Nixon,Honda Center,36,6.665634675,7.430340557,3/24/2016,Duke,82,68,31-6 (14-4),Oregon,0,0,0,1,0,0,0,3.191112496,4,150
+190,400872390,53,Lamont Simpson/Gene Steratore/Roger Ayers,Honda Center,30,11.49853372,7.038123167,3/24/2016,Texas A&M,77,63,28-7 (12-6),Oklahoma,0,0,0,1,0,0,0,2.144651084,4,140
+191,400872339,51,Lee Cassell/Pat Adams/Joe DeRosa,Wells Fargo Center,49,12.84401114,6.685236769,3/25/2016,Indiana,101,86,31-6 (14-4),UNC,0,0,0,1,0,0,0,2.7049295,4,187
+192,400872394,33,Kipp Kissinger/Terry Oglesby/Ted Valentine,Wells Fargo Center,24,-3.052980132,7.947019868,3/25/2016,Wisconsin,61,56,24-11 (11-7),Notre Dame,0,0,0,1,0,0,0,6.581483394,4,117
+193,400872330,29,Randy  McCall/Tim Clougherty/Brian Dorsey,United Center,32,12.08637874,7.973421927,3/25/2016,Iowa State,84,71,29-7 (13-5),UVA,0,0,0,1,0,0,0,2.354144158,4,155
+194,400872391,36,Mike Stuart/Keith Kimble/Doug Sirmons,United Center,26,-3.758842444,7.717041801,3/25/2016,Gonzaga,63,60,22-13 (9-9),Syracuse,0,0,0,1,0,0,0,5.543261463,4,123
+195,400873025,40,Jeff Clark/Terry Wymer/Chris Rastatter,KFC Yum! Center,35,-2.131756757,8.108108108,3/26/2016,Villanova,59,64,33-5 (15-3),Kansas,0,0,0,0,1,0,0,5.548331932,5,123
+196,400873026,45,Tony Padilla/Mike Eades/Ray Natili,Honda Center,37,-12.32024169,7.250755287,3/26/2016,Oklahoma,68,80,31-7 (14-4),Oregon,0,0,0,0,1,0,0,2.133120625,5,148
+197,400873157,31,Tom Eades/Ed Corbett/Michael Stephens,Wells Fargo Center,35,4.795454545,9.090909091,3/27/2016,Notre Dame,88,74,32-6 (14-4),UNC,0,0,0,0,1,0,0,4.020713331,5,162
+198,400873156,40,Mike Roberts/John Higgins/John Gaffney,United Center,31,4.84375,7.5,3/27/2016,Syracuse,62,68,29-8 (13-5),UVA,0,0,0,0,1,0,0,3.569824242,5,130
+199,400873214,45,Tom Eades/Tony Padilla/Mark Whitehead,NRG Stadium,31,-18.34210526,7.894736842,4/2/2016,Oklahoma,95,51,34-5 (16-2),Villanova,0,0,0,0,0,1,0,2.160142855,6,146
+200,400873196,42,Jeff Clark/Roger Ayers/Mike Eades,NRG Stadium,27,7.328173375,7.430340557,4/2/2016,Syracuse,83,66,33-6 (14-4),UNC,0,0,0,0,0,1,0,2.875176861,6,149
+201,400873651,31,Terry Wymer/John Higgins/Michael Stephens,NRG Stadium,36,-1.254180602,8.026755853,4/4/2016,North Carolina,77,74,35-5 (16-2),Villanova,0,0,0,0,0,0,1,6.75349233,7,151
+202,400946453,28,Jeb Hartness/Brent Hampton/Steve McJunkins,UD Arena,31,-3.142857143,8.571428571,3/14/2017,New Orleans,67,66,20-15 (14-4),Mt St Mary's,1,0,0,0,0,0,0,6.031090914,1,133
+203,400946444,43,Nathan Farrell/Jeff Anderson/Bill McCarthy,UD Arena,51,-4.363095238,7.142857143,3/14/2017,Wake Forest,95,88,21-13 (8-10),Kansas State,1,0,0,0,0,0,0,5.55222091,1,183
+204,400946443,39,Bo Boroski/Bill Covington/Nate Harris,UD Arena,34,3.881578947,7.894736842,3/15/2017,USC,71,75,20-13 (10-8),Providence,1,0,0,0,0,0,0,4.150903824,1,146
+205,400946445,42,Lamar Simpson/Tony Chiazza/Todd Austin,UD Arena,28,2.769230769,7.692307692,3/15/2017,UC Davis,63,67,25-9 (13-3),NC Central,1,0,0,0,0,0,0,5.584602397,1,130
+206,400946417,38,Dwayne Gladden/Mike Scyphers/Tony Padilla,KeyBank Center,32,6.077181208,8.053691275,3/16/2017,Mount St. Mary's,76,56,32-3 (15-3),Villanova,0,1,0,0,0,0,0,2.758647053,2,132
+207,400946418,46,Larry Scirotto/Rodrick Dixon/Mike Eades,Amway Center,31,6.734939759,7.228915663,3/16/2017,East Tennessee State,80,65,25-8 (14-4),Florida,0,1,0,0,0,0,0,1.137335122,2,145
+208,400946428,43,Bill Ek/Pat Adams/Karl Hess,Amway Center,39,0.47515528,7.453416149,3/16/2017,UNC Wilmington,76,71,23-10 (11-7),UVA,0,1,0,0,0,0,0,3.720501376,2,147
+209,400946427,48,Gregory Nixon/Gary Prager/Jeff Anderson,KeyBank Center,40,3.56918239,7.547169811,3/16/2017,Virginia Tech,84,74,26-9 (12-6),Wisconsin,0,1,0,0,0,0,0,4.578215537,2,158
+210,400946449,50,Jeff Clark/Larry Spaulding/Eric Curry,Delta Center,30,5.783783784,7.207207207,3/16/2017,South Dakota State,66,46,33-1 (17-1),Gonzaga,0,1,0,0,0,0,0,0.253350515,2,112
+211,400946451,33,Ron Groover/Antinio Petty/Kelly Pfeifer,Delta Center,41,11.79821958,7.121661721,3/16/2017,North Dakota,100,82,31-4 (16-2),Arizona,0,1,0,0,0,0,0,0.451715624,2,182
+212,400946442,41,Terry Wymer/Tim Clougherty/Patrick Evans,Amway Center,42,5.678851175,6.266318538,3/16/2017,Florida Gulf Coast,86,80,26-8 (12-6),Florida State,0,1,0,0,0,0,0,1.361309098,2,166
+213,400946450,31,Pat Driscoll/Bert Smith/Vladimir Voyard-Tadal,KeyBank Center,44,6.120643432,6.434316354,3/16/2017,Bucknell,86,80,27-8 (12-6),West Virginia,0,1,0,0,0,0,0,1.069717659,2,166
+214,400946440,42,Anthony Jordan/Paul Szelc/Bill McCarthy,KeyBank Center,23,4.063829787,8.510638298,3/16/2017,Princeton,60,58,26-9 (12-6),Notre Dame,0,1,0,0,0,0,0,2.691894241,2,118
+215,400946452,50,Doug Shows/Gerry Pollard/A.J. Desai,Amway Center,36,-3.538216561,7.643312102,3/16/2017,Xavier,65,76,24-9 (12-6),Maryland,0,1,0,0,0,0,0,3.972497348,2,141
+216,400946441,30,Brent Hampton/Chris Rastatter/Marques Pettigrew,Delta Center,52,7.057692308,6.593406593,3/16/2017,VCU,85,77,29-4 (16-2),Saint Mary's,0,1,0,0,0,0,0,2.736042996,2,162
+217,400946439,40,Kevin Brill/John Higgins/Tom Nunez,Delta Center,34,5.042207792,7.792207792,3/16/2017,Vanderbilt,68,66,24-11 (10-8),Northwestern,0,1,0,0,0,0,0,6.98793669,2,134
+218,400946422,47,Randy Heimerman/Ed Corbett/Earl Walton,BMO Harris Bradley Center,32,2.341137124,8.026755853,3/16/2017,Vermont,80,70,26-7 (14-4),Purdue,0,1,0,0,0,0,0,2.553810122,2,150
+219,400946432,45,Michael Irving/John Gaffney/Donnie Eppley,BMO Harris Bradley Center,29,7.71147541,7.868852459,3/16/2017,Nevada,84,73,24-10 (12-6),Iowa State,0,1,0,0,0,0,0,1.669314911,2,157
+220,400946446,44,Deron White/Jerry Heater/Ted Valentine,BMO Harris Bradley Center,37,11.65944272,7.430340557,3/16/2017,Winthrop,76,64,24-8 (12-6),Butler,0,1,0,0,0,0,0,0.506017191,2,140
+221,400946436,34,Kelly Self/Tony Greene/James Breeding,BMO Harris Bradley Center,42,-5.542056075,7.476635514,3/16/2017,Middle Tennessee,72,81,24-10 (11-7),Minnesota,0,1,0,0,0,0,0,3.856599698,2,153
+222,400946419,51,Tim Nestor/Darron George/Lamont Simpson,Bon Secours Wellness Arena,36,13.01183432,7.100591716,3/17/2017,Troy,87,65,28-8 (11-7),Duke,0,1,0,0,0,0,0,0.244756827,2,152
+223,400946430,30,Gene Steratore/Jamie Luckie/Evon Burroughs,BOK Center,33,6.56918239,7.547169811,3/17/2017,New Mexico State,91,73,26-7 (12-6),Baylor,0,1,0,0,0,0,0,1.618277339,2,164
+224,400946420,52,Joe Lindsay/Matt Potter/Ray Natali,BOK Center,31,4.467857143,8.571428571,3/17/2017,USC,65,66,30-5 (17-1),SMU,0,1,0,0,0,0,0,4.536237232,2,131
+225,400946429,52,Michael Greenstein/Bo Boroski/Olandis Poole,Bon Secours Wellness Arena,33,1.593167702,7.453416149,3/17/2017,Marquette,93,73,23-10 (12-6),South Carolina,0,1,0,0,0,0,0,4.952603627,2,166
+226,400946421,45,D.J. Carstensen/Deldre Carr/Ray Acosta,BOK Center,36,19.69822485,7.100591716,3/17/2017,UC Davis,100,62,29-4 (16-2),Kansas,0,1,0,0,0,0,0,0.101277324,2,162
+227,400946423,34,Mike Roberts/Robert Riley/Tony Henderson,Gainbridge Fieldhouse,26,4.902173913,8.695652174,3/17/2017,Jacksonville State,78,63,25-8 (12-6),Louisville,0,1,0,0,0,0,0,0.442489748,2,141
+228,400946434,49,Verne Harris/Terry Oglesby/Bill Covington,Golden 1 Center,31,13.44578313,7.228915663,3/17/2017,Iona,93,77,30-5 (16-2),Oregon,0,1,0,0,0,0,0,0.418927164,2,170
+229,400946424,44,Bob Staffen/Mark Schnur/Keith Kimbell,Golden 1 Center,36,-7.737609329,6.997084548,3/17/2017,Rhode Island,72,84,25-10 (10-8),Creighton,0,1,0,0,0,0,0,4.109852405,2,156
+230,400946433,45,Byron Jarrett/Tony Chiazza/Roger Ayers,Gainbridge Fieldhouse,36,0.188311688,7.792207792,3/17/2017,Oklahoma State,92,91,25-11 (10-8),Michigan,0,1,0,0,0,0,0,7.13896414,2,183
+231,400946431,36,Rick Crawford/Don Daily/Michael Stephens,BOK Center,35,-7.550522648,8.362369338,3/17/2017,Michigan State,58,78,21-12 (10-8),Miami,0,1,0,0,0,0,0,2.085027651,2,136
+232,400946425,49,Paul Faia/Mike Reed/Les Jones,Bon Secours Wellness Arena,30,23.02,6.857142857,3/17/2017,Texas Southern,103,64,28-7 (14-4),UNC,0,1,0,0,0,0,0,0.048173065,2,167
+233,400946447,49,Lamar Simpson/Brian  O'Connell/Raymie Styons,Gainbridge Fieldhouse,37,10.4558011,6.629834254,3/17/2017,Northern Kentucky,79,70,30-5 (16-2),Kentucky,0,1,0,0,0,0,0,0.208315154,2,149
+234,400946438,36,Chris Beaver/Kipp Kissinger/Brandon Cruz,Golden 1 Center,30,10.90849673,7.843137255,3/17/2017,Kent State,97,80,30-4 (15-3),UCLA,0,1,0,0,0,0,0,0.465578601,2,177
+235,400946448,29,Verne Harris/Lee Cassell/Clarence Armstrong,Golden 1 Center,31,9.655677656,8.791208791,3/17/2017,Kansas State,75,61,30-5 (16-2),Cincinnati,0,1,0,0,0,0,0,2.032914654,2,136
+236,400946437,42,Randy  McCall/Jeb Hartness/Bret Smith,Gainbridge Fieldhouse,42,-1.137313433,7.164179104,3/17/2017,Wichita State,58,64,24-8 (15-3),Dayton,0,1,0,0,0,0,0,3.31282829,2,122
+237,400946435,24,Doug Sirmons/David Hall/Mike Nance,Bon Secours Wellness Arena,38,0.697547684,6.539509537,3/17/2017,Seton Hall,77,71,26-9 (12-6),Arkansas,0,1,0,0,0,0,0,6.194159706,2,148
+238,400947025,34,Anthony Jordan/Pat Driscoll/Gregory Nixon,KeyBank Center,35,-1.177631579,7.894736842,3/18/2017,Wisconsin,62,65,32-4 (15-3),Villanova,0,0,1,0,0,0,0,5.970434583,3,127
+239,400947000,36,Doug Shows/Terry Wymer/Larry Scirotto,Amway Center,27,13.14028777,8.633093525,3/18/2017,Virginia,65,39,26-8 (14-4),Florida,0,0,1,0,0,0,0,1.379917355,3,104
+240,400947027,40,Jeff Clark/Chris Rastatter/Brent Hampton,Delta Center,45,11.71279373,6.266318538,3/18/2017,Northwestern,79,73,34-1 (17-1),Gonzaga,0,0,1,0,0,0,0,0.758601451,3,152
+241,400947049,32,John Higgins/Ron Groover/Eric Curry,Delta Center,32,-0.786941581,8.24742268,3/18/2017,Saint Mary's,69,60,32-4 (16-2),Arizona,0,0,1,0,0,0,0,4.570072766,3,129
+242,400947046,38,Tim Clougherty/Pat Adams/Mike Eades,Amway Center,44,-12.19753086,7.407407407,3/18/2017,Xavier,66,91,26-9 (12-6),Florida State,0,0,1,0,0,0,0,3.15213855,3,157
+243,400947006,42,Tony Padilla/Paul Szelc/Jeff Anderson,KeyBank Center,39,7.585669782,7.476635514,3/18/2017,Notre Dame,83,71,28-8 (12-6),West Virginia,0,0,1,0,0,0,0,2.17639396,3,154
+244,400947047,49,Earl Walton/James Breeding/Ted Valentine,BMO Harris Bradley Center,31,7.245954693,7.766990291,3/18/2017,Iowa State,80,76,27-7 (14-4),Purdue,0,0,1,0,0,0,0,5.063065158,3,156
+245,400947026,34,Michael Irving/Ed Corbett/John Gaffney,BMO Harris Bradley Center,37,6.431034483,8.275862069,3/18/2017,Middle Tennessee,74,65,25-8 (12-6),Butler,0,0,1,0,0,0,0,2.219896439,3,139
+246,400947225,49,Mike Reed/Doug Sirmons/David Hall,Bon Secours Wellness Arena,48,-0.300268097,6.434316354,3/19/2017,South Carolina,81,88,28-9 (11-7),Duke,0,0,1,0,0,0,0,4.387280652,3,169
+247,400947183,41,Don Daily/Joe Lindsay/Michael Stephens,BOK Center,34,2.679180887,8.19112628,3/19/2017,USC,82,78,27-7 (12-6),Baylor,0,0,1,0,0,0,0,5.073693274,3,160
+248,400947223,43,Gene Steratore/Jamie Luckie/Ray Natili,BOK Center,30,5.221122112,7.920792079,3/19/2017,Michigan State,90,70,30-4 (16-2),Kansas,0,0,1,0,0,0,0,2.293638499,3,160
+249,400947182,37,Randy  McCall/Lamar Simpson/Jeb Hartness,Gainbridge Fieldhouse,33,2.738255034,8.053691275,3/19/2017,Michigan,69,73,25-9 (12-6),Louisville,0,0,1,0,0,0,0,5.133019707,3,142
+250,400947206,38,Kipp Kissinger/Terry Oglesby/Bill Covington,Golden 1 Center,35,-1.367412141,7.667731629,3/19/2017,Rhode Island,75,72,31-5 (16-2),Oregon,0,0,1,0,0,0,0,5.832499531,3,147
+251,400947185,38,Darron George/Lamont Simpson/Bo Boroski,Bon Secours Wellness Arena,30,4.937853107,6.779661017,3/19/2017,Arkansas,72,65,29-7 (14-4),UNC,0,0,1,0,0,0,0,3.837915488,3,137
+252,400947227,42,Mike Roberts/Brian  O'Connell/Roger Ayers,Gainbridge Fieldhouse,25,1.337704918,7.868852459,3/19/2017,Wichita State,65,62,31-5 (16-2),Kentucky,0,0,1,0,0,0,0,5.345908208,3,127
+253,400947226,48,Verne Harris/Lee Cassell/Keith Kimble,Golden 1 Center,23,2.573529412,8.823529412,3/19/2017,Cincinnati,79,67,31-4 (15-3),UCLA,0,0,1,0,0,0,0,4.192284952,3,146
+254,400947270,33,Lamont Simpson/Jamie Luckie/Eric Curry,SAP Center at San Jose,51,2.27077748,6.434316354,3/23/2017,West Virginia,61,58,35-1 (17-1),Gonzaga,0,0,0,1,0,0,0,5.62286734,4,119
+255,400947273,44,Terry Wymer/D.J. Carstensen/Pat Adams,SAP Center at San Jose,32,1.771126761,8.450704225,3/23/2017,Xavier,71,73,32-5 (16-2),Arizona,0,0,0,1,0,0,0,5.787570405,4,144
+256,400947321,55,Lee Cassell/Bill Covington/Doug Sirmons,T-Mobile Center,33,6.455696203,7.594936709,3/23/2017,Purdue,98,66,31-4 (16-2),Kansas,0,0,0,1,0,0,0,3.529423371,4,164
+257,400947325,48,Brian  O'Connell/Burt Walton/Roger Ayers,T-Mobile Center,25,0.817204301,8.602150538,3/23/2017,Michigan,69,68,32-5 (16-2),Oregon,0,0,0,1,0,0,0,6.390961193,4,137
+258,400947327,33,Mike Roberts/Gene Steratore/John Gaffney,Madison Square Garden,40,-11.95870206,7.079646018,3/24/2017,South Carolina,50,70,27-8 (12-6),Baylor,0,0,0,1,0,0,0,1.898798342,4,120
+259,400947266,39,Verne Harris/Tim Clougherty/Jeb Hartness,Madison Square Garden,50,0.148541114,7.161803714,3/24/2017,Wisconsin,84,83,27-8 (14-4),Florida,0,0,0,1,0,0,0,7.371847691,4,167
+260,400947324,52,Doug Shows/Joe Lindsay/Lamar Simpson,FedExForum,44,12.71802326,6.976744186,3/24/2017,Butler,92,80,30-7 (14-4),UNC,0,0,0,1,0,0,0,1.230299801,4,172
+261,400947330,46,Don Daily/Tony Padilla/Bo Boroski,FedExForum,36,3.619672131,7.868852459,3/24/2017,UCLA,86,75,32-5 (16-2),Kentucky,0,0,0,1,0,0,0,3.821112323,4,161
+262,400948652,40,James Breeding/Kipp Kissinger/Michael Stephens,SAP Center at San Jose,41,11.62568306,6.557377049,3/25/2017,Xavier,83,59,36-1 (17-1),Gonzaga,0,0,0,0,1,0,0,1.098492558,5,142
+263,400948650,50,Randy  McCall/Terry Oglesby/Ted Valentine,T-Mobile Center,26,-8.469387755,8.163265306,3/25/2017,Oregon,60,74,31-5 (16-2),Kansas,0,0,0,0,1,0,0,3.368603055,5,134
+264,400948729,36,Ron Groover/Jeffrey Anderson/Mike Eades,Madison Square Garden,38,0.238670695,7.250755287,3/26/2017,South Carolina,70,77,27-9 (14-4),Florida,0,0,0,0,1,0,0,5.768257611,5,147
+265,400948726,34,John Higgins/Keith Kimble/Mike Reed,FedExForum,37,3.840782123,6.703910615,3/26/2017,Kentucky,75,73,31-7 (14-4),UNC,0,0,0,0,1,0,0,6.570695181,5,148
+266,400948847,39,John Higgins/Doug Sirmons/Jeff Anderson,State Farm Stadium,35,4.758112094,7.079646018,4/1/2017,Gonzaga,73,77,26-11 (12-6),South Carolina,0,0,0,0,0,1,0,3.169860241,6,150
+267,400948853,47,Ron Groover/Tony Padilla/Ted Valentine,State Farm Stadium,42,3.015748031,6.299212598,4/1/2017,North Carolina,76,77,33-6 (16-2),Oregon,0,0,0,0,0,1,0,4.681243345,6,153
+268,400949246,46,Verne Harris/Michael Stephens/Mike Eades,State Farm Stadium,44,-0.589285714,6.12244898,4/3/2017,North Carolina,65,71,37-2 (17-1),Gonzaga,0,0,0,0,0,0,1,6.4079556,7,136
+269,401025841,49,Deldre Carr/Doug Sirmons/Brooks Wells,UD Arena,32,0.192307692,7.692307692,3/13/2018,UCLA,65,58,26-7 (14-4),St Bonaventure,1,0,0,0,0,0,0,5.272061399,1,123
+270,401025856,43,Michael Reed/Bert Smith/Justin Porterfield,UD Arena,42,5.012618297,7.570977918,3/13/2018,Radford,61,71,18-17 (10-8),LIU,1,0,0,0,0,0,0,4.602413596,1,132
+271,401025855,38,Tim Nestor/Chuck Jones/Rob Kueneman,UD Arena,30,-9.822485207,7.100591716,3/14/2018,Texas Southern,46,64,19-16 (9-7),NC Central,1,0,0,0,0,0,0,1.487921112,1,110
+272,401025854,52,Marques Pettigrew/Eric Curry/Mike Eades,UD Arena,35,0.119601329,7.973421927,3/14/2018,Syracuse,56,60,20-12 (8-10),Arizona State,1,0,0,0,0,0,0,5.415791069,1,116
+273,401025831,39,Don Daily/Bo Boroski/Steve McJunkins,American Airlines Center,34,12.58125,7.5,3/15/2018,Wright State,73,47,26-8 (13-5),Tennessee,0,1,0,0,0,0,0,0.364985706,2,120
+274,401025818,48,Gerry Pollard/Gregory Nixon/Vladimir Voyard-Tadal,ExtraMile Arena,26,-6.815972222,8.333333333,3/15/2018,Buffalo,68,89,27-8 (14-4),Arizona,0,1,0,0,0,0,0,4.312838101,2,157
+275,401025814,NA,Sean Hall/Terry Oglesby/Joe Lindsay,ExtraMile Arena,41,4.901538462,7.384615385,3/15/2018,Davidson,78,73,25-10 (10-8),Kentucky,0,1,0,0,0,0,0,3.628157434,2,151
+276,401025815,30,Bill Ek/John Gaffney/Deldre Carr,American Airlines Center,27,0.401408451,8.450704225,3/15/2018,Loyola Chicago,62,64,22-10 (11-7),Miami,0,1,0,0,0,0,0,6.156560002,2,126
+277,401025838,31,Deron White/Ron Groover/Bert Smith,INTRUST Bank Arena,35,3.835526316,7.894736842,3/15/2018,Montana,61,47,29-7 (13-5),Michigan,0,1,0,0,0,0,0,1.506467963,2,108
+278,401025840,45,Antinio Petty/Ray Natali/Tommy Nunez,ExtraMile Arena,36,3.302052786,7.038123167,3/15/2018,UNC Greensboro,68,64,31-4 (17-1),Gonzaga,0,1,0,0,0,0,0,5.44346221,2,132
+279,401025853,71,Randy Heimerman/Lee Cassell/Mike Stevens,ExtraMile Arena,30,4.544668588,6.916426513,3/15/2018,South Dakota State,81,73,25-8 (15-3),Ohio State,0,1,0,0,0,0,0,3.078614396,2,154
+280,401025829,29,Anthony Jordan/Larry Spaulding/Kelly Pfeifer,INTRUST Bank Arena,44,4.966386555,6.722689076,3/15/2018,San Diego State,67,65,27-7 (14-4),Houston,0,1,0,0,0,0,0,4.782100039,2,132
+281,401025816,51,Mike Roberts/Paul Faia/Robert Riley,PPG Paints Arena,33,21.88815789,7.894736842,3/15/2018,Radford,87,61,31-4 (14-4),Villanova,0,1,0,0,0,0,0,0.047817899,2,148
+282,401025833,30,Gene Steratore/Tony Padilla/D.G. Nelson,American Airlines Center,44,-1.859237537,7.038123167,3/15/2018,Stephen F. Austin,70,60,25-9 (11-7),Texas Tech,0,1,0,0,0,0,0,4.109809744,2,130
+283,401025819,51,Larry Scirotto/Mark Schnur/Mike Reed,American Airlines Center,40,10.13165266,6.722689076,3/15/2018,St. Bonaventure,77,62,21-12 (11-7),Florida,0,1,0,0,0,0,0,1.333645428,2,139
+284,401025832,36,Kevin Brill/Pat Adams/Nathan Farrell,PPG Paints Arena,40,-0.384858044,7.570977918,3/15/2018,Alabama,83,86,21-12 (10-8),Virginia Tech,0,1,0,0,0,0,0,6.052432093,2,169
+285,401025823,46,Keith Kimble/Bret Smith/Donnie Eppley,INTRUST Bank Arena,27,4.373376623,7.792207792,3/15/2018,Pennsylvania,76,60,28-7 (13-5),Kansas,0,1,0,0,0,0,0,1.153731327,2,136
+286,401025836,54,Chris Rastatter/Tim Comer/Courtney Green,PPG Paints Arena,28,17.01993355,7.973421927,3/15/2018,Iona,89,67,27-7 (13-5),Duke,0,1,0,0,0,0,0,0.203299156,2,156
+287,401025825,48,Tony Chiazza/Bill Covington/Doug Sirmons,PPG Paints Arena,35,-0.336760925,6.940874036,3/15/2018,Oklahoma,83,78,26-7 (15-3),URI,0,1,0,0,0,0,0,7.340735819,2,161
+288,401025834,51,Terry Wymer/Clarence Armstrong/David Hall,INTRUST Bank Arena,53,6.932249322,6.504065041,3/15/2018,NC State,94,83,22-11 (10-8),Seton Hall,0,1,0,0,0,0,0,4.409997709,2,177
+289,401025813,46,Tim Nestor/Tony Greene/Todd Austin,Spectrum Center,29,-6.617977528,8.988764045,3/16/2018,UMBC,54,74,31-3 (17-1),UVA,0,1,0,0,0,0,0,2.808736848,2,128
+290,401025820,57,Jeff Clark/Ed Corbett/Raymie Styons,Bridgestone Arena,25,2.283216783,8.391608392,3/16/2018,Georgia State,68,53,31-4 (16-2),Cincinnati,0,1,0,0,0,0,0,3.628900451,2,121
+291,401025817,53,Lamar Simpson/Tim Clougherty/Jerry Heater,Bridgestone Arena,33,-4.301775148,7.98816568,3/16/2018,Texas,87,83,28-7 (15-3),Nevada,0,1,0,0,0,0,0,8.292045301,2,170
+292,401025830,53,Pat Driscoll/Rod Dickson/Eric Curry,Spectrum Center,32,-7.536585366,7.317073171,3/16/2018,Kansas State,59,69,21-12 (10-8),Creighton,0,1,0,0,0,0,0,3.770833332,2,128
+293,401025826,49,Brent Hampton/Byron Jarrett/Mike Eades,Bridgestone Arena,43,14.14427861,5.970149254,3/16/2018,Texas Southern,102,83,29-5 (15-3),Xavier,0,1,0,0,0,0,0,0.230622338,2,185
+294,401025839,50,Lamont Simpson/Tony Henderson/Bill McCarthy,Spectrum Center,35,7.470238095,7.142857143,3/16/2018,Lipscomb,84,66,26-10 (11-7),UNC,0,1,0,0,0,0,0,0.567020075,2,150
+295,401025850,36,Michael Irving/Wally Rutecki/Kipp Kissinger,Spectrum Center,36,0.870253165,7.594936709,3/16/2018,Providence,73,69,21-12 (9-9),Texas A&M,0,1,0,0,0,0,0,3.992255538,2,142
+296,401025837,39,Patrick Evans/Darron George/Jamie Luckie,Bridgestone Arena,39,-10.54285714,6.857142857,3/16/2018,Florida State,54,67,20-13 (10-8),Missouri,0,1,0,0,0,0,0,1.899114563,2,121
+297,401025828,40,Brandon Cruz/Jeff Anderson/Karl Hess,Little Caesars Arena,42,12.83976261,7.121661721,3/16/2018,Cal State Fullerton,74,48,29-6 (15-3),Purdue,0,1,0,0,0,0,0,1.798404619,2,122
+298,401025822,52,John Higgins/Bob Staffen/Marques Pettigrew,Viejas Arena,33,-1.148688047,6.997084548,3/16/2018,Marshall,75,81,25-8 (14-4),Wichita State,0,1,0,0,0,0,0,5.079216476,2,156
+299,401025821,34,Earl Walton/James Breeding/Chris Beaver,Viejas Arena,46,8.335276968,6.997084548,3/16/2018,Murray State,85,68,25-10 (11-7),West Virginia,0,1,0,0,0,0,0,1.173938822,2,153
+300,401025827,44,Jeb Hartness/Roger Ayers/Mark Potter,Little Caesars Arena,34,-9.016025641,7.692307692,3/16/2018,Butler,62,79,23-12 (10-8),Arkansas,0,1,0,0,0,0,0,2.790722677,2,141
+301,401025835,37,Verne Harris/D.J. Carstensen/Nate Harris,Little Caesars Arena,45,7.640949555,7.121661721,3/16/2018,Bucknell,82,78,30-4 (16-2),Michigan State,0,1,0,0,0,0,0,0.878560321,2,160
+302,401025852,46,Dwayne Gladden/Doug Shows/Kelly Self,Viejas Arena,41,2.410614525,6.703910615,3/16/2018,Charleston,62,58,26-7 (13-5),Auburn,0,1,0,0,0,0,0,3.378231872,2,120
+303,401025851,39,Randy  McCall/Paul Szelc/Evon Burroughs,Viejas Arena,31,8.162251656,7.947019868,3/16/2018,New Mexico State,79,68,24-9 (11-7),Clemson,0,1,0,0,0,0,0,1.739913315,2,147
+304,401025824,31,Brian  O'Connell/Michael Greenstein/A.J. Desai,Little Caesars Arena,34,-2.003311258,7.947019868,3/16/2018,Syracuse,52,57,21-12 (9-9),TCU,0,1,0,0,0,0,0,4.665861289,2,109
+305,401025857,45,Michael Reed/Larry Scirotto/Don Daily,American Airlines Center,30,-1.996183206,9.160305344,3/17/2018,Loyola Chicago,62,63,26-9 (13-5),Tennessee,0,0,1,0,0,0,0,5.79949727,3,125
+306,401025858,46,Joe Lindsay/Mike Stevens/Ray Natili,ExtraMile Arena,41,8.467422096,6.798866856,3/17/2018,Buffalo,95,75,26-10 (10-8),Kentucky,0,0,1,0,0,0,0,2.112954102,3,170
+307,401025868,48,Terry Wymer/Bert Smith/David Hall,INTRUST Bank Arena,41,-0.617021277,7.294832827,3/17/2018,Houston,64,63,30-7 (13-5),Michigan,0,0,1,0,0,0,0,7.192026542,3,127
+308,401025869,48,Gerry Pollard/Lee Cassell/Terry Oglesby,ExtraMile Arena,46,5.835164835,6.593406593,3/17/2018,Ohio State,90,84,32-4 (17-1),Gonzaga,0,0,1,0,0,0,0,4.762407786,3,174
+309,401025862,57,Robert Riley/Pat Adams/Doug Sirmons,PPG Paints Arena,33,13.12149533,7.476635514,3/17/2018,Alabama,81,58,32-4 (14-4),Villanova,0,0,1,0,0,0,0,0.652579446,3,139
+310,401025863,37,Tony Padilla/Bo Boroski/John Gaffney,American Airlines Center,32,0.319277108,7.228915663,3/17/2018,Florida,69,66,26-9 (11-7),Texas Tech,0,0,1,0,0,0,0,5.149616757,3,135
+311,401025871,45,Anthony Jordan/Ron Groover/Keith Kimble,INTRUST Bank Arena,40,5.014705882,7.058823529,3/17/2018,Seton Hall,83,79,29-7 (13-5),Kansas,0,0,1,0,0,0,0,2.897453747,3,162
+312,401025870,40,Chris Rastatter/Tony Chiazza/Bill Covington,PPG Paints Arena,34,15.73650794,7.619047619,3/17/2018,Rhode Island,87,62,28-7 (13-5),Duke,0,0,1,0,0,0,0,0.572186298,3,149
+313,401025861,35,Jeff Clark/Brent Hampton/Jamie Luckie,Bridgestone Arena,31,11.72077922,7.792207792,3/18/2018,Nevada,73,75,31-5 (16-2),Cincinnati,0,0,1,0,0,0,0,2.784474189,3,148
+314,401025860,34,Lamont Simpson/Kipp Kissinger/Tony Henderson,Spectrum Center,34,1.088328076,7.570977918,3/18/2018,UMBC,50,43,24-11 (10-8),Kansas State,0,0,1,0,0,0,0,1.890096992,3,93
+315,401025867,36,Tim Clougherty/Darron George/Mike Eades,Bridgestone Arena,45,3.92795389,6.916426513,3/18/2018,Florida State,70,75,29-6 (15-3),Xavier,0,0,1,0,0,0,0,4.893593537,3,145
+316,401025866,55,Pat Driscoll/Michael Irving/Eric Curry,Spectrum Center,33,-12.00877193,7.01754386,3/18/2018,Texas A&M,65,86,26-11 (11-7),UNC,0,0,1,0,0,0,0,2.26787126,3,151
+317,401025864,44,Verne Harris/Brian  O'Connell/D.J. Carstensen,Little Caesars Arena,35,1.031578947,8.421052632,3/18/2018,Butler,76,73,30-6 (15-3),Purdue,0,0,1,0,0,0,0,4.05506386,3,149
+318,401025865,51,Doug Shows/Randy  McCall/Paul Szelc,Viejas Arena,38,14.68435754,6.703910615,3/18/2018,Marshall,94,71,26-10 (11-7),West Virginia,0,0,1,0,0,0,0,0.716925138,3,165
+319,401025873,45,Michael Greenstein/Roger Ayers/Jeff Anderson,Little Caesars Arena,42,1.192090395,6.779661017,3/18/2018,Syracuse,53,55,30-5 (16-2),Michigan State,0,0,1,0,0,0,0,4.250839889,3,108
+320,401025872,58,John Higgins/Earl Walton/James Breeding,Viejas Arena,35,-21.31176471,7.058823529,3/18/2018,Clemson,53,84,26-8 (13-5),Auburn,0,0,1,0,0,0,0,1.265141832,3,137
+321,401025877,34,Chris Rastatter/Earl Walton/Jamie Luckie,State Farm Arena,51,-4.344444444,6.666666667,3/22/2018,Kansas State,58,61,26-11 (10-8),Kentucky,0,0,0,1,0,0,0,5.935376188,4,119
+322,401025876,40,Michael Irving/Larry Scirotto/Kipp Kissinger,State Farm Arena,26,0.059440559,8.391608392,3/22/2018,Loyola Chicago,68,69,29-8 (15-3),Nevada,0,0,0,1,0,0,0,6.083515903,4,137
+323,401025875,39,Jeff Clark/D.J. Carstensen/Don Daily,crypto.com Arena,27,19.57525084,8.026755853,3/22/2018,Texas A&M,99,72,31-7 (13-5),Michigan,0,0,0,1,0,0,0,0.85949141,4,171
+324,401025874,40,Verne Harris/Brent Hampton/Bo Boroski,crypto.com Arena,38,-5.755617978,6.741573034,3/22/2018,Florida State,60,75,32-5 (17-1),Gonzaga,0,0,0,1,0,0,0,4.056612816,4,135
+325,401025879,52,Mike Roberts/Ron Groover/Joe Lindsay,TD Garden,48,2.759358289,6.417112299,3/23/2018,West Virginia,90,78,33-4 (14-4),Villanova,0,0,0,1,0,0,0,4.115629433,4,168
+326,401025878,35,Anthony Jordan/Pat Driscoll/Ray Natili,TD Garden,31,-3.2909699,8.026755853,3/23/2018,Texas Tech,65,78,30-7 (15-3),Purdue,0,0,0,1,0,0,0,4.457212644,4,143
+327,401025880,43,Lamont Simpson/Tony Padilla/Bill Covington,CHI Health Center Omaha,40,9.829608939,6.703910615,3/23/2018,Clemson,80,76,30-7 (13-5),Kansas,0,0,0,1,0,0,0,1.938083052,4,156
+328,401025881,39,Lee Cassell/Pat Adams/Mike Eades,CHI Health Center Omaha,35,2.46835443,7.594936709,3/23/2018,Syracuse,69,65,29-7 (13-5),Duke,0,0,0,1,0,0,0,2.28688214,4,134
+329,401025884,43,Gerry Pollard/Terry Wymer/Bert Smith,State Farm Arena,34,-12.42140468,8.026755853,3/24/2018,Loyola Chicago,62,78,25-12 (10-8),Kansas State,0,0,0,0,1,0,0,2.074457302,5,140
+330,401025885,39,Randy  McCall/Keith Kimble/John Gaffney,crypto.com Arena,39,3.105590062,7.453416149,3/24/2018,Florida State,58,54,32-7 (13-5),Michigan,0,0,0,0,1,0,0,3.408694897,5,112
+331,401025883,44,Terry Oglesby/Mike Reed/Michael Stephens,TD Garden,NA,6.638176638,6.837606838,3/25/2018,Texas Tech,71,59,34-4 (14-4),Villanova,0,0,0,0,1,0,0,1.45490241,5,130
+332,401025882,65,Roger Ayers/Doug Sirmons/Jeffrey Anderson,CHI Health Center Omaha,30,0.289693593,7.520891365,3/25/2018,Duke,85,81,31-7 (13-5),Kansas,0,0,0,0,1,0,0,8.309768159,5,166
+333,401025887,38,Mike Roberts/Terry Oglesby/Roger Ayers,Alamodome,28,0.237623762,7.920792079,3/31/2018,Michigan,57,69,32-6 (15-3),Loyola-Chicago,0,0,0,0,0,1,0,3.632406612,6,126
+334,401025886,61,Randy  McCall/Kipp Kissinger/Michael Stephens,Alamodome,26,15.49498328,8.026755853,3/31/2018,Kansas,95,79,35-4 (14-4),Villanova,0,0,0,0,0,1,0,1.80555711,6,174
+335,401025888,50,Terry Wymer/Doug Sirmons/Jeff Anderson,Alamodome,38,8.254716981,7.547169811,4/2/2018,Villanova,62,79,33-8 (13-5),Michigan,0,0,0,0,0,0,1,2.46796752,7,141
+336,401123380,45,John Gaffney/Steve McJunkins/Owen Shortt,UD Arena,34,4.175757576,7.272727273,3/19/2019,Belmont,70,81,23-10 (13-5),Temple,1,0,0,0,0,0,0,4.101730522,1,151
+337,401123378,50,Kevin Brill/Brian Dorsey/Lewis Garrison,UD Arena,29,4.203883495,7.766990291,3/19/2019,Prairie View A&M,82,76,21-13 (12-6),Fair Dickinson,1,0,0,0,0,0,0,5.186876224,1,158
+338,401123379,41,Michael Irving/Jerry Heater/Bart Lenox,UD Arena,34,2.533557047,8.053691275,3/20/2019,North Dakota State,74,78,18-16 (10-6),NC Central,1,0,0,0,0,0,0,5.157353511,1,152
+339,401123377,43,Michael Greenstein/A.J. Desai/Chance Moore,UD Arena,41,10.48311688,6.233766234,3/20/2019,St. John's,74,65,23-10 (12-6),Arizona State,1,0,0,0,0,0,0,2.16812825,1,139
+340,401123435,40,Nate Harris/Eric Curry/Michael Stephens,Wells Fargo Arena (IA),40,1.587662338,7.792207792,3/21/2019,Bradley,76,65,29-6 (16-4),Michigan State,0,1,0,0,0,0,0,0.93082581,2,141
+341,401123438,54,Chris Rastatter/Nathan Farrell/Vladimir Voyard-Tadal,VyStar Veterans Memorial Arena,27,8.747191011,6.741573034,3/21/2019,Yale,79,74,27-6 (16-2),LSU,0,1,0,0,0,0,0,1.378214981,2,153
+342,401123437,50,Bill Ek/Clarence Armstrong/Doug Sirmons,VyStar Veterans Memorial Arena,34,-1.873900293,7.038123167,3/21/2019,Belmont,79,77,23-10 (13-7),Maryland,0,1,0,0,0,0,0,6.618766493,2,156
+343,401123436,53,Pat Driscoll/David Hall/Charles Jones,Wells Fargo Arena (IA),37,-6.701298701,7.792207792,3/21/2019,Minnesota,76,86,20-14 (10-8),Louisville,0,1,0,0,0,0,0,3.734599532,2,162
+344,401123396,42,Kelly Self/Kipp Kissinger/Donnie Eppley,Delta Center,34,26.25595238,7.142857143,3/21/2019,Fairleigh Dickinson,87,49,31-3 (16-0),Gonzaga,0,1,0,0,0,0,0,0.017293152,2,136
+345,401123405,41,Larry Spaulding/Gregory Nixon/Jeff Anderson,Wells Fargo Arena (IA),33,13.92038217,7.643312102,3/21/2019,Montana,74,55,29-6 (15-5),Michigan,0,1,0,0,0,0,0,0.190538925,2,129
+346,401123393,44,Keith Kimble/Robert Riley/Courtney Green,XL Center,45,1.549418605,6.976744186,3/21/2019,Vermont,76,69,28-7 (13-5),Florida State,0,1,0,0,0,0,0,2.954616313,2,145
+347,401123394,49,Randy Heimerman/Lee Cassell/Pat Adams,XL Center,34,-10.23943662,6.76056338,3/21/2019,Murray State,64,83,24-10 (12-6),Marquette,0,1,0,0,0,0,0,2.938421164,2,147
+348,401123406,42,Tony Greene/Joe Lindsay/Kelly Pfeifer,Wells Fargo Arena (IA),40,-7.047058824,7.058823529,3/21/2019,Florida,61,70,29-5 (15-3),Nevada,0,1,0,0,0,0,0,4.106558415,2,131
+349,401123395,63,Rick Crawford/Lamar Simpson/D.J. Carstensen,Delta Center,31,-2.859649123,8.421052632,3/21/2019,Baylor,69,78,20-14 (10-8),Syracuse,0,1,0,0,0,0,0,5.334848895,2,147
+350,401123399,55,Tony Chiazza/Steve McJunkins/Jamie Luckie,XL Center,32,9.103773585,7.509433962,3/21/2019,Old Dominion,61,48,24-9 (16-4),Purdue,0,1,0,0,0,0,0,0.408694739,2,109
+351,401123400,42,Mark Schnur/Bert Smith/Evon Burroughs,XL Center,20,3.613821138,9.727642276,3/21/2019,Saint Mary's,61,57,26-9 (13-5),Villanova,0,1,0,0,0,0,0,3.309573581,2,118
+352,401123403,37,,VyStar Veterans Memorial Arena,34,21.27090301,8.026755853,3/21/2019,Abilene Christian,79,44,28-6 (15-3),Kentucky,0,1,0,0,0,0,0,0.070911082,2,123
+353,401123401,50,James Breeding/Tommy Nunez Jr./Bill McCarthy,Delta Center,31,13.02857143,7.619047619,3/21/2019,Northeastern,87,53,26-9 (12-6),Kansas,0,1,0,0,0,0,0,0.839981517,2,140
+354,401123402,56,Brent Hampton/Randy  McCall/Mike Nance,Delta Center,43,4.952522255,7.121661721,3/21/2019,New Mexico State,78,77,27-9 (11-7),Auburn,0,1,0,0,0,0,0,3.346616352,2,155
+355,401123404,55,Dwayne Gladden/Jeb Hartness/Brian Dorsey,VyStar Veterans Memorial Arena,33,6.197452229,7.643312102,3/21/2019,Seton Hall,84,68,30-4 (18-0),Wofford,0,1,0,0,0,0,0,3.761741055,2,152
+356,401123420,48,Chris Beaver/Bo Boroski/Patrick Evans,Colonial Life Arena,31,11.81469649,7.667731629,3/22/2019,North Dakota State,85,62,30-5 (14-4),Duke,0,1,0,0,0,0,0,0.140945316,2,147
+357,401123417,33,Terry Wymer/Bob Staffen/A.J. Desai,SAP Center at San Jose,37,13.64761905,7.619047619,3/22/2019,Saint Louis,66,52,25-8 (12-6),Virginia Tech,0,1,0,0,0,0,0,0.404610917,2,118
+358,401123418,47,Larry Scirotto/Tony Padilla/Brandon Cruz,SAP Center at San Jose,37,1.665605096,7.643312102,3/22/2019,Liberty,76,80,23-11 (10-8),Miss St,0,1,0,0,0,0,0,5.198898444,2,156
+359,401123419,40,Doug Shows/William Covington/Antinio Petty,Colonial Life Arena,30,-8.283950617,7.407407407,3/22/2019,UCF,58,73,25-8 (16-2),VCU,0,1,0,0,0,0,0,2.457430265,2,131
+360,401123407,39,Michael Reed/Tony Henderson/Olandis Poole,BOK Center,26,7.751612903,7.741935484,3/22/2019,Northern Kentucky,72,57,27-6 (14-4),Texas Tech,0,1,0,0,0,0,0,0.736862538,2,129
+361,401123408,49,Raymond Styons Jr./Gerry Pollard/Deldre Carr,BOK Center,42,11.7283237,6.936416185,3/22/2019,Arizona State,91,74,32-3 (16-2),Buffalo,0,1,0,0,0,0,0,1.390642316,2,165
+362,401123412,46,Brian  O'Connell/D.G. Nelson/Marques Pettigrew,Colonial Life Arena,25,1.48,8.727272727,3/22/2019,Gardner-Webb,71,56,30-3 (16-2),UVA,0,1,0,0,0,0,0,0.763260278,2,127
+363,401123397,55,Darron George/Terry Oglesby/Matt Porter,Nationwide Arena,27,6.192439863,8.24742268,3/22/2019,Colgate,77,70,30-5 (15-3),Tennessee,0,1,0,0,0,0,0,1.141639576,2,147
+364,401123409,50,Sean Hull/Mike Roberts/Jerry Heater,SAP Center at San Jose,31,0.996721311,7.868852459,3/22/2019,UC Irvine,64,70,25-9 (14-4),Kansas State,0,1,0,0,0,0,0,4.564158142,2,134
+365,401123410,45,Jeff Clark/Michael Greenstein/Rob Kueneman,SAP Center at San Jose,29,-4.756756757,8.108108108,3/22/2019,Oregon,54,72,23-11 (14-6),Wisconsin,0,1,0,0,0,0,0,3.808293552,2,126
+366,401123398,50,Tim Clougherty/Ron Groover/Steven Anderson,Nationwide Arena,33,3.504950495,7.920792079,3/22/2019,Iowa,72,79,28-7 (14-4),Cincinnati,0,1,0,0,0,0,0,5.115109306,2,151
+367,401123411,44,Verne Harris/Paul Szelc/Bret Smith,Colonial Life Arena,37,-17.41137124,8.026755853,3/22/2019,Oklahoma,72,95,20-13 (10-8),Ole Miss,0,1,0,0,0,0,0,1.78887654,2,167
+368,401123416,63,Don Daily/Jose Carrion/Todd Austin,Nationwide Arena,30,5.179810726,7.570977918,3/22/2019,Iona,88,73,28-6 (16-2),UNC,0,1,0,0,0,0,0,0.427451623,2,161
+369,401123413,52,Mike Scyphers/Ted Valentine/Ray Natili,BOK Center,25,14.7012987,7.792207792,3/22/2019,Georgia State,84,55,32-3 (16-2),Houston,0,1,0,0,0,0,0,2.16194535,2,139
+370,401123414,42,Kevin Brill/Rodrick Dixon/Roger Ayers,BOK Center,27,-2.461279461,8.080808081,3/22/2019,Ohio State,59,62,23-12 (9-9),Iowa State,0,1,0,0,0,0,0,5.979749814,2,121
+371,401123415,37,Michael Irving/John Higgins/Justin Porterfield,Nationwide Arena,36,-6.442424242,7.272727273,3/22/2019,Washington,61,78,28-7 (15-3),Utah State,0,1,0,0,0,0,0,3.871595434,2,139
+372,401123439,37,Pat Driscoll/Jeff Anderson/Michael Stephens,Wells Fargo Arena (IA),31,14.18771331,8.19112628,3/23/2019,Minnesota,70,50,30-6 (16-4),Michigan State,0,0,1,0,0,0,0,0.462650531,3,120
+373,401123440,52,Earl Walton/Brian Dorsey/John Gaffney,VyStar Veterans Memorial Arena,30,5.376404494,6.741573034,3/23/2019,Maryland,69,67,28-6 (16-2),LSU,0,0,1,0,0,0,0,5.765752467,3,136
+374,401123429,41,Randy  McCall/Brent Hampton/James Breeding,Delta Center,41,9.997032641,7.121661721,3/23/2019,Baylor,83,71,32-3 (16-0),Gonzaga,0,0,1,0,0,0,0,0.671635147,3,154
+375,401123421,47,Joe Lindsay/Kelly Pfeifer/Eric Curry,Wells Fargo Arena (IA),23,6.617647059,8.823529412,3/23/2019,Florida,64,49,30-6 (15-5),Michigan,0,0,1,0,0,0,0,1.822790384,3,113
+376,401123430,45,Bert Smith/Tony Chiazza/Jamie Luckie,XL Center,24,14.58579882,7.100591716,3/23/2019,Murray State,90,62,29-7 (13-5),Florida State,0,0,1,0,0,0,0,1.578941036,3,152
+377,401123432,68,Lee Cassell/Keith Kimble/Robert Riley,XL Center,28,18.79577465,8.450704225,3/23/2019,Villanova,87,61,25-9 (16-4),Purdue,0,0,1,0,0,0,0,1.001466549,3,148
+378,401123433,40,Chris Rastatter/Jeb Hartness/Doug Sirmons,VyStar Veterans Memorial Arena,30,0.857142857,8.156462585,3/23/2019,Wofford,62,56,29-6 (15-3),Kentucky,0,0,1,0,0,0,0,3.652960902,3,118
+379,401123434,49,Lamar Simpson/D.J. Carstensen/Kipp Kissinger,Delta Center,38,-17.24921136,7.570977918,3/23/2019,Auburn,75,89,26-10 (12-6),Kansas,0,0,1,0,0,0,0,1.32597105,3,164
+380,401123427,43,Verne Harris/Brian  O'Connell/Paul Szelc,Colonial Life Arena,34,0.978125,7.5,3/24/2019,UCF,77,76,31-5 (14-4),Duke,0,0,1,0,0,0,0,4.880570365,3,153
+381,401123428,47,Jeff Clark/Mike Roberts/Michael Greenstein,SAP Center at San Jose,29,1.183745583,8.480565371,3/24/2019,Liberty,67,58,26-8 (12-6),Virginia Tech,0,0,1,0,0,0,0,2.670747559,3,125
+382,401123422,42,Roger Ayers/Ted Valentine/Ray Natili,BOK Center,40,13.24404762,7.142857143,3/24/2019,Buffalo,78,58,28-6 (14-4),Texas Tech,0,0,1,0,0,0,0,1.548449548,3,136
+383,401123424,46,Doug Shows/Marques Pettigrew/Bo Borowski,Colonial Life Arena,20,7.705179283,9.561752988,3/24/2019,Oklahoma,63,51,31-3 (16-2),UVA,0,0,1,0,0,0,0,0.815851042,3,114
+384,401123423,41,Don Daily/Tim Clougherty/Terry Oglesby,Nationwide Arena,44,11.10723861,7.238605898,3/24/2019,Iowa,83,77,31-5 (15-3),Tennessee,0,0,1,0,0,0,0,3.148126091,3,160
+385,401123431,43,Terry Wymer/Larry Scirotto/Tony Padilla,SAP Center at San Jose,27,7.2,8.421052632,3/24/2019,UC Irvine,73,54,25-12 (10-8),Oregon,0,0,1,0,0,0,0,2.133467749,3,127
+386,401123426,50,Michael Irving/John Higgins/Ron Groover,Nationwide Arena,23,12.45065789,7.894736842,3/24/2019,Washington,81,59,29-6 (16-2),UNC,0,0,1,0,0,0,0,0.694861532,3,140
+387,401123425,48,Gerry Pollard/Michael Reed/Tony Henderson,BOK Center,40,6.305732484,7.643312102,3/24/2019,Ohio State,74,59,33-3 (16-2),Houston,0,0,1,0,0,0,0,2.521023041,3,133
+388,401123386,39,Pat Driscoll/Verne Harris/Ray Natili,Honda Center,36,7.398843931,6.936416185,3/28/2019,Florida State,72,58,33-3 (16-0),Gonzaga,0,0,0,1,0,0,0,1.382666813,4,130
+389,401123385,38,Michael Irving/Larry Scirotto/James Breeding,Honda Center,30,-10.82698962,8.30449827,3/28/2019,Texas Tech,44,63,30-7 (15-5),Michigan,0,0,0,1,0,0,0,1.657080047,4,107
+390,401123381,58,Randy  McCall/Lamar Simpson/Brian  O'Connell,KFC Yum! Center,27,2.046692607,9.338521401,3/28/2019,Oregon,53,49,32-3 (16-2),UVA,0,0,0,1,0,0,0,2.393527579,4,102
+391,401123382,55,D.J. Carstensen/Joe Lindsay/Jeff Anderson,KFC Yum! Center,49,-6.876923077,6.923076923,3/28/2019,Purdue,94,99,31-6 (15-3),Tennessee,0,0,0,1,0,0,0,7.243057214,4,193
+392,401123388,46,Bert Smith/Kipp Kissinger/Jamie Luckie,Capital One Arena,30,0.28852459,7.868852459,3/29/2019,Virginia Tech,75,73,32-5 (14-4),Duke,0,0,0,1,0,0,0,4.545868116,4,148
+393,401123389,53,Doug Shows/Paul Szelc/Pat Adams,Capital One Arena,20,11.17567568,8.108108108,3/29/2019,LSU,80,63,31-6 (16-4),Michigan State,0,0,0,1,0,0,0,1.336083536,4,143
+394,401123392,65,Gerry Pollard/Mike Reed/Michael Stephens,T-Mobile Center,33,-5.479768786,6.936416185,3/29/2019,Auburn,80,97,29-7 (16-2),UNC,0,0,0,1,0,0,0,3.985012397,4,177
+395,401123391,32,Jeff Clark/Chris Rastatter/Don Daily,T-Mobile Center,36,4.180851064,8.510638298,3/29/2019,Houston,62,58,30-6 (15-3),Kentucky,0,0,0,1,0,0,0,5.310692728,4,120
+396,401123384,49,John Higgins/Earl Walton/Roger Ayers,Honda Center,29,-0.779456193,7.250755287,3/30/2019,Texas Tech,69,75,33-4 (16-0),Gonzaga,0,0,0,0,1,0,0,5.383142967,5,144
+397,401123383,59,Ron Groover/Tony Padilla/Bo Boroski,KFC Yum! Center,30,-0.213815789,8.881578947,3/30/2019,Purdue,80,75,33-3 (16-2),UVA,0,0,0,0,1,0,0,7.788529835,5,155
+398,401123387,40,Keith Kimble/John Gaffney/Doug Sirmons,Capital One Arena,20,-1.136075949,7.594936709,3/31/2019,Michigan State,67,68,32-6 (14-4),Duke,0,0,0,0,1,0,0,6.672061983,5,135
+399,401123390,44,Mike Roberts/Terry Wymer/Brian Dorsey,T-Mobile Center,40,1.52972973,7.297297297,3/31/2019,Auburn,71,77,30-7 (15-3),Kentucky,0,0,0,0,1,0,0,5.886589612,5,148
+400,401123376,47,Doug Shows/Bo Boroski/Jeffrey Anderson,U.S. Bank Stadium,33,-3.362007168,8.602150538,4/6/2019,Texas Tech,51,61,32-7 (16-4),Michigan State,0,0,0,0,0,1,0,3.905568945,6,112
+401,401123375,50,James Breeding/Keith Kimble/Doug Sirmons,U.S. Bank Stadium,24,1.603703704,NA,4/6/2019,Auburn,63,62,34-3 (16-2),UVA,0,0,0,0,0,1,0,5.525682599,6,125
+402,401123374,54,Terry Wymer/Ron Groover/Michael Stephens,U.S. Bank Stadium,33,3.420245399,8.282208589,4/8/2019,Virginia,77,85,31-7 (14-4),Texas Tech,0,0,0,0,0,0,1,7.468391879,7,162
+403,401310864,37,Steven Anderson/Bo Boroski/Brian McNutt,Mackey Arena,29,4.099688474,7.476635514,3/18/2021,Drake,52,53,16-6 (11-2),Wichita State,1,0,0,0,0,0,0,4.665791315,1,105
+404,401310868,54,Randy  McCall/Jeffrey Anderson/Andy  O'Brien,Simon Skjodt Assembly Hall,22,7.027355623,7.294832827,3/18/2021,Appalachian State,98,55,17-7 (8-4),Norfolk State,1,0,0,0,0,0,0,4.588533534,1,153
+405,401310862,36,Pat Driscoll/Jeff Clark/Doug Sirmons,Mackey Arena,34,4.157099698,8.157099698,3/18/2021,UCLA,80,86,15-13 (9-11),Michigan State,1,0,0,0,0,0,0,5.953127632,1,166
+406,401310863,36,Chris Rastatter/Ron Groover/Byron Jarrett,Simon Skjodt Assembly Hall,26,1.757679181,8.19112628,3/18/2021,Texas Southern,52,60,12-11 (9-7),Mt St Mary's,1,0,0,0,0,0,0,4.336005837,1,112
+407,401310912,55,Tony Padilla/Gregory Nixon/Matt Potter,Lucas Oil Stadium,31,12.59504132,6.611570248,3/19/2021,Hartford,79,55,23-2 (13-1),Baylor,0,1,0,0,0,0,0,0.136745369,2,134
+408,401310905,58,Gerry Pollard/Bart Lenox/Jeffrey Anderson,Mackey Arena,33,-0.512328767,7.397260274,3/19/2021,Oral Roberts,72,75,21-10 (12-8),Ohio State,0,1,0,0,0,0,0,5.794729454,2,147
+409,401310907,NA,NA,NA,NA,NA,NA,3/19/2021,Colgate,85,68,23-6 (13-4),Arkansas,0,1,0,0,0,0,0,NA,2,153
+410,401310909,51,Brent Hampton/James Breeding/Byron Jarrett,Lucas Oil Stadium,36,-4.809667674,8.157099698,3/19/2021,North Texas,69,78,18-10 (13-6),Purdue,0,1,0,0,0,0,0,6.531073747,2,147
+411,401310910,48,Brian  O'Connell/Brian Dorsey/Courtney Green,Indiana Farmers Coliseum,44,5.618012422,7.453416149,3/19/2021,Winthrop,73,63,17-6 (11-4),Villanova,0,1,0,0,0,0,0,2.567343711,2,136
+412,401310908,37,Bill Covington/Doug Sirmons/John Floyd,Simon Skjodt Assembly Hall,27,4.093645485,8.026755853,3/19/2021,Utah State,65,53,18-10 (9-8),Texas Tech,0,1,0,0,0,0,0,2.626962064,2,118
+413,401310906,36,Lamar Simpson/Ron Groover/Paul Szelc,Hinkle Fieldhouse,43,-1.949101796,8.083832335,3/19/2021,Virginia Tech,75,70,15-9 (9-7),Florida,0,1,0,0,0,0,0,7.31888189,2,145
+414,401310911,40,Jeff Clark/Terry Oglesby/Mike Reed,Mackey Arena,25,-10.46333333,8,3/19/2021,Wisconsin,62,85,18-11 (10-6),UNC,0,1,0,0,0,0,0,2.560051654,2,147
+415,401310904,NA,NA,NA,NA,NA,NA,3/19/2021,Drexel,78,49,24-6 (16-4),Illinois,0,1,0,0,0,0,0,NA,2,127
+416,401310897,41,Tony Greene/Joe Lindsay/Deldre Carr,Simon Skjodt Assembly Hall,42,16.58035714,7.142857143,3/19/2021,Cleveland State,87,56,25-3 (14-3),Houston,0,1,0,0,0,0,0,0.260132743,2,143
+417,401310899,37,Kevin Brill/Larry Scirotto/Pat Adams,Lucas Oil Stadium,30,6.787878788,8.080808081,3/19/2021,Morehead State,84,67,19-9 (11-6),West Virginia,0,1,0,0,0,0,0,1.328242427,2,151
+418,401310901,36,Doug Shows/Steven Anderson/Robert Riley,Indiana Farmers Coliseum,39,1.637142857,6.857142857,3/19/2021,Liberty,69,60,21-8 (11-7),Oklahoma State,0,1,0,0,0,0,0,3.474243552,2,129
+419,401310902,47,Pat Driscoll/Michael Irving/Bo Boroski,Gainbridge Fieldhouse,29,-12.16719243,7.570977918,3/19/2021,Oregon State,56,70,18-9 (10-7),Tennessee,0,1,0,0,0,0,0,2.573013872,2,126
+420,401310900,67,Chris Rastatter/Clarence Armstrong/Kelly Pfeifer,Hinkle Fieldhouse,29,-10.65724382,8.480565371,3/19/2021,Syracuse,62,78,23-5 (14-3),San Diego State,0,1,0,0,0,0,0,1.912811999,2,140
+421,401310898,50,Terry Wymer/Jeb Hartness/Marques Pettigrew,Gainbridge Fieldhouse,26,-0.727868852,7.868852459,3/19/2021,Rutgers,56,60,16-8 (10-6),Clemson,0,1,0,0,0,0,0,4.799729317,2,116
+422,401310903,37,Bert Smith/D.J. Carstensen/Tony Chiazza,Hinkle Fieldhouse,28,1.730337079,8.988764045,3/19/2021,Georgia Tech,71,60,25-4 (16-2),Loyola-Chicago,0,1,0,0,0,0,0,3.666936025,2,131
+423,401310913,48,Mike Reed/Joe Lindsay/Clarence Armstrong,Gainbridge Fieldhouse,29,23.9537037,7.407407407,3/20/2021,Norfolk State,98,55,27-0 (15-0),Gonzaga,0,1,0,0,0,0,0,0.029408296,2,153
+424,401310923,48,James Breeding/Deldre Carr/Kelly Pfeifer,Indiana Farmers Coliseum,35,10.68553459,7.547169811,3/20/2021,Grand Canyon,86,74,22-8 (14-6),Iowa,0,1,0,0,0,0,0,0.675559515,2,160
+425,401310925,56,Terry Wymer/Michael Irving/Tony Henderson,Indiana Farmers Coliseum,33,0.009375,7.5,3/20/2021,Eastern Washington,85,51,21-8 (12-6),Kansas,0,1,0,0,0,0,0,4.377671428,2,136
+426,401310926,54,Don Daily/Lee Cassell/Steve McJunkins,Simon Skjodt Assembly Hall,22,0.894160584,8.759124088,3/20/2021,Ohio,NA,NA,18-7 (13-4),UVA,0,1,0,0,0,0,0,4.106840106,2,NA
+427,401310927,46,Gregory Nixon/Keith Kimble/Tony Chiazza,Lucas Oil Stadium,30,-0.373702422,8.30449827,3/20/2021,UC Santa Barbara,63,62,21-8 (14-6),Creighton,0,1,0,0,0,0,0,5.225683622,2,125
+428,401310914,41,Pat Driscoll/Bert Smith/D.J. Carstensen,Gainbridge Fieldhouse,27,5.588050314,7.547169811,3/20/2021,Drake,72,56,23-7 (15-5),USC,0,1,0,0,0,0,0,2.168272,2,128
+429,401310924,NA,NA,NA,NA,NA,NA,3/20/2021,VCU,95,80,21-7 (14-4),Oregon,0,1,0,0,0,0,0,NA,2,175
+430,401310928,42,Larry Scirotto/Brent Hampton/Doug Sirmons,Lucas Oil Stadium,34,1.271293375,7.570977918,3/20/2021,Missouri,72,68,16-10 (9-8),Oklahoma,0,1,0,0,0,0,0,5.384162224,2,140
+431,401310922,38,Bill Ek/Tim Clougherty/Jeff Anderson,Mackey Arena,41,14.81341108,6.997084548,3/20/2021,Texas Southern,82,66,21-4 (14-3),Michigan,0,1,0,0,0,0,0,0.085566428,2,148
+432,401310915,39,Bo Boroski/Bill Covington/Todd Austin,Hinkle Fieldhouse,36,4.052307692,7.384615385,3/20/2021,Iona,68,55,25-6 (16-2),Alabama,0,1,0,0,0,0,0,1.270093063,2,123
+433,401310917,38,Donnie Eppley/Brian  O'Connell/Tony Padilla,Lucas Oil Stadium,31,0.765079365,7.619047619,3/20/2021,Abilene Christian,NA,NA,19-8 (11-6),Texas,0,1,0,0,0,0,0,5.126583183,2,NA
+434,401310919,37,Doug Shows/Kevin Brill/Tony Greene,Gainbridge Fieldhouse,33,7.074193548,7.741935484,3/20/2021,UNC Greensboro,71,53,17-6 (11-4),Florida State,0,1,0,0,0,0,0,1.609291431,2,124
+435,401310920,49,Lamar Simpson/Michael Greenstein/Marques Pettigrew,Hinkle Fieldhouse,33,17.36038961,7.792207792,3/20/2021,Georgetown,96,73,23-8 (14-6),Colorado,0,1,0,0,0,0,0,0.947581216,2,169
+436,401310918,36,Randy  McCall/Robert Riley/Pat Adams,Hinkle Fieldhouse,36,-7.625,8.333333333,3/20/2021,UCLA,62,73,20-7 (10-3),BYU,0,1,0,0,0,0,0,3.590524204,2,135
+437,401310916,41,Ron Groover/Paul Szelc/A.J. Desai,Mackey Arena,31,-6.963087248,8.053691275,3/20/2021,Maryland,54,63,15-8 (11-6),UConn,0,1,0,0,0,0,0,3.00751921,2,117
+438,401310921,45,Terry Oglesby/Brian Dorsey/Courtney Green,Simon Skjodt Assembly Hall,35,8.299703264,7.121661721,3/20/2021,St. Bonaventure,76,61,19-9 (11-6),LSU,0,1,0,0,0,0,0,2.16025272,2,137
+439,401310882,38,Lee Cassell/D.J. Carstensen/Marques Pettigrew,Hinkle Fieldhouse,33,8.24567474,8.30449827,3/21/2021,Wisconsin,76,63,24-2 (13-1),Baylor,0,0,1,0,0,0,0,1.712495169,3,139
+440,401310884,37,Brent Hampton/Tony Chiazza/Pat Adams,Hinkle Fieldhouse,35,2.73374613,7.430340557,3/21/2021,Texas Tech,68,66,24-6 (13-4),Arkansas,0,0,1,0,0,0,0,5.166879044,3,134
+441,401310881,56,Lamar Simpson/Mike Reed/Kelly Pfeifer,Gainbridge Fieldhouse,24,12.77647059,9.411764706,3/21/2021,North Texas,84,61,18-6 (11-4),Villanova,0,0,1,0,0,0,0,1.578411085,3,145
+442,401310883,52,Donnie Eppley/Brian Dorsey/Deldre Carr,Indiana Farmers Coliseum,30,3.709265176,7.667731629,3/21/2021,Oral Roberts,78,81,15-10 (9-7),Florida,0,0,1,0,0,0,0,3.967355449,3,159
+443,401310888,24,Terry Wymer/Larry Scirotto/Bret Smith,Gainbridge Fieldhouse,34,-8.506666667,8,3/21/2021,Loyola Chicago,58,71,24-7 (16-4),Illinois,0,0,1,0,0,0,0,3.880422418,3,129
+444,401310886,38,Kevin Brill/Don Daily/Courtney Green,Lucas Oil Stadium,32,-1.618589744,7.692307692,3/21/2021,Rutgers,63,60,26-3 (14-3),Houston,0,0,1,0,0,0,0,5.385454377,3,123
+445,401310885,57,Gerry Pollard/Brian  O'Connell/Bert Smith,Gainbridge Fieldhouse,29,-7.295031056,7.453416149,3/21/2021,Syracuse,72,75,19-10 (11-6),West Virginia,0,0,1,0,0,0,0,5.239864389,3,147
+446,401310887,49,Verne Harris/Tim Clougherty/Terry Oglesby,Hinkle Fieldhouse,53,-7.557739558,5.896805897,3/21/2021,Oregon State,70,80,21-9 (11-7),Oklahoma State,0,0,1,0,0,0,0,4.894147944,3,150
+447,401310889,38,Doug Shows/Michael Irving/Tony Henderson,Hinkle Fieldhouse,33,7.806349206,7.619047619,3/22/2021,Oklahoma,87,71,28-0 (15-0),Gonzaga,0,0,1,0,0,0,0,0.844185594,3,158
+448,401310893,50,Tony Padilla/Bo Boroski/A.J. Desai,Gainbridge Fieldhouse,26,-8.460365854,7.317073171,3/22/2021,Oregon,80,95,22-9 (14-6),Iowa,0,0,1,0,0,0,0,3.850474706,3,175
+449,401310895,43,Randy  McCall/Steven Anderson/Doug Sirmons,Hinkle Fieldhouse,31,-15.29073482,7.667731629,3/22/2021,USC,NA,NA,21-9 (12-6),Kansas,0,0,1,0,0,0,0,1.507679151,3,NA
+450,401310890,51,Jeff Clark/Bill Ek/Jeb Hartness,Hinkle Fieldhouse,33,9.432432432,7.207207207,3/22/2021,Ohio,72,58,22-8 (14-6),Creighton,0,0,1,0,0,0,0,1.729110023,3,130
+451,401310894,46,Pat Driscoll/Robert Riley/Jeffrey Anderson,Lucas Oil Stadium,37,-0.327272727,7.272727273,3/22/2021,LSU,86,78,22-4 (14-3),Michigan,0,0,1,0,0,0,0,5.191280409,3,164
+452,401310892,60,Ron Groover/Keith Kimble/Joe Lindsay,Gainbridge Fieldhouse,19,10.63669065,8.633093525,3/22/2021,Maryland,96,77,26-6 (16-2),Alabama,0,0,1,0,0,0,0,1.983834054,3,173
+453,401310896,42,Chris Rastatter/William Covington/Paul Szelc,Indiana Farmers Coliseum,37,5.928802589,7.766990291,3/22/2021,Colorado,76,58,18-6 (11-4),Florida State,0,0,1,0,0,0,0,3.036175462,3,134
+454,401310891,38,James Breeding/Michael Greenstein/Byron Jarrett,Gainbridge Fieldhouse,30,12.81144781,8.080808081,3/22/2021,Abilene Christian,67,47,20-9 (13-6),UCLA,0,0,1,0,0,0,0,1.0975841,3,114
+455,401310880,36,Gerry Pollard/James Breeding/Byron Jarrett,Hinkle Fieldhouse,26,0.392857143,8.571428571,3/27/2021,Villanova,62,51,25-2 (13-1),Baylor,0,0,0,1,0,0,0,3.193261058,4,113
+456,401310879,40,Larry Scirotto/Keith Kimble/Joe Lindsay,Gainbridge Fieldhouse,32,-3.212827988,6.997084548,3/27/2021,Oral Roberts,72,70,25-6 (13-4),Arkansas,0,0,0,1,0,0,0,6.522883545,4,142
+457,401310878,49,Brent Hampton/A.J. Desai/Pat Adams,Hinkle Fieldhouse,33,7.384126984,7.619047619,3/27/2021,Syracuse,62,46,27-3 (14-3),Houston,0,0,0,1,0,0,0,1.651938209,4,108
+458,401310877,36,Chris Rastatter/Jeb Hartness/Courtney Green,Gainbridge Fieldhouse,36,-3.581993569,7.717041801,3/27/2021,Oregon State,58,65,26-5 (16-2),Loyola-Chicago,0,0,0,1,0,0,0,4.064061479,4,123
+459,401310876,47,Michael Greenstein/Marques Pettigrew/Doug Sirmons,Hinkle Fieldhouse,24,12.64119601,7.973421927,3/28/2021,Creighton,83,65,29-0 (15-0),Gonzaga,0,0,0,1,0,0,0,0.65806265,4,148
+460,401310875,38,Brian  O'Connell/Tony Henderson/Kelly Pfeifer,Gainbridge Fieldhouse,25,10.0730897,7.973421927,3/28/2021,Oregon,82,68,25-7 (15-5),USC,0,0,0,1,0,0,0,2.03420882,4,150
+461,401310874,31,D.J. Carstensen/Tony Padilla/Brian Dorsey,Gainbridge Fieldhouse,32,10.05128205,7.692307692,3/28/2021,Florida State,76,58,23-4 (14-3),Michigan,0,0,0,1,0,0,0,2.140249879,4,134
+462,401310873,57,Pat Driscoll/Michael Irving/Don Daily,Hinkle Fieldhouse,44,-2.368932039,6.553398058,3/28/2021,UCLA,78,88,26-7 (16-2),Alabama,0,0,0,1,0,0,0,7.587372948,4,166
+463,401310870,26,Jeff Clark/Terry Oglesby/Paul Szelc,Lucas Oil Stadium,39,9.65060241,7.228915663,3/29/2021,Arkansas,81,72,26-2 (13-1),Baylor,0,0,0,0,1,0,0,1.563892928,5,153
+464,401310869,48,Ron Groover/Mike Reed/Jeff Anderson,Lucas Oil Stadium,32,9.01863354,7.453416149,3/29/2021,Oregon State,67,61,28-3 (14-3),Houston,0,0,0,0,1,0,0,1.864536693,5,128
+465,401310871,36,Doug Shows/Randy  McCall/Bert Smith,Lucas Oil Stadium,29,16.35384615,7.384615385,3/30/2021,USC,85,66,30-0 (15-0),Gonzaga,0,0,0,0,1,0,0,0.616650271,5,151
+466,401310872,24,Verne Harris/Lee Cassell/Bo Boroski,Lucas Oil Stadium,25,-1.028673835,8.602150538,3/30/2021,UCLA,49,51,23-5 (14-3),Michigan,0,0,0,0,1,0,0,4.820542729,5,100
+467,401310867,38,Ron Groover/James Breeding/Jeffrey Anderson,Lucas Oil Stadium,32,0.183800623,8.411214953,4/3/2021,UCLA,93,90,31-0 (15-0),Gonzaga,0,0,0,0,0,1,0,5.954306996,6,183
+468,401310866,43,Chris Rastatter/Pat Adams/Doug Sirmons,Lucas Oil Stadium,28,15.29411765,8.30449827,4/3/2021,Houston,78,59,27-2 (13-1),Baylor,0,0,0,0,0,1,0,1.012571127,6,137
+469,401310865,40,Randy  McCall/Keith Kimble/Bo Boroski,Lucas Oil Stadium,36,-13.88580247,7.407407407,4/5/2021,Baylor,70,86,31-1 (15-0),Gonzaga,0,0,0,0,0,0,1,3.101847129,7,156
+470,401408571,32,Roger Ayers/Nate Harris/Vladimir Voyard-Tadal,UD Arena,40,-3.665615142,7.570977918,3/15/2022,Indiana,58,66,25-9 (13-5),Wyoming,1,0,0,0,0,0,0,2.938763724,1,124
+471,401408572,34,Joe Lindsay/Chad Barlow/Michael Palau,UD Arena,40,1.399470899,6.349206349,3/15/2022,Texas A&M-Corpus Christi,76,67,19-12 (13-5),Texas Southern,1,0,0,0,0,0,0,5.07331284,1,143
+472,401408570,46,Pat Driscoll/Rob Rorke/Courtney Green,UD Arena,23,0.766871166,9.202453988,3/16/2022,Notre Dame,87,89,18-14 (12-8),Rutgers,1,0,0,0,0,0,0,11.3893883,1,176
+473,401408573,45,D.J. Carstensen/Jason Baker/Evon Burroughs,UD Arena,44,6.586118252,6.16966581,3/16/2022,Bryant,93,82,22-13 (15-7),Wright State,1,0,0,0,0,0,0,3.745268471,1,175
+474,401408586,34,Michael Irving/Robert Riley/Tommy Morrissey,Moda Center,43,5.834586466,6.015037594,3/17/2022,Georgia State,93,72,27-3 (13-1),Gonzaga,0,1,0,0,0,0,0,0.834667336,2,165
+475,401408575,45,Bert Smith/Gregory Nixon/Steve McJunkins,KeyBank Center,40,2.026143791,7.843137255,3/17/2022,Vermont,75,71,26-8 (13-5),Arkansas,0,1,0,0,0,0,0,4.649868132,2,146
+476,401408574,40,Jeff Clark/D.G. Nelson/William Henderson,KeyBank Center,33,-3.800738007,8.856088561,3/17/2022,New Mexico State,63,70,23-10 (13-6),UConn,0,1,0,0,0,0,0,6.16971677,2,133
+477,401408588,33,Sean Hull/Gerry Pollard/Bart Lenox,Moda Center,32,-8.820598007,7.973421927,3/17/2022,Memphis,53,64,27-8 (15-3),Boise State,0,1,0,0,0,0,0,2.010899297,2,117
+478,401408585,49,Darron George/Rob Kueneman/Jeff Anderson,Dickies Arena,31,18.53642384,7.947019868,3/17/2022,Norfolk State,85,49,27-6 (14-4),Baylor,0,1,0,0,0,0,0,0.127373014,2,134
+479,401408578,32,Larry Spaulding/Joe Lindsay/Edwin  Young,Gainbridge Fieldhouse,42,0.70441989,7.458563536,3/17/2022,Saint Peter's,79,85,26-8 (14-4),Kentucky,0,1,0,0,0,0,0,4.886319743,2,164
+480,401408587,38,Terry Wymer/Amy Bonner/Matt Potter,Moda Center,26,-1.091872792,8.480565371,3/17/2022,Akron,57,53,26-7 (15-5),UCLA,0,1,0,0,0,0,0,4.076737405,2,110
+481,401408589,31,Rick Crawford/Verne Harris/Kelly Pfeifer,Moda Center,33,15.36129032,7.741935484,3/17/2022,Indiana,82,53,26-7 (12-3),Saint Mary's,0,1,0,0,0,0,0,1.93650733,2,135
+482,401408579,56,Roger Ayers Jr./Patrick Evans/Earl Walton,Gainbridge Fieldhouse,45,1.09921671,7.049608355,3/17/2022,San Francisco,92,87,31-2 (18-0),Murray State,0,1,0,0,0,0,0,8.521945947,2,179
+483,401408583,66,Lamar Simpson/Kipp Kissinger/Nate Harris,Dickies Arena,27,20.66954023,6.896551724,3/17/2022,Marquette,95,63,25-9 (15-5),UNC,0,1,0,0,0,0,0,0.937406194,2,158
+484,401408580,46,Bill Ek/Chuck Jones/Ray Natili,Gainbridge Fieldhouse,27,19.60777385,8.480565371,3/17/2022,Longwood,88,56,27-7 (14-4),Tennessee,0,1,0,0,0,0,0,0.274889761,2,144
+485,401408581,49,Larry Scirotto/Jeb Hartness/Justin Porterfield,Gainbridge Fieldhouse,30,1.559210526,7.894736842,3/17/2022,Michigan,63,75,25-6 (14-4),Colorado State,0,1,0,0,0,0,0,4.376765963,2,138
+486,401408582,37,Donnie Eppley/Tony Padilla/Scott Brown,Dickies Arena,35,20.40532544,7.100591716,3/17/2022,Texas Southern,83,56,29-6 (14-4),Kansas,0,1,0,0,0,0,0,0.099505139,2,139
+487,401408576,45,Anthony Jordan/Michael Greenstein/Terry Oglesby,KeyBank Center,23,5.263513514,8.108108108,3/17/2022,South Dakota State,66,57,26-5 (14-3),Providence,0,1,0,0,0,0,0,3.261742823,2,123
+488,401408577,46,Pat Adams/Clarence Armstrong/David Hall,KeyBank Center,32,-1.302180685,7.476635514,3/17/2022,Richmond,63,67,26-10 (12-8),Iowa,0,1,0,0,0,0,0,5.328388526,2,130
+489,401408584,33,Brent Hampton/Brian Dorsey/Vlad Tadal,Dickies Arena,37,5.602777778,7.5,3/17/2022,Creighton,69,72,23-9 (13-4),San Diego State,0,1,0,0,0,0,0,5.273795707,2,141
+490,401408592,39,John Gaffney/Randy Richardson/Greg Evans,Bon Secours Wellness Arena,21,12.37800687,8.24742268,3/18/2022,Cal State Fullerton,78,61,29-6 (16-4),Duke,0,1,0,0,0,0,0,0.253581014,2,139
+491,401408602,45,Jerry Heater/Keith Kimble/Eric Curry,Viejas Arena,40,25.20327869,7.868852459,3/18/2022,Montana State,97,62,26-9 (12-6),Texas Tech,0,1,0,0,0,0,0,0.190049516,2,159
+492,401408605,40,Doug Shows/Tim Clougherty/Brandon Cruz,Viejas Arena,27,-5.236842105,7.894736842,3/18/2022,Notre Dame,64,78,19-14 (9-9),Alabama,0,1,0,0,0,0,0,3.809159112,2,142
+493,401408593,51,Pat Driscoll/Chris Beaver/Byron Jarrett,Bon Secours Wellness Arena,32,1.560810811,8.108108108,3/18/2022,Davidson,74,73,23-12 (11-9),Michigan State,0,1,0,0,0,0,0,5.807797988,2,147
+494,401408595,39,James Breeding/Evon Burroughs/Owen Shortt,Fiserv Forum,34,15.23952096,7.185628743,3/18/2022,Yale,78,56,28-7 (14-6),Purdue,0,1,0,0,0,0,0,0.405497329,2,134
+495,401408596,31,Chris Rastatter/Steven Anderson/John Floyd,Fiserv Forum,41,4.879746835,7.594936709,3/18/2022,Virginia Tech,81,73,22-11 (10-8),Texas,0,1,0,0,0,0,0,3.328678741,2,154
+496,401408604,45,Paul Szelc/Bill Covington/K.B. Burdett,Viejas Arena,31,12.78235294,7.058823529,3/18/2022,Wright State,87,70,32-3 (18-2),Arizona,0,1,0,0,0,0,0,0.195240386,2,157
+497,401408598,48,Tony Greene/Mike Reed/Todd Austin,PPG Paints Arena,30,9.837545126,8.664259928,3/18/2022,Delaware,80,60,27-7 (16-4),Villanova,0,1,0,0,0,0,0,0.825505409,2,140
+498,401408600,32,Don Daily/Tony Chiazza/Tommy Nunez,PPG Paints Arena,37,-6.042424242,7.272727273,3/18/2022,Chattanooga,54,53,23-9 (15-5),Illinois,0,1,0,0,0,0,0,6.095233391,2,107
+499,401408601,40,Bret Smith/Doug Sirmons/Olandis Poole,PPG Paints Arena,26,10.97923875,8.30449827,3/18/2022,UAB,82,68,30-5 (15-3),Houston,0,1,0,0,0,0,0,1.146222083,2,150
+500,401408599,43,Brian  O'Connell/Antinio Petty/Courtney Green,PPG Paints Arena,35,6.765079365,7.619047619,3/18/2022,Loyola Chicago,54,41,20-11 (12-8),Ohio State,0,1,0,0,0,0,0,2.2530789,2,95
+501,401408603,31,Kevin Brill/John Higgins/Frank Harvey,Viejas Arena,32,-11.62171053,7.894736842,3/18/2022,TCU,42,69,21-11 (11-8),Seton Hall,0,1,0,0,0,0,0,1.820542133,2,111
+502,401408591,49,Lee Cassell/Deldre Carr/Brooks Wells,Bon Secours Wellness Arena,38,10.57971014,6.956521739,3/18/2022,Jacksonville State,80,61,28-5 (15-3),Auburn,0,1,0,0,0,0,0,0.824768347,2,141
+503,401408594,39,D.J. Carstensen/Nathan Farrell/Mike Nance,Fiserv Forum,23,-0.282142857,8.571428571,3/18/2022,Colgate,67,60,25-7 (15-5),Wisconsin,0,1,0,0,0,0,0,4.00477693,2,127
+504,401408597,56,Ron Groover/Mark Schnur/Marques Pettigrew,Fiserv Forum,32,-4.314465409,7.547169811,3/18/2022,Iowa State,54,59,22-12 (9-9),LSU,0,1,0,0,0,0,0,4.974243844,2,113
+505,401408590,35,Bo Boroski/A.J. Desai/Chance Moore,Bon Secours Wellness Arena,30,-2.996774194,7.741935484,3/18/2022,Miami,66,68,26-8 (14-6),USC,0,1,0,0,0,0,0,6.907103114,2,134
+506,401408613,46,Terry Wymer/Verne Harris/Kelly Pfeifer,Moda Center,39,-1.123893805,7.079646018,3/19/2022,Memphis,82,78,28-3 (13-1),Gonzaga,0,0,1,0,0,0,0,5.095475184,3,160
+507,401408606,42,Michael Greenstein/Terry Oglesby/Pat Adams,KeyBank Center,29,3.374213836,7.547169811,3/19/2022,New Mexico State,53,48,27-8 (13-5),Arkansas,0,0,1,0,0,0,0,2.641947196,3,101
+508,401408610,62,Donnie Eppley/Brent Hampton/Kipp Kissinger,Dickies Arena,53,-9.377574371,6.178489703,3/19/2022,North Carolina,86,93,27-7 (14-4),Baylor,0,0,1,0,0,0,0,5.839956323,3,179
+509,401408612,30,Gerry Pollard/Michael Irving/Robert Riley,Moda Center,28,4.231707317,9.756097561,3/19/2022,Saint Mary's,72,56,27-7 (15-5),UCLA,0,0,1,0,0,0,0,3.054228225,3,128
+510,401408609,37,Jeb Hartness/Roger Ayers/Ray Natili,Gainbridge Fieldhouse,46,-4.783098592,6.76056338,3/19/2022,Saint Peter's,60,70,31-3 (18-0),Murray State,0,0,1,0,0,0,0,5.292000237,3,130
+511,401408608,34,Larry Scirotto/Earl Walton/Joe Lindsay,Gainbridge Fieldhouse,30,-0.911949686,7.547169811,3/19/2022,Michigan,68,76,27-8 (14-4),Tennessee,0,0,1,0,0,0,0,5.225258606,3,144
+512,401408611,44,Lamar Simpson/Tony Padilla/Jeff Anderson,Dickies Arena,37,2.675516224,7.079646018,3/19/2022,Creighton,79,72,30-6 (14-4),Kansas,0,0,1,0,0,0,0,2.484983037,3,151
+513,401408607,44,Jeff Clark/Bert Smith/Tony Henderson,KeyBank Center,28,18.61724138,8.275862069,3/19/2022,Richmond,79,51,27-5 (14-3),Providence,0,0,1,0,0,0,0,1.066590412,3,130
+514,401408614,35,Lee Cassell/Bo Boroski/A.J. Desai,Bon Secours Wellness Arena,31,2.674267101,7.817589577,3/20/2022,Michigan State,85,76,30-6 (16-4),Duke,0,0,1,0,0,0,0,4.993962637,3,161
+515,401408620,43,John Higgins/Paul Szelc/Bill Covington,Viejas Arena,29,1.589576547,7.817589577,3/20/2022,Notre Dame,59,53,27-9 (12-6),Texas Tech,0,0,1,0,0,0,0,4.169335028,3,112
+516,401408616,45,Ron Groover/D.J. Carstensen/Marques Pettigrew,Fiserv Forum,45,3.375722543,6.936416185,3/20/2022,Texas,81,71,29-7 (14-6),Purdue,0,0,1,0,0,0,0,4.264733199,3,152
+517,401408621,53,Doug Shows/Keith Kimble/Eric Curry,Viejas Arena,43,0.785377358,6.367924528,3/20/2022,TCU,85,80,33-3 (18-2),Arizona,0,0,1,0,0,0,0,6.642871818,3,165
+518,401408619,45,Don Daily/Tony Chiazza/Doug Sirmons,PPG Paints Arena,32,7.83277592,8.026755853,3/20/2022,Ohio State,71,61,28-7 (16-4),Villanova,0,0,1,0,0,0,0,2.433549749,3,132
+519,401408618,47,Brian  O'Connell/Mike Reed/Courtney Green,PPG Paints Arena,31,-5.057324841,7.643312102,3/20/2022,Houston,53,68,23-10 (15-5),Illinois,0,0,1,0,0,0,0,3.258968856,3,121
+520,401408615,41,Pat Driscoll/John Gaffney/Byron Jarrett,Bon Secours Wellness Arena,30,-7.427350427,6.837606838,3/20/2022,Miami,61,79,28-6 (15-3),Auburn,0,0,1,0,0,0,0,4.346484514,3,140
+521,401408617,36,Chris Rastatter/James Breeding/Steven Anderson,Fiserv Forum,43,-1.956896552,6.896551724,3/20/2022,Iowa State,49,54,25-8 (15-5),Wisconsin,0,0,1,0,0,0,0,3.463978484,3,103
+522,401408625,46,Doug Shows/Michael Irving/James Breeding,Chase Center,37,-0.944444444,6.666666667,3/24/2022,Arkansas,68,74,28-4 (13-1),Gonzaga,0,0,0,1,0,0,0,4.555626043,4,142
+523,401408624,38,Gerry Pollard/Lamar Simpson/Bert Smith,Chase Center,26,-1.442176871,8.163265306,3/24/2022,Texas Tech,78,73,31-6 (16-4),Duke,0,0,0,1,0,0,0,6.397052182,4,151
+524,401408622,42,Terry Oglesby/Paul Szelc/Marques Pettigrew,AT&T Center,40,-6.698795181,7.228915663,3/24/2022,Houston,60,72,33-4 (18-2),Arizona,0,0,0,1,0,0,0,3.736597869,4,132
+525,401408623,48,Don Daily/Pat Adams/Tony Henderson,AT&T Center,23,4.562091503,7.843137255,3/24/2022,Michigan,63,55,29-7 (16-4),Villanova,0,0,0,1,0,0,0,2.733395444,4,118
+526,401408628,42,Pat Driscoll/Chris Rastatter/Brent Hampton,Wells Fargo Center,37,0.493421053,7.894736842,3/25/2022,Saint Peter's,64,67,29-8 (14-6),Purdue,0,0,0,1,0,0,0,4.704547971,4,131
+527,401408629,45,Lee Cassell/Tony Padilla/Courtney Green,Wells Fargo Center,20,1.676975945,8.24742268,3/25/2022,North Carolina,66,73,27-8 (15-5),UCLA,0,0,0,1,0,0,0,5.777595873,4,139
+528,401408627,38,John Gaffney/Keith Kimble/Ray Natili,United Center,36,6.101983003,6.798866856,3/25/2022,Providence,66,61,31-6 (14-4),Kansas,0,0,0,1,0,0,0,2.935339241,4,127
+529,401408626,48,Jeff Clark/D.J. Carstensen/Doug Sirmons,United Center,30,5.939393939,7.272727273,3/25/2022,Iowa State,70,56,26-10 (14-6),Miami,0,0,0,1,0,0,0,2.672831204,4,126
+530,401408631,30,Larry Scirotto/Ron Groover/Joe Lindsay,Chase Center,30,7.335548173,7.973421927,3/26/2022,Arkansas,78,69,32-6 (16-4),Duke,0,0,0,0,1,0,0,2.356479852,5,147
+531,401408630,41,Kipp Kissinger/Mike Reed/Jeffrey Anderson,AT&T Center,26,6.817275748,7.973421927,3/26/2022,Houston,50,44,30-7 (16-4),Villanova,0,0,0,0,1,0,0,3.43994058,5,94
+532,401408633,38,Verne Harris/John Higgins/Bo Boroski,Wells Fargo Center,30,16.58461538,7.384615385,3/27/2022,Saint Peter's,69,49,28-9 (15-5),UNC,0,0,0,0,1,0,0,0.483393764,5,118
+533,401408632,35,Terry Wymer/Earl Walton/Roger Ayers,United Center,36,4.910179641,7.185628743,3/27/2022,Miami,76,50,32-6 (14-4),Kansas,0,0,0,0,1,0,0,2.910448192,5,126
+534,401408635,48,Tony Padilla/Roger Ayers/Bo Boroski,Caesars Superdome,37,0.055401662,6.648199446,4/2/2022,North Carolina,77,81,32-7 (16-4),Duke,0,0,0,0,0,1,0,7.719573519,6,158
+535,401408634,55,James Breeding/Keith Kimble/Doug Sirmons,Caesars Superdome,18,11.34615385,9.230769231,4/2/2022,Kansas,65,81,30-8 (16-4),Villanova,0,0,0,0,0,1,0,1.887623629,6,146
+536,401408636,40,Ron Groover/Terry Oglesby/Jeff Anderson,Caesars Superdome,29,-2.570637119,6.648199446,4/4/2022,Kansas,69,72,29-10 (15-5),UNC,0,0,0,0,0,0,1,5.915344211,7,141
+537,401522117,44,Bert Smith/Alfred Smith/Bart Lenox,UD Arena,49,4.357923497,6.557377049,3/14/2023,Southeast Missouri State,75,71,24-10 (14-4),Texas A&M-CC,1,0,0,0,0,0,0,5.498117527,1,146
+538,401522116,42,Kipp Kissinger/Bharat Ramnanan/Tommy Nunez,UD Arena,30,-0.00330033,7.920792079,3/14/2023,Pittsburgh,59,60,21-13 (8-10),Miss St,1,0,0,0,0,0,0,5.697978646,1,119
+539,401522118,43,Larry Scirotto/Bret Smith/Tim Smith,UD Arena,39,-12.98089172,7.643312102,3/15/2023,Fairleigh Dickinson,61,84,14-21 (7-11),Texas Southern,1,0,0,0,0,0,0,2.412626161,1,145
+540,401522119,42,Doug Shows/Deldre Carr/Lucas Santos,UD Arena,35,18.5754386,8.421052632,3/15/2023,Nevada,98,73,23-12 (11-9),Arizona State,1,0,0,0,0,0,0,1.354950618,1,171
+541,401522123,54,Rick Crawford/Verne Harris/Larry Spaulding,Legacy Arena at BJCC,36,15.99197861,6.417112299,3/16/2023,Texas A&M-Corpus Christi,96,75,30-5 (16-2),Alabama,0,1,0,0,0,0,0,0.094404154,2,171
+542,401522134,41,Kevin Brill/Brian  O'Connell/Rob Rorke,Golden 1 Center,29,4.205980066,7.973421927,3/16/2023,Princeton,55,59,28-7 (14-6),Arizona,0,1,0,0,0,0,0,1.765428547,2,114
+543,401522130,40,Dwayne Gladden/Jerry Heater/Michael Greenstein,Amway Center,30,5.110032362,7.766990291,3/16/2023,Furman,67,68,25-8 (15-5),UVA,0,1,0,0,0,0,0,5.427087429,2,135
+544,401522131,40,Kipp Kissinger/A.J. Desai/Todd Austin,Amway Center,36,1.30239521,7.185628743,3/16/2023,Charleston,63,57,28-6 (15-3),San Diego State,0,1,0,0,0,0,0,3.750588653,2,120
+545,401522135,49,Earl Walton/Tommy Morrissey/Tommy Nunez,Golden 1 Center,27,4.326460481,8.24742268,3/16/2023,Utah State,76,65,25-9 (11-7),Missouri,0,1,0,0,0,0,0,4.690080514,2,141
+546,401522122,37,Ron Groover/Darron George/Edwin  Young,Legacy Arena at BJCC,43,-2.253968254,7.619047619,3/16/2023,West Virginia,67,65,22-12 (11-9),Maryland,0,1,0,0,0,0,0,5.416425297,2,132
+547,401522132,36,John Higgins/Jeb Hartness/Antinio Petty,Golden 1 Center,26,21.00332226,7.973421927,3/16/2023,UCLA,53,86,27-8 (16-2),UNC Asheville,0,1,0,0,0,0,0,0.143014143,2,139
+548,401522129,34,Jason Baker/Justin Porterfield/Pat Adams,Amway Center,34,7.227272727,7.792207792,3/16/2023,Louisiana,58,55,24-10 (11-7),Tennessee,0,1,0,0,0,0,0,1.069825377,2,113
+549,401522128,48,Mike Reed/Tony Chiazza/Steve McJunkins,Amway Center,23,16.47194719,7.920792079,3/16/2023,Oral Roberts,74,51,27-8 (14-6),Duke,0,1,0,0,0,0,0,0.629684248,2,125
+550,401522121,50,Randy Heimerman/Terry Oglesby/Brandon Cruz,Legacy Arena at BJCC,26,3.853820598,7.973421927,3/16/2023,Northern Kentucky,63,52,32-3 (17-1),Houston,0,1,0,0,0,0,0,0.818310797,2,115
+551,401522124,38,Amy Bonner/Joe Lindsay/Randy Richardson,Wells Fargo Arena (IA),23,10.20069204,8.30449827,3/16/2023,Colgate,81,61,27-8 (12-6),Texas,0,1,0,0,0,0,0,0.906103811,2,142
+552,401522127,56,Marques Pettigrew/Courtney Green/Chance Moore,Wells Fargo Arena (IA),26,-12.69039146,8.540925267,3/16/2023,Penn State,59,76,25-10 (15-3),Texas A&M,0,1,0,0,0,0,0,1.953672268,2,135
+553,401522120,49,Pat Driscoll/Bill Covington/Bart Lenox,Legacy Arena at BJCC,36,-6.087719298,7.01754386,3/16/2023,Auburn,75,83,19-14 (11-9),Iowa,0,1,0,0,0,0,0,3.306866562,2,158
+554,401522125,54,Tony Padilla/Byron Jarrett/Brian McNutt,Wells Fargo Arena (IA),25,10.50720461,6.916426513,3/16/2023,Howard,96,68,28-7 (13-5),Kansas,0,1,0,0,0,0,0,0.348210399,2,164
+555,401522133,44,Michael Irving/Nathan Farrell/John Floyd,Golden 1 Center,33,5.66,8,3/16/2023,Boise State,75,67,22-11 (12-8),Northwestern,0,1,0,0,0,0,0,3.800402363,2,142
+556,401522126,33,Sean Hull/Bert Smith/Brooks Wells,Wells Fargo Arena (IA),38,8.262032086,6.417112299,3/16/2023,Illinois,73,63,21-13 (8-10),Arkansas,0,1,0,0,0,0,0,2.400321748,2,136
+557,401522151,38,Deldre Carr/Wil Howard/Doug Sirmons,Ball Arena,28,5.25095057,9.125475285,3/17/2023,UC Santa Barbara,74,56,23-10 (11-7),Baylor,0,1,0,0,0,0,0,2.034211315,2,130
+558,401522152,33,Larry Scirotto/Tim Clougherty/Eric Curry,Ball Arena,32,3.330097087,7.766990291,3/17/2023,NC State,72,63,22-12 (14-6),Creighton,0,1,0,0,0,0,0,4.102886253,2,135
+559,401522145,49,Chris Beaver/Brian Dorsey/Clarence Armstrong,Nationwide Arena,32,-0.84375,7.5,3/17/2023,Fairleigh Dickinson,58,63,29-6 (15-5),Purdue,0,1,0,0,0,0,0,2.93259412,2,121
+560,401522141,45,Don Daily/Jemel Spearman/Greg Evans,Nationwide Arena,25,9.339552239,8.955223881,3/17/2023,Vermont,78,61,29-6 (17-3),Marquette,0,1,0,0,0,0,0,1.154508263,2,139
+561,401522153,36,Lamar Simpson/Gregory Nixon/Chad Barlow,Greensboro Coliseum,29,6.546666667,8,3/17/2023,Montana State,77,65,24-9 (11-7),Kansas State,0,1,0,0,0,0,0,1.849469918,2,142
+562,401522154,39,Patrick Evans/John Gaffney/K.B. Burdett,Greensboro Coliseum,28,4.378548896,7.570977918,3/17/2023,Providence,61,53,22-11 (12-6),Kentucky,0,1,0,0,0,0,0,2.610683173,2,114
+563,401522142,34,Steven Anderson/Roger Ayers/Scott Brown,Nationwide Arena,28,5.919732441,8.026755853,3/17/2023,USC,72,62,20-12 (11-8),Michigan State,0,1,0,0,0,0,0,3.250281631,2,134
+564,401522144,50,Lee Cassell/Bret Smith/Evon Burroughs,Nationwide Arena,25,-0.200668896,8.026755853,3/17/2023,Florida Atlantic,65,66,26-9 (13-5),Memphis,0,1,0,0,0,0,0,6.988775603,2,131
+565,401522156,31,Jeff Clark/Chuck Jones/Robert Riley,Greensboro Coliseum,38,-1.80952381,7.142857143,3/17/2023,Kennesaw State,72,67,26-9 (15-5),Xavier,0,1,0,0,0,0,0,4.72346059,2,139
+566,401522138,35,Mark Schnur/Keith Kimble/Kelly Pfeifer,MVP Arena,25,7.896875,7.5,3/17/2023,Kent State,71,60,23-11 (12-8),Indiana,0,1,0,0,0,0,0,2.121816501,2,131
+567,401522139,42,Anthony Jordan/Doug Shows/Tyler Kumpf,MVP Arena,30,-1.695238095,7.619047619,3/17/2023,Drake,63,56,26-7 (15-5),Miami,0,1,0,0,0,0,0,5.243661159,2,119
+568,401522157,40,Gerry Pollard/Rob Kueneman/Mike Nance,Greensboro Coliseum,41,-11.78171091,7.079646018,3/17/2023,Pittsburgh,41,59,19-14 (9-9),Iowa State,0,1,0,0,0,0,0,2.183946474,2,100
+569,401522148,39,Bill Ek/Paul Szelc/Michael Palau,Ball Arena,31,6.342105263,7.894736842,3/17/2023,Grand Canyon,82,70,29-5 (14-2),Gonzaga,0,1,0,0,0,0,0,1.12740671,2,152
+570,401522136,41,Jeffrey Anderson/Olandis Poole/Owen Shortt,MVP Arena,28,5.853420195,7.817589577,3/17/2023,Iona,87,63,26-8 (13-7),UConn,0,1,0,0,0,0,0,2.300822424,2,150
+571,401522137,31,Brent Hampton/D.J. Carstensen/Nate Harris,MVP Arena,40,3.605504587,7.339449541,3/17/2023,VCU,63,51,27-7 (14-2),Saint Mary's,0,1,0,0,0,0,0,2.829670917,2,114
+572,401522149,40,D.G. Nelson/Vladimir Voyard-Tadal/Ray Natili,Ball Arena,41,-2.367164179,7.164179104,3/17/2023,Arizona State,72,70,22-12 (9-9),TCU,0,1,0,0,0,0,0,6.36566442,2,142
+573,401522159,29,Pat Driscoll/Terry Oglesby/Bill Covington,Legacy Arena at BJCC,36,7.282420749,6.916426513,3/18/2023,Maryland,73,51,31-5 (16-2),Alabama,0,0,1,0,0,0,0,1.472548867,3,124
+574,401522167,46,Mike Reed/Tony Chiazza/Pat Adams,Amway Center,33,12.15932203,8.13559322,3/18/2023,Furman,75,52,29-6 (15-3),San Diego State,0,0,1,0,0,0,0,1.386010401,3,127
+575,401522170,55,Michael Irving/John Higgins/Jeb Hartness,Golden 1 Center,27,-10.22591362,7.973421927,3/18/2023,Princeton,63,78,25-10 (11-7),Missouri,0,0,1,0,0,0,0,3.159417916,3,141
+576,401522166,42,Michael Greenstein/Kipp Kissinger/A.J. Desai,Amway Center,28,3.50877193,8.421052632,3/18/2023,Duke,65,52,25-10 (11-7),Tennessee,0,0,1,0,0,0,0,3.737030166,3,117
+577,401522161,38,Verne Harris/Ron Groover/Darron George,Legacy Arena at BJCC,47,1.516393443,6.557377049,3/18/2023,Auburn,81,64,33-3 (17-1),Houston,0,0,1,0,0,0,0,3.994321039,3,145
+578,401522165,41,Bert Smith/Tony Padilla/Byron Jarrett,Wells Fargo Arena (IA),25,4.268817204,8.602150538,3/18/2023,Penn State,71,66,28-8 (12-6),Texas,0,0,1,0,0,0,0,3.6665802,3,137
+579,401522162,28,Joe Lindsay/Marques Pettigrew/Courtney Green,Wells Fargo Arena (IA),48,4.744117647,7.058823529,3/18/2023,Arkansas,71,72,28-8 (13-5),Kansas,0,0,1,0,0,0,0,6.390203522,3,143
+580,401522169,37,Kevin Brill/Brian  O'Connell/Earl Walton,Golden 1 Center,30,5.314285714,8.571428571,3/18/2023,Northwestern,68,63,31-5 (18-2),UCLA,0,0,1,0,0,0,0,2.548230227,3,131
+581,401522179,46,Paul Szelc/Eric Curry/Ray Natili,Ball Arena,37,-8.789473684,7.430340557,3/19/2023,Creighton,76,85,23-11 (11-7),Baylor,0,0,1,0,0,0,0,2.71773577,3,161
+582,401522175,43,Lee Cassell/Brian Dorsey/Clarence Armstrong,Nationwide Arena,37,-4.863057325,7.643312102,3/19/2023,Michigan State,60,69,29-7 (17-3),Marquette,0,0,1,0,0,0,0,4.886223377,3,129
+583,401522180,41,Jeff Clark/Gerry Pollard/K.B. Burdett,Greensboro Coliseum,34,-1.045454545,7.272727273,3/19/2023,Kentucky,75,69,25-9 (11-7),Kansas State,0,0,1,0,0,0,0,5.756119713,3,144
+584,401522174,62,Don Daily/Steven Anderson/Roger Ayers,Nationwide Arena,27,3.889518414,6.798866856,3/19/2023,Fairleigh Dickinson,78,70,33-3 (18-2),FAU,0,0,1,0,0,0,0,2.306589986,3,148
+585,401522183,44,Lamar Simpson/John Gaffney/Gregory Nixon,Greensboro Coliseum,39,11.22191781,6.575342466,3/19/2023,Pittsburgh,84,73,27-9 (15-5),Xavier,0,0,1,0,0,0,0,1.664538563,3,157
+586,401522173,48,Brent Hampton/D.J. Carstensen/Jeff Anderson,MVP Arena,27,-6.818991098,7.121661721,3/19/2023,Miami,69,85,23-12 (12-8),Indiana,0,0,1,0,0,0,0,4.093097512,3,154
+587,401522178,50,Larry Scirotto/Doug Sirmons/Vladimir Voyard-Tadal,Ball Arena,41,-0.88172043,6.451612903,3/19/2023,TCU,84,81,30-5 (14-2),Gonzaga,0,0,1,0,0,0,0,5.254574143,3,165
+588,401522172,36,Doug Shows/Kelly Pfeifer/Keith Kimbell,MVP Arena,29,4.412639405,8.921933086,3/19/2023,Saint Mary's,70,55,27-8 (13-7),UConn,0,0,1,0,0,0,0,3.011655145,3,125
+589,401522191,49,Jeb Hartness/Paul Szelc/Jeff Anderson,Madison Square Garden,40,1.933139535,7.848837209,3/23/2023,Michigan State,98,93,26-9 (11-7),Kansas State,0,0,0,1,0,0,0,9.768508435,4,191
+590,401522192,50,Larry Scirotto/Brian Dorsey/A.J. Desai,Madison Square Garden,32,0.973333333,8,3/23/2023,Florida Atlantic,55,62,25-11 (11-7),Tennessee,0,0,0,1,0,0,0,3.297597493,4,117
+591,401522186,34,Gerry Pollard/Bert Smith/Kipp Kissinger,T-Mobile Arena,30,3.11641791,7.164179104,3/23/2023,Gonzaga,76,79,31-6 (18-2),UCLA,0,0,0,1,0,0,0,5.81931509,4,155
+592,401522188,36,Lamar Simpson/Terry Oglesby/Ray Natili,T-Mobile Arena,38,18.18023256,6.976744186,3/23/2023,Arkansas,88,65,28-8 (13-7),UConn,0,0,0,1,0,0,0,1.307127113,4,153
+593,401522197,44,Don Daily/Tony Padilla/Marques Pettigrew,KFC Yum! Center,40,-0.848484848,6.060606061,3/24/2023,San Diego State,64,71,31-6 (16-2),Alabama,0,0,0,1,0,0,0,4.540003493,4,135
+594,401522198,45,Pat Driscoll/D.J. Carstensen/Byron Jarrett,KFC Yum! Center,28,5.826241135,8.510638298,3/24/2023,Princeton,86,75,24-12 (14-6),Creighton,0,0,0,1,0,0,0,1.940128221,4,161
+595,401522195,56,John Higgins/Brian  O'Connell/Steven Anderson,T-Mobile Center,32,-7.301886792,7.547169811,3/24/2023,Miami,75,89,33-4 (17-1),Houston,0,0,0,1,0,0,0,4.23933541,4,164
+596,401522194,29,Tony Chiazza/Roger Ayers/Courtney Green,T-Mobile Center,31,12.20754717,7.547169811,3/24/2023,Xavier,83,71,29-8 (12-6),Texas,0,0,0,1,0,0,0,1.333662008,4,154
+597,401522193,45,Doug Shows/Earl Walton/Doug Sirmons,Madison Square Garden,39,-1.08259587,7.079646018,3/25/2023,Florida Atlantic,76,79,26-10 (11-7),Kansas State,0,0,0,0,1,0,0,6.365809182,5,155
+598,401522190,51,John Gaffney/Keith Kimble/Mike Reed,T-Mobile Arena,30,-13.78235294,7.058823529,3/25/2023,UConn,54,82,31-6 (14-2),Gonzaga,0,0,0,0,1,0,0,2.200930924,5,136
+599,401522199,30,Michael Irving/Lee Cassell/Joe Lindsay,KFC Yum! Center,22,-2.303886926,8.480565371,3/26/2023,Creighton,57,56,31-6 (15-3),San Diego State,0,0,0,0,1,0,0,5.467787587,5,113
+600,401522196,33,Ron Groover/Brent Hampton/Pat Adams,T-Mobile Center,37,4.180645161,7.741935484,3/26/2023,Miami,81,88,29-9 (12-6),Texas,0,0,0,0,1,0,0,5.295137083,5,169
+601,401522200,40,John Higgins/Bert Smith/Kipp Kissinger,NRG Stadium,34,-4.031847134,7.643312102,4/1/2023,Florida Atlantic,72,71,32-6 (15-3),San Diego State,0,0,0,0,0,1,0,6.36532323,6,143
+602,401522201,46,Roger Ayers/Doug Sirmons/Jeff Anderson,NRG Stadium,23,9.924836601,7.843137255,4/1/2023,UConn,59,72,29-8 (15-5),Miami,0,0,0,0,0,1,0,1.509934316,6,131
+603,401522202,40,Ron Groover/Terry Oglesby/Keith Kimble,NRG Stadium,35,9.489675516,7.079646018,4/3/2023,UConn,59,76,32-7 (15-3),San Diego State,0,0,0,0,0,0,1,1.554259369,7,135
