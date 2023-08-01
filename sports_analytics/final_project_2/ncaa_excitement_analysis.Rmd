@@ -72,11 +72,11 @@ pairs.panels
 # scatterplot
 ggplot(data_1, aes(x=gei, y=abs_score_delta)) + 
   geom_point() +
-  geom_smooth(method = "lm") +
+  geom_smooth(method = "loess") +
   labs(
     title = "Score Difference vs GEI",
-    y = "GEI", 
-    x = "Score Difference"
+    y = "Score Difference", 
+    x = "GEI"
   )
 ```
 
